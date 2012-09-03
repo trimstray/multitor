@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Original script from
+# http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/
+
 base_socks_port=9050
 base_control_port=8118
 
@@ -16,9 +19,7 @@ if [ ! $TOR_INSTANCES ] || [ $TOR_INSTANCES -lt 1 ]; then
     exit 1
 fi
 
-#for i in {0..10}
 for i in $(seq $TOR_INSTANCES)
-
 do
 	j=$((i+1))
 	socks_port=$((base_socks_port+i))
@@ -27,8 +28,8 @@ do
 		echo "Creating directory data/tor$i"
 		mkdir "data/tor$i"
 	fi
-	# Take into account that authentication for the control port is disabled. Must be used in secure and controlled environments
 
+	# Take into account that authentication for the control port is disabled. Must be used in secure and controlled environments
 	echo "Running: tor --RunAsDaemon 1 --CookieAuthentication 0 --HashedControlPassword \"\" --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i"
 
 	tor --RunAsDaemon 1 --CookieAuthentication 0 --HashedControlPassword "" --ControlPort $control_port --PidFile tor$i.pid --SocksPort $socks_port --DataDirectory data/tor$i
