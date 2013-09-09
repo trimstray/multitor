@@ -4,7 +4,7 @@
 # http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/
 
 base_socks_port=9050
-base_control_port=8118
+base_control_port=15000
 
 # Create data directory if it doesn't exist
 if [ ! -d "data" ]; then
