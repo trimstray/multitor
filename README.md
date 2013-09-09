@@ -3,8 +3,8 @@ Multi-TOR
 
 Tools for handling multiple TOR connections
 
-multi_tor.sh - opens multiple TOR instances
-tor_newid.sh - requests new identity (IP address) to multiple TOR instances
+* multitor.sh - opens multiple TOR instances
+* tor_newid.sh - requests new identity (IP address) to multiple TOR instances
 
 Changelog
 -------------
