@@ -1,4 +1,6 @@
 #!/bin/bash
+#making script to stop on 1st error
+set -e
 
 # Original script from
 # http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/
