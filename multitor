@@ -783,6 +783,10 @@ function __main__() {
 
     _i="" ; eval _i='$'$i
 
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "$i: '$_i'"
+
     if [[ -z "$_i" ]] ; then
 
       _sprintf "stop" "error of argument value: '$i' is unset or empty"
