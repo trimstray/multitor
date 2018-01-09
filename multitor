@@ -779,11 +779,7 @@ function __main__() {
   #   - variables for call parameters
   #   - variables from the additional configuration files
   for i in "instance_state" \
-           "instance_number" \
-           "socks_port_state" \
-           "socks_port_number" \
-           "control_port_state" \
-           "control_port_number" ; do
+           "instance_number" ; do
 
     _i="" ; eval _i='$'$i
 
