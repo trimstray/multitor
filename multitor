@@ -4,9 +4,10 @@
 #
 # Header:
 #
-#         fname : "git-template-full"
-#         cdate : "00.00.0000"
-#        author : "Michał Żurawski <contact@nslab.at>"
+#         fname : "multitor"
+#         cdate : "09.01.2018"
+#        author : "Jan Seidl <jseidl@wroot.org>"
+#                 "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
 #
@@ -14,9 +15,12 @@
 #
 #   See README.md file for more information.
 #
+#   This is fork Multi-TOR project written by Jai Seidl:
+#     https://github.com/jseidl/Multi-TOR
+#
 # License:
 #
-#   git-template-full, Copyright (C) 2017  Michał Żurawski
+#   multitor, Copyright (C) 2017  Jan Seidl, Michał Żurawski
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
