@@ -729,7 +729,7 @@ function __main__() {
 
         export socks_port_state=1
 
-        export socks_port_number=${2:-"1"}
+        export socks_port_number=${2:-"10000"}
 
         shift 2 ;;
 
@@ -737,7 +737,7 @@ function __main__() {
 
         export control_port_state=1
 
-        export control_port_number=${2:-"1"}
+        export control_port_number=${2:-"15000"}
 
         shift 2 ;;
 
@@ -778,7 +778,12 @@ function __main__() {
   # Checking the value of the variables (if they are unset or empty):
   #   - variables for call parameters
   #   - variables from the additional configuration files
-  for i in load_state ; do
+  for i in "instance_state" \
+           "instance_number" \
+           "socks_port_state" \
+           "socks_port_number" \
+           "control_port_state" \
+           "control_port_number" ; do
 
     _i="" ; eval _i='$'$i
 
