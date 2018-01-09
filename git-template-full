@@ -1,0 +1,826 @@
+#!/usr/bin/env bash
+
+### BEG SCRIPT INFO
+#
+# Header:
+#
+#         fname : "git-template-full"
+#         cdate : "00.00.0000"
+#        author : "Michał Żurawski <contact@nslab.at>"
+#      tab_size : "2"
+#     soft_tabs : "yes"
+#
+# Description:
+#
+#   See README.md file for more information.
+#
+# License:
+#
+#   git-template-full, Copyright (C) 2017  Michał Żurawski
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+### END SCRIPT INFO
+
+
+################################################################################
+################## The configuration parameters of the script ##################
+################################################################################
+
+# Bash 'Strict Mode':
+#   errexit  - exit the script if any statement returns a non-true return value
+#   pipefail - exit the script if any command in a pipeline errors
+#   nounset  - exit the script if you try to use an uninitialised variable
+#   xtrace   - display debugging information
+set -o pipefail
+
+# Internal field separator (more flexible):
+#   IFS_ORIG="$IFS"
+#   IFS_HACK=$'\n\t'
+#   IFS="$IFS_HACK"
+
+# PATH env variable setup:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Setting permissions in the script environment:
+#   0022 - less restrictive settings (default value)
+#   0027 - for better security than above
+#   0077 - only for user access (more restrictive)
+umask 0027
+
+
+################################################################################
+############################### Global variables ###############################
+################################################################################
+
+# The tables that store call parameters.
+__init_params=()
+__script_params=("$@")
+
+# Store the name of the script and directory call.
+readonly _init_name="$(basename "$0")"
+readonly _init_directory="$(dirname "$(readlink -f "$0")")"
+
+# Directory structure.
+readonly _src_directory="${_init_directory}/src"
+
+# File with external (user) functions and variables.
+readonly _import_="${_src_directory}/_import_"
+
+# Stores the current date.
+readonly _cdate=$(date +%Y%m%d)
+
+# Variables related to the log file. Divided into three parts due
+# to the better possibility of manipulation for the user.
+readonly _log_directory="${_init_directory}/log"
+readonly _log_file="${_init_name}.${_cdate}.log"
+readonly _log_stdout="${_log_directory}/stdout.log"
+readonly _log_path="${_log_directory}/${_log_file}"
+
+# External configuration file (-c|--config script param).
+config=""
+load_state=0
+
+# Declaration of output variables (--debug and --verbose params).
+stdout_mode=""
+printf_mode=""
+s_color="true"
+
+# Declaration of total execution time.
+time_tracking="true"
+time_mode=0
+
+
+################################################################################
+############################## External commands ###############################
+################################################################################
+
+# We place here used commands at script runtime, as strings to anything
+# unnecessarily run.
+readonly commands=(basename dirname stat date grep egrep cut sed gzip tar)
+
+# If you intend to specify the full path to the command we do it like:
+# readonly exec_gzip="/bin/gzip"
+
+# Stores the names of the missing commands.
+missing_hash=
+missing_counter=0
+
+for i in "${commands[@]}" ; do
+
+  if [[ ! -z "$i" ]] ; then
+
+    hash "$i" >/dev/null 2>&1 ; state="$?"
+
+    # If the command was not found put it in the array
+    if [[ "$state" -ne 0 ]] ; then
+
+      missing_hash+=("$i")
+      ((missing_counter++))
+
+    fi
+
+  fi
+
+done
+
+# Stop the script if you do not find at least one command.
+if [[ "$missing_counter" -gt 0 ]] ; then
+
+  printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
+  exit 1
+
+fi
+
+
+################################################################################
+####################### Definitions of global functions ########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _exit_()
+#
+# Description:
+#   Covers the default exit command.
+#
+# Usage:
+#   _exit_ value
+#
+# Examples:
+#   _exit_ 0
+#
+
+function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _logger()
+#
+# Description:
+#   Saving selected operation states to a log file
+#   and allows you to terminate the script with 'stop' signal.
+#
+#   Four states of message type:
+#     info - normal information
+#     head - normal information (header)
+#     warn - warning information
+#     stop - interrupts script execution
+#
+# Usage:
+#   _logger "type" "message"
+#
+# Examples:
+#   _logger "info" "load config file properly"
+#   _logger "stop" "not connected"
+#
+
+function _logger() {
+
+  local _FUNCTION_ID="_logger"
+  local _STATE=0
+
+  local _type="$1"
+  local _to_log
+  local _conv_type
+
+  _to_log=$(shift ; echo "$@")
+  _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
+
+  if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then
+    mkdir -p "$_log_directory" ; fi
+
+  # Normal debug mode (output the same as the contents of the log file).
+  if [[ "$stdout_mode" == "debug" ]] ; then
+
+    printf "%s  %s:  [%s] %s\n" \
+           "$(date +"%d/%m/%y %X")" \
+           "$_init_name" \
+           "$_conv_type" \
+           "$_to_log" \
+           | tee -a "$_log_path"
+
+  # The decision whether an INFO is to be only log to a file
+  # or to a file and to standard output.
+  else
+
+    printf "%s  %s:  [%s] %s\n" \
+           "$(date +"%d/%m/%y %X")" \
+           "$_init_name" \
+           "$_conv_type" \
+           "$_to_log" \
+           >>"$_log_path"
+
+  fi
+
+  if [[ "$_type" == "stop" ]] ; then _exit_ 255 ; fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _get_trap_SIG()
+#
+# Description:
+#   Ensuring they always perform necessary cleanup operations,
+#   even when something unexpected goes wrong.
+#
+# Usage:
+#   trap _get_trap_SIG SIGNAL
+#
+# Examples:
+#   trap _get_trap_SIG EXIT
+#
+
+function _get_trap_SIG() {
+
+  local _FUNCTION_ID="_get_trap_SIG"
+  local _STATE="${_STATUS:-}"
+
+  # Unset variables (e.g. global).
+  # local _to_unset=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
+  local _to_unset=("$PATH")
+
+  # Running tasks before the end of the script.
+  _after_init
+
+  for i in "${_to_unset[@]}" ; do unset i ; done
+
+  if [ -z "$_STATE" ] ; then _STATE=255 ; fi
+
+  _logger "exit" \
+    "$_FUNCTION_ID exit > signal $_STATE"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _sprintf()
+#
+# Description:
+#   Function designed to output to the screen in a clear format.
+#
+# Usage:
+#   _sprintf "type" "message"
+#
+# Examples:
+#   _sprintf "head" "correct certificate: $_ssl_cert_file"
+#
+
+function _sprintf() {
+
+  local _FUNCTION_ID="_sprintf"
+  local _STATE=0
+
+  local _s_type="$1"
+  local _s_info="$2"
+
+  # Determine the type of character and color for each type
+  # of output information.
+  if [[ "$_s_type" == "head" ]] ; then
+
+    s_char="+"
+    s_trgb="1;32"
+
+  elif [[ "$_s_type" == "info" ]] ; then
+
+    s_char="-"
+    s_trgb="0;33"
+
+  elif [[ "$_s_type" == "warn" ]] ; then
+
+    s_char="!"
+    s_trgb="1;37"
+
+  elif [[ "$_s_type" == "stop" ]] ; then
+
+    s_char="!"
+    s_trgb="1;31"
+
+  else
+
+    s_char="-"
+    s_trgb="0;37"
+
+  fi
+
+  # If you run the tool in verbose mode do not display output using _sprintf.
+  if [[ "$stdout_mode" != "debug" ]] ; then
+
+    if [[ "$_s_type" == "spin" ]] && [[ ! -z "$_s_info" ]] ; then
+
+      # Process id of the previous running command.
+      local _pid="$_s_info"
+
+      local _sc='-\|/'
+
+      # Verify that the process is still running.
+      local _n=0
+
+      # shellcheck disable=SC2143
+      while [[ $(ps a | awk '{print $1}' | grep -w "$_pid") ]] ; do
+
+        _n=$(( ( _n + 1 ) % 4 ))
+        printf "\r[%s]" "${_sc:_n:1}"
+        sleep 0.1
+
+      done
+
+      # If the end, we clean.
+      printf "\r"
+
+    else
+
+      # Normal execution if:
+      # - spinner has not been called
+      # - spinner completed
+
+      # If verbose mode is enabled, display info message.
+      if [[ "$printf_mode" == "verbose" ]] && [[ "$_s_type" == "info" ]] ; then
+
+        printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+      else
+
+        # If not, just display only the head, warn or stop string.
+        if [[ "$_s_type" == "head" ]] ; then
+
+          if [[ "$s_color" == "true" ]] ; then
+
+            c_trgb="1;39"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        elif [[ "$_s_type" == "warn" ]] ; then
+
+          if [[ "$s_color" == "true" ]] ; then
+
+            c_trgb="1;43"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        elif [[ "$_s_type" == "stop" ]] ; then
+
+          if [[ "$s_color" == "true" ]] ; then
+
+            c_trgb="1;41"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        fi
+
+      fi
+
+    fi
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _init_cmd()
+#
+# Description:
+#   Function executing given as a command parameter.
+#
+# Usage:
+#   _init_cmd "parameter"
+#
+# Examples:
+#   _init_cmd "eval cd /etc/init.d && ls"
+#
+
+function _init_cmd() {
+
+  local _FUNCTION_ID="_init_cmd"
+  local _STATE=0
+
+  local _cmd="$1"
+
+  # Uncomment if you want to display executed commands.
+  # _sprintf "info" "init: \"$_cmd\""
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "init: $_cmd"
+
+  # Execute command and exit save to file.
+  $_cmd >>"$_log_stdout" 2>&1 &
+
+  # We keep pid of the last command.
+  _pid=$!
+
+  # When the '(command) &' command is performed.
+  _sprintf "spin" "$_pid"
+
+  # Very important line:
+  # We define the state of the output job from the background.
+  wait $_pid &>/dev/null && _state="0" || _state="1"
+
+  if [[ "$_state" -eq 0 ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "result: pass"
+
+  else
+
+    _sprintf "stop" "result: fail"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "result: fail"
+
+  fi
+
+  _STATE=$_state
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _load()
+#
+# Description:
+#   Responsible for loading the configuration file, $config variable
+#   parameter is defined in the script call.
+#
+# Usage:
+#   _load "type" "path_to_config_file"
+#
+# Examples:
+#   _load "info" "$config"
+#   _load "head" "/tmp/file.cfg"
+#
+
+function _load() {
+
+  local _FUNCTION_ID="_load"
+  local _STATE=0
+
+  local _type="$1"
+  local _filename="$2"
+
+  if [[ ! -z "$_filename" ]] && [[ -e "$_filename" ]] ; then
+
+    # If we do not want to inform that the file is loaded,
+    # the value is 'null', otherwise:
+    if [[ "$_type" == "head" ]] ; then
+
+      _sprintf "head" "load configuration"
+      _sprintf "info" "file: '$_filename'"
+
+    elif [[ "$_type" == "info" ]] ; then
+
+      _sprintf "info" "load configuration: '$_filename'"
+
+    fi
+
+    # shellcheck disable=SC1090
+    # If the file exists is loaded.
+    . "$_filename" && \
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "loading configuration file: '$_filename'"
+
+  elif [ -z "$_filename" ] ; then
+
+    _sprintf "stop" "incorrectly loaded '$_filename' file (incorrect filename)"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "incorrectly loaded '$_filename' file (incorrect filename)"
+
+  else
+
+    _sprintf "stop" "incorrectly loaded '$_filename' file (does not exist?)"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "incorrectly loaded '$_filename' file (does not exist?)"
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _help_()
+#
+# Description:
+#   Help message. Should be consistent with the contents of the file README.md.
+#
+# Usage:
+#   _help_
+#
+# Examples:
+#   _help_
+#
+
+function _help_() {
+
+  local _FUNCTION_ID="_help_"
+  local _STATE=0
+
+  printf "%s" "
+  Usage:
+    $_init_name <option|long-option>
+
+  Examples:
+    $_init_name --help
+
+  Options:
+        --help                      show this message
+        --debug                     displays information on the screen (debug mode)
+        --verbose                   displays 'info' messages on the screen (verbose mode)
+        --time                      displays execution time, occurs only with --verbose
+    -c, --config <file>             attach an external config file to the script
+
+
+  This program comes with ABSOLUTELY NO WARRANTY.
+  This is free software, and you are welcome to redistribute it
+  under certain conditions; for more details please see
+  <http://www.gnu.org/licenses/>.
+
+"
+
+  return $_STATE
+
+}
+
+
+################################################################################
+################# Definitions of user variables and functions ##################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _before_init()
+#
+# Description:
+#   INFOs performed before calling the __main__ function, e.g.
+#   attaching files, cleaning logs (if you need a function that will deal
+#   with it, put it here).
+#
+# Usage:
+#   _before_init
+#
+# Examples:
+#   _before_init
+#
+
+function _before_init() {
+
+  local _FUNCTION_ID="_before_init"
+  local _STATE=0
+
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_init_directory'"
+
+  : >"$_log_stdout"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _after_init()
+#
+# Description:
+#   INFOs performed after calling the __main__ function, e.g.
+#   cleaning logs (if you need a function that will deal with it,
+#   put it here).
+#
+# Usage:
+#   _after_init
+#
+# Examples:
+#   _after_init
+#
+
+function _after_init() {
+
+  local _FUNCTION_ID="_after_init"
+  local _STATE=0
+
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_init_directory'"
+
+  return $_STATE
+
+}
+
+
+################################################################################
+######################### Main function (script init) ##########################
+################################################################################
+
+function __main__() {
+
+  local _FUNCTION_ID="__main__"
+  local _STATE=0
+
+  _logger "init" \
+    "init '${_init_name}' in '${_init_directory}'" && \
+  _logger "info" \
+    "__init_params[] = (${__init_params[*]})," \
+    "__script_params[] = (${__script_params[*]})"
+
+  if [[ "$time_tracking" == "true" ]] ; then
+    _begtime=$(date +%s) ; fi
+
+  # Specifies the call parameters of the script, the exact description
+  # can be found in _help_ and file README.md.
+  local _short_opt="c:"
+  local _long_opt="help,debug,verbose,time,config:"
+
+  _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
+                   -n "${_init_name}" -- "${__script_params[@]}")
+
+  # Ends an error if the parameter or its argument is not valid.
+  _getopt_state="$?"
+  if [ $_getopt_state != 0 ] ; then
+    _exit_ 1
+  # Ends if no parameter is specified.
+  elif [[ "${#__script_params[@]}" -eq 0 ]] ; then
+    _exit_ 0
+  fi
+
+  eval set -- "$_GETOPT_PARAMS"
+  while true ; do
+
+    case $1 in
+
+      --help)
+
+        _help_
+
+        shift ; _exit_ 0 ;;
+
+      --debug)
+
+        export stdout_mode="debug"
+
+        shift ;;
+
+      --verbose)
+
+        export printf_mode="verbose"
+
+        shift ;;
+
+      --time)
+
+        export time_mode=1
+
+        shift ;;
+
+      -c|--config)
+
+        export load_state=1
+
+        export config=${2:-"$config"}
+
+        shift 2 ;;
+
+      *)
+
+        if [[ "$2" == "-" ]] || [[ ! -z "$2" ]] ; then
+
+          printf "%s: invalid option -- '%s'\n" "$_init_name" "$2"
+          _exit_ 1
+
+        # elif [[ -z "$2" ]] ; then break ; fi
+        else break ; fi
+
+        ;;
+
+    esac
+
+  done
+
+  # Include src/_import_ file.
+  _load "null" "$_import_"
+
+  # Running tasks before start user functions.
+  _before_init
+
+  ################################# USER SPACE #################################
+  # ````````````````````````````````````````````````````````````````````````````
+  # Put here all your variable declarations, function calls
+  # and all the other code blocks.
+
+  # In this section we add external file (for -c|--config script param).
+  if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
+
+  # shellcheck disable=SC2034
+  # Generate random value.
+  _random=$(date +"%s")
+
+  # Checking the value of the variables (if they are unset or empty):
+  #   - variables for call parameters
+  #   - variables from the additional configuration files
+  for i in load_state ; do
+
+    _i="" ; eval _i='$'$i
+
+    if [[ -z "$_i" ]] ; then
+
+      _sprintf "stop" "error of argument value: '$i' is unset or empty"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "error of argument value: '$i' is unset or empty"
+
+    fi
+
+  done
+
+  # Checking the relationship between call parameters.
+  if [[ "$time_mode" -eq 1 ]] ; then
+
+    if [[ "$printf_mode" != "verbose" ]] ; then
+
+      _sprintf "stop" "missing argument: '--time' is dependent on '--verbose'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "missing argument: '--time' occurs only with '--verbose'"
+
+    fi
+
+  elif [[ "$stdout_mode" == "debug" ]] ; then
+
+    if [[ "$printf_mode" == "verbose" ]] || [[ "$time_mode" -eq 1 ]] ; then
+
+      _sprintf "stop" "debug mode can not occur together with '--verbose' and '--time'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "debug mode can not occur together with '--verbose' and '--time'"
+
+    fi
+
+  fi
+
+  # ````````````````````````````````````````````````````````````````````````````
+
+  if [[ "$time_tracking" == "true" ]] ; then
+
+    # Counting the execution time.
+    _endtime=$(date +%s)
+    _totaltime=$((_endtime - _begtime))
+
+    # Print time header.
+    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+            $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
+
+  fi
+
+  return $_STATE
+
+}
+
+trap _get_trap_SIG EXIT
+
+# An array as an argument to a function call __main__,
+# is required if we want to operate on arguments of type $1, $2, ...
+__main__ "${__script_params[@]}"
+
+_exit_ 0
