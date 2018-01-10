@@ -857,8 +857,6 @@ function __main__() {
 
     mkdir -m 0700 -p "$_instdir" ; fi
 
-  fi
-
   # First, we remove current processes.
   export _tor_processes=$(pidof tor)
 
