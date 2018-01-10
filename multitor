@@ -956,7 +956,7 @@ function __main__() {
 
     done
 
-    printf "\n    Password: \e[0;31m%s\e[m\n" "$_pass_gen"
+    printf "    Password: \e[0;31m%s\e[m\n" "$_pass_gen"
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
