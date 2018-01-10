@@ -195,9 +195,12 @@ function _ctorproc() {
   local _FUNCTION_ID="_ctorproc"
   local _STATE=0
 
-  local _arg_tproc="$1"
-  local _arg_socks="$2"
-  local _arg_control="$3"
+  local _arg_uname="$1"
+  local _arg_tproc="$2"
+  local _arg_socks="$3"
+  local _arg_control="$4"
+
+  _init_function "_ctordatadir"
 
   return $_STATE
 
@@ -220,6 +223,35 @@ function _ctordatadir() {
 
   local _FUNCTION_ID="_ctordatadir"
   local _STATE=0
+
+  cd "$_inst_dir" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_inst_dir'"
+
+  mkdir -m 0700 "$_arg_tproc" > /dev/null 2>&1 ; _kstate="$?"
+
+  if [[ $_kstate -eq 0 ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "created tor process directory: ${_arg_tproc}"
+
+    chown -R "$_arg_uname": "${_arg_tproc}" && \
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "changed owner properly to: ${_arg_uname}" || \
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "the owner could not be changed"
+
+  else
+
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "not created tor process directory"
+
+  fi
 
   return $_STATE
 
