@@ -886,7 +886,7 @@ function __main__() {
 
   if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
-    for _tpr in "${_tor_processes[@]}" ; do
+    for _tpr in ${_tor_processes[@]} ; do
 
       _init_function "_dtorproc ${_tpr}"
 
