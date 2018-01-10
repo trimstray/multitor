@@ -961,11 +961,13 @@ function __main__() {
     _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
     _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $15}')
     _tor_proc_control=$(echo "$_arg_tdir" | awk '{print $17}')
+    _tor_prod_data_dir=$(echo "$_arg_tdir" | awk '{print $21}')
 
-    printf "id: %s\nsocks_port: %d\ncontrol_port: %d\n" \
+    printf "pid: %s\nsocks_port: %d\ncontrol_port: %d\ndata_dir: %s\n" \
            "$_tor_proc_id" \
            "$_tor_proc_socks" \
-           "$_tor_proc_control"
+           "$_tor_proc_control" \
+           "$_tor_prod_data_dir"
 
   fi
 
