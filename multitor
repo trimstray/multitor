@@ -881,6 +881,10 @@ function __main__() {
     socks_port_number=$(($sock_port_number + $i))
     control_port_number=$(($control_port_number + $i))
 
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "set properly variables value: '$sock_port_number', '$control_port_number'"
+
     _init_function "_ctorproc ${i} ${socks_port_number} ${control_port_number}"
 
   done
