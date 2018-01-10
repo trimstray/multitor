@@ -108,8 +108,9 @@ function _dtorproc() {
   local _FUNCTION_ID="_dtorproc"
   local _STATE=0
 
-  local _arg_uname="$1"
-  local _arg_tproc="$2"
+  local _arg_tproc="$1"
+
+  local _arg_tdir=$(ps -p $_arg_tproc -u | grep "tor" | awk '{print $24}')
 
   kill -9 $_arg_tproc > /dev/null 2>&1 ; _kstate="$?"
 
@@ -151,8 +152,6 @@ function _dtordatadir() {
 
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
-
-  local _arg_tdir=$(ps aux | grep tor | grep -v "grep" | grep $_arg_tproc | awk '{print $24}')
 
   if [[ -d "$_arg_tdir" ]] ; then
 
