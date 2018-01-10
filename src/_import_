@@ -195,6 +195,10 @@ function _ctorproc() {
   local _FUNCTION_ID="_ctorproc"
   local _STATE=0
 
+  local _arg_tproc="$1"
+  local _arg_socks="$2"
+  local _arg_control="$3"
+
   return $_STATE
 
 }
