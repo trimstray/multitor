@@ -116,10 +116,10 @@ function _dtorproc() {
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "killed tor process: ${_tpr}"
+      "killed tor process: '${_arg_tproc}'"
 
       # Init _dtordatadir to removed tor process data directory.
-      _init_function "_dtordatadir ${_tpr}"
+      _init_function "_dtordatadir ${_arg_tproc}"
 
   else
 
@@ -151,19 +151,14 @@ function _dtordatadir() {
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
 
-  local _arg_tdir="$1"
-
-  cd "$_multitor_directory" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$_multitor_directory'"
+  local _arg_tdir=$(ps ax | grep tor | grep "$_arg_tdir" | awk '{print $18}' > /dev/null 2>&1)
 
   if [[ -d "$_arg_tdir" ]] ; then
 
     rm -fr "$_arg_tdir" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "removed tor process directory: ${_arg_tdir}"
+      "removed tor process directory: '${_arg_tdir}'"
 
   else
 
@@ -246,10 +241,10 @@ function _ctordatadir() {
       "${_FUNCTION_ID}()" \
       "created tor process directory: ${_arg_socks}"
 
-    chown -R "$_arg_uname": "${_arg_socks}" && \
+    chown -R "${_arg_uname}:" "${_arg_socks}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "changed owner properly to: ${_arg_uname}" || \
+      "changed owner properly to: '${_arg_uname}'" || \
     _logger "warn" \
       "${_FUNCTION_ID}()" \
       "the owner could not be changed"
