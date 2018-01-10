@@ -917,37 +917,47 @@ function __main__() {
 
   fi
 
-  # First, we remove current processes.
-  export _tor_processes=$(pidof tor)
+  if [[ "$init_state" -eq 1 ]] ; then
 
-  if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+    # First, we remove current processes.
+    export _tor_processes=$(pidof tor)
 
-    for _tpr in ${_tor_processes[@]} ; do
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
-      _init_function "_dtorproc ${_tpr}"
+      for _tpr in ${_tor_processes[@]} ; do
+
+        _init_function "_dtorproc ${_tpr}"
+
+      done
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "not found tor processes"
+
+    fi
+
+    for i in $(seq 0 $(($instance_number - 1))) ; do
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
+
+      _init_function "_ctorproc ${user_name} ${socks_port_number} ${control_port_number}"
+
+      socks_port_number=$(($socks_port_number + 1))
+      control_port_number=$(($control_port_number + 1))
 
     done
 
-  else
+  elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    _logger "warn" \
-      "${_FUNCTION_ID}()" \
-      "not found tor processes"
+    _arg_tdir=$(ps -p $show_id -u | grep "tor" | awk '{print $27}')
+
+    printf "%s" "$_arg_tdir"
 
   fi
-
-  for i in $(seq 0 $(($instance_number - 1))) ; do
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
-
-    _init_function "_ctorproc ${user_name} ${socks_port_number} ${control_port_number}"
-
-    socks_port_number=$(($socks_port_number + 1))
-    control_port_number=$(($control_port_number + 1))
-
-  done
 
   # ````````````````````````````````````````````````````````````````````````````
 
