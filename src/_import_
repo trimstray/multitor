@@ -241,7 +241,7 @@ function _ctordatadir() {
       "${_FUNCTION_ID}()" \
       "created tor process directory: ${_arg_socks}"
 
-    chown -R "${_arg_uname}:" "${_arg_socks}" && \
+    chown -R "${_arg_uname}" "${_arg_socks}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \

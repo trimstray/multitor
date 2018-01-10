@@ -863,7 +863,7 @@ function __main__() {
         "${_FUNCTION_ID}()" \
         "created tor process directory: ${_multitor_directory}"
 
-      chown -R "${user_name}:" "${_multitor_directory}" && \
+      chown -R "${user_name}" "${_multitor_directory}" && \
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "changed owner properly to: ${_multitor_directory}" || \
