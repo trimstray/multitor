@@ -97,10 +97,10 @@ function _init_function() {
 #   It destroys currently running tor processes.
 #
 # Usage:
-#   _dtorproc
+#   _dtorproc "proc_id"
 #
 # Examples:
-#   _dtorproc
+#   _dtorproc "12500"
 #
 
 function _dtorproc() {
@@ -148,7 +148,7 @@ function _dtorproc() {
 #   It destroys currently tor processes data directory.
 #
 # Usage:
-#   _dtordatadir params
+#   _dtordatadir "proc_id"
 #
 # Examples:
 #   _dtordatadir "12500"
@@ -189,12 +189,10 @@ function _dtordatadir() {
 # Function name: _ctorproc()
 #
 # Description:
-#   It deals with launching functions:
-#     - creates a simple environment for the functions you perform
-#     - operates on message to display and command to execute
+#   It creates tor processes.
 #
 # Usage:
-#   _ctorproc "12500"
+#   _ctorproc "proc_id"
 #
 # Examples:
 #   _ctorproc "12500"
@@ -210,23 +208,21 @@ function _ctorproc() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CreateDataDirectory()
+# Function name: _ctordatadir()
 #
 # Description:
-#   It deals with launching functions:
-#     - creates a simple environment for the functions you perform
-#     - operates on message to display and command to execute
+#   It creates tor processes data directory.
 #
 # Usage:
-#   CreateDataDirectory function_name params
+#   _ctordatadir "proc_id"
 #
 # Examples:
-#   CreateDataDirectory "CheckConn 172.20.20.50 22"
+#   _ctordatadir "12500"
 #
 
-function CreateDataDirectory() {
+function _ctordatadir() {
 
-  local _FUNCTION_ID="CreateDataDirectory"
+  local _FUNCTION_ID="_ctordatadir"
   local _STATE=0
 
   return $_STATE
