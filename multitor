@@ -964,8 +964,12 @@ function __main__() {
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
-    printf "AUTHENTICATE \"\"\r\nSIGNAL NEWNYM\r\n" \
-    | nc 127.0.0.1 $control_port_number
+    _tor_proc_config=$(echo "$_arg_tdir" | awk '{print $7}')
+
+    (readonly _pass_in ; read -sp 'Enter password: ' _pass_in
+
+     printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\r\n" \
+     | nc 127.0.0.1 $control_port_number)
 
   fi
 
