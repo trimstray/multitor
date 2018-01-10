@@ -108,32 +108,24 @@ function _dtorproc() {
   local _FUNCTION_ID="_dtorproc"
   local _STATE=0
 
-  local _tor_processes=$(pidof tor)
+  local _arg_tproc="$1"
 
-  if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+  kill -9 $_arg_tproc ; _kstate="$?"
 
-    for _tpr in "${_tor_processes[@]}" ; do
+  if [[ $_kstate -q 0 ]] ; then
 
-      kill -9 $_tpr ; _kstate="$?"
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "killed tor process: ${_tpr}"
 
-      if [[ $_kstate -q 0 ]] ; then
-
-        _logger "info" \
-          "${_FUNCTION_ID}()" \
-          "killed tor process by id: ${_tpr}"
-
-        # Init _dtordatadir to removed tor process data directory.
-        _init_function "_dtordatadir ${_tpr}"
-
-      else
-
-    done
+      # Init _dtordatadir to removed tor process data directory.
+      _init_function "_dtordatadir ${_tpr}"
 
   else
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "not found tor processes"
+      "not killed tor process: ${_tpr}"
 
   fi
 
@@ -159,25 +151,25 @@ function _dtordatadir() {
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
 
-  local _tor_id_directory="$1"
+  local _arg_tdir="$1"
 
   cd "$_inst_dir" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
     "directory change error: '$_inst_dir'"
 
-  if [[ -d "$_tor_id_directory" ]] ; then
+  if [[ -d "$_arg_tdir" ]] ; then
 
-    rm -fr "$_tor_id_directory" && \
+    rm -fr "$_arg_tdir" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "removed tor process directory: ${_tor_id_directory}"
+      "removed tor process directory: ${_arg_tdir}"
 
   else
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "not found tor process directory: ${_tor_id_directory}"
+      "not found tor process directory: ${_arg_tdir}"
 
   fi
 

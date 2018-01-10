@@ -857,12 +857,30 @@ function __main__() {
 
     mkdir -m 0700 -p "$_instdir" ; fi
 
+  fi
+
   # First, we remove current processes.
-  _init_function "_dtorproc"
+  export _tor_processes=$(pidof tor)
+
+  if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+    for _tpr in "${_tor_processes[@]}" ; do
+
+      _init_function "_dtorproc ${_tpr}"
+
+    done
+
+  else
+
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "not found tor processes"
+
+  fi
 
   for i in $(seq $instance_number) ; do
 
-    CreateInstance $i
+    _ctorproc $i
 
   done
 
