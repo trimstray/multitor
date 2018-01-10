@@ -218,6 +218,8 @@ function _ctorproc() {
 
   _init_function "_tor_output"
 
+  echo
+
   return $_STATE
 
 }
