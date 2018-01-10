@@ -110,7 +110,29 @@ function CreateInstance() {
   local _FUNCTION_ID="CreateInstance"
   local _STATE=0
 
-  echo -en "create: $1"
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CreateDataDirectory()
+#
+# Description:
+#   It deals with launching functions:
+#     - creates a simple environment for the functions you perform
+#     - operates on message to display and command to execute
+#
+# Usage:
+#   CreateDataDirectory function_name params
+#
+# Examples:
+#   CreateDataDirectory "CheckConn 172.20.20.50 22"
+#
+
+function CreateDataDirectory() {
+
+  local _FUNCTION_ID="CreateDataDirectory"
+  local _STATE=0
 
   return $_STATE
 
