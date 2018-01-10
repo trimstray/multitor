@@ -112,7 +112,7 @@ function _dtorproc() {
 
   kill -9 $_arg_tproc ; _kstate="$?"
 
-  if [[ $_kstate -q 0 ]] ; then
+  if [[ $_kstate -eq 0 ]] ; then
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
