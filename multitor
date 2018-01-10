@@ -888,7 +888,7 @@ function __main__() {
 
     for _tpr in ${_tor_processes[@]} ; do
 
-      _init_function "_dtorproc ${_tpr}"
+      _init_function "_dtorproc ${user_name} ${_tpr}"
 
     done
 
