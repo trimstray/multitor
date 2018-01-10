@@ -119,7 +119,7 @@ function _dtorproc() {
       "killed tor process: '${_arg_tproc}'"
 
       # Init _dtordatadir to removed tor process data directory.
-      _init_function "_dtordatadir ${_arg_tproc}"
+      _init_function "_dtordatadir"
 
   else
 
@@ -140,10 +140,10 @@ function _dtorproc() {
 #   It destroys currently tor processes data directory.
 #
 # Usage:
-#   _dtordatadir "proc_id"
+#   _dtordatadir
 #
 # Examples:
-#   _dtordatadir "12500"
+#   _dtordatadir
 #
 
 function _dtordatadir() {
@@ -151,7 +151,7 @@ function _dtordatadir() {
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
 
-  local _arg_tdir=$(ps ax | grep tor | grep "$_arg_tdir" | awk '{print $18}')
+  local _arg_tdir=$(ps ax | grep tor | grep "$_arg_tproc" | awk '{print $18}')
 
   if [[ -d "$_arg_tdir" ]] ; then
 
@@ -179,7 +179,7 @@ function _dtordatadir() {
 #   It creates tor processes.
 #
 # Usage:
-#   _ctorproc "username" "num" "num"
+#   _ctorproc "username" "id" "id"
 #
 # Examples:
 #   _ctorproc ${user_name} ${socks_port_number} ${control_port_number}
