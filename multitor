@@ -768,7 +768,7 @@ function __main__() {
 
       --show-id)
 
-        export show_state=1
+        export show_id_state=1
 
         export show_id=${2:-"1"}
 
@@ -848,17 +848,29 @@ function __main__() {
   # Generate random value.
   _random=$(date +"%s")
 
+  if [[ "$init_state" -eq 1 ]] ; then
+
+    export _multitor_args=("user_state" "user_name" \
+                           "instance_state" "instance_number" \
+                           "socks_port_state" "socks_port_number" \
+                           "control_port_state" "control_port_number")
+
+  elif [[ "$show_id_state" -eq 1 ]] ; then
+
+    export _multitor_args=("socks_port_state" "socks_port_number" \
+                           "control_port_state" "control_port_number")
+
+  elif [[ "$new_id_state" -eq 1 ]] ; then
+
+    export _multitor_args=("socks_port_state" "socks_port_number" \
+                           "control_port_state" "control_port_number")
+
+  fi
+
   # Checking the value of the variables (if they are unset or empty):
   #   - variables for call parameters
   #   - variables from the additional configuration files
-  for i in "user_state" \
-           "user_name" \
-           "instance_state" \
-           "instance_number" \
-           "socks_port_state" \
-           "socks_port_number" \
-           "control_port_state" \
-           "control_port_number" ; do
+  for i in "${_multitor_args[@]}" ; do
 
     _i="" ; eval _i='$'$i
 
