@@ -131,7 +131,7 @@ function _dtorproc() {
 
   else
 
-    _logger "info" \
+    _logger "warn" \
       "${_FUNCTION_ID}()" \
       "not found tor processes"
 
