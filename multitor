@@ -971,7 +971,7 @@ function __main__() {
      echo 
 
      printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-     | nc 127.0.0.1 $control_port_number)
+     | nc 127.0.0.1 $control_port_number >/dev/null 2>&1)
 
   fi
 
