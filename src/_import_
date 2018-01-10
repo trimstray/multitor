@@ -208,7 +208,8 @@ function _ctorproc() {
       --SocksPort $_arg_socks \
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
-      --DataDirectory "${_multitor_directory}/${_arg_socks}"
+      --DataDirectory "${_multitor_directory}/${_arg_socks}" \
+      > /dev/null 2>&1
 
   return $_STATE
 
