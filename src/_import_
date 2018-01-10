@@ -199,9 +199,6 @@ function _ctorproc() {
 
   _init_function "_ctordatadir"
 
-  local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
-  local _pass_hash=$(tor --hash-password "${_pass_gen}" | grep "16:")
-
   echo "HashedControlPassword ${_pass_hash}" > "${_arg_tconfig}" && \
   chmod 0400 "${_arg_tconfig}" && \
   chown "${_arg_uname}:${_arg_uname}" "${_arg_tconfig}"
