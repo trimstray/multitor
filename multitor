@@ -856,6 +856,12 @@ function __main__() {
 
     mkdir -m 0700 -p "$_instdir" ; fi
 
+  for i in $(seq $instance_number) ; do
+
+    CreateInstance $i
+
+  done
+
   # ````````````````````````````````````````````````````````````````````````````
 
   if [[ "$time_tracking" == "true" ]] ; then
