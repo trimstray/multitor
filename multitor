@@ -109,8 +109,8 @@ s_color="true"
 time_tracking="true"
 time_mode=0
 
-# Create tor instance directory.
-readonly _instdir="/var/lib/multitor"
+# Create multitor directory.
+readonly _multitor_directory="/var/lib/multitor"
 
 
 ################################################################################
@@ -849,13 +849,13 @@ function __main__() {
 
   fi
 
-  if [[ ! -d "$_instdir" && ! -L "$_instdir" ]] ; then
+  if [[ ! -d "$_multitor_directory" && ! -L "$_multitor_directory" ]] ; then
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "creating a instance directory: '$_instdir'"
+      "creating a instance directory: '$_multitor_directory'"
 
-    mkdir -m 0700 -p "$_instdir" ; fi
+    mkdir -m 0700 -p "$_multitor_directory" ; fi
 
   # First, we remove current processes.
   export _tor_processes=$(pidof tor)

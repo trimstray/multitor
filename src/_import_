@@ -153,10 +153,10 @@ function _dtordatadir() {
 
   local _arg_tdir="$1"
 
-  cd "$_inst_dir" || \
+  cd "$_multitor_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: '$_inst_dir'"
+    "directory change error: '$_multitor_directory'"
 
   if [[ -d "$_arg_tdir" ]] ; then
 
@@ -223,10 +223,10 @@ function _ctordatadir() {
   local _FUNCTION_ID="_ctordatadir"
   local _STATE=0
 
-  cd "$_inst_dir" || \
+  cd "$_multitor_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: '$_inst_dir'"
+    "directory change error: '$_multitor_directory'"
 
   mkdir -m 0700 "$_arg_socks" > /dev/null 2>&1 ; _kstate="$?"
 
