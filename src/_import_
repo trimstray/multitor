@@ -197,11 +197,12 @@ function _ctorproc() {
   _init_function "_ctordatadir"
 
   local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+  local _pass_hash=$(tor --hash-password "${_pass_gen}")
 
   sudo -u $_arg_uname tor \
       --RunAsDaemon 1 \
       --CookieAuthentication 0 \
-      --HashedControlPassword "${_pass_gen}" \
+      --HashedControlPassword "${_pass_hash}" \
       --SocksPort $_arg_socks \
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
