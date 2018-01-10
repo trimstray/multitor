@@ -204,7 +204,7 @@ function _ctorproc() {
 
   echo "HashedControlPassword $_pass_hash" > "${_arg_tconfig}" && \
   chmod 0400 "${_arg_tconfig}" && \
-  chown "${_arg_uname}" "${_arg_tconfig}"
+  chown "${_arg_uname}:${_arg_uname}" "${_arg_tconfig}"
 
   sudo -u $_arg_uname tor -f "${_arg_tconfig}" \
       --RunAsDaemon 1 \
