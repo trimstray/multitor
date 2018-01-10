@@ -91,6 +91,54 @@ function _init_function() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: KillInstance()
+#
+# Description:
+#   It deals with launching functions:
+#     - creates a simple environment for the functions you perform
+#     - operates on message to display and command to execute
+#
+# Usage:
+#   KillInstance function_name params
+#
+# Examples:
+#   KillInstance "CheckConn 172.20.20.50 22"
+#
+
+function KillInstance() {
+
+  local _FUNCTION_ID="KillInstance"
+  local _STATE=0
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: RemoveDataDirectory()
+#
+# Description:
+#   It deals with launching functions:
+#     - creates a simple environment for the functions you perform
+#     - operates on message to display and command to execute
+#
+# Usage:
+#   RemoveDataDirectory function_name params
+#
+# Examples:
+#   RemoveDataDirectory "CheckConn 172.20.20.50 22"
+#
+
+function RemoveDataDirectory() {
+
+  local _FUNCTION_ID="RemoveDataDirectory"
+  local _STATE=0
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CreateInstance()
 #
 # Description:
