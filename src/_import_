@@ -184,10 +184,10 @@ function _dtordatadir() {
 #   It creates tor processes.
 #
 # Usage:
-#   _ctorproc "proc_id"
+#   _ctorproc "username" "num" "num"
 #
 # Examples:
-#   _ctorproc "12500"
+#   _ctorproc ${user_name} ${socks_port_number} ${control_port_number}
 #
 
 function _ctorproc() {
@@ -201,6 +201,15 @@ function _ctorproc() {
 
   _init_function "_ctordatadir"
 
+  sudo -u $_arg_uname tor \
+      --RunAsDaemon 1 \
+      --CookieAuthentication 0 \
+      --HashedControlPassword "" \
+      --SocksPort $_arg_socks \
+      --ControlPort $_arg_control \
+      --PidFile "$_arg_socks.pid" \
+      --DataDirectory "${_multitor_directory}/${_arg_socks}"
+
   return $_STATE
 
 }
@@ -212,10 +221,10 @@ function _ctorproc() {
 #   It creates tor processes data directory.
 #
 # Usage:
-#   _ctordatadir "proc_id"
+#   _ctordatadir
 #
 # Examples:
-#   _ctordatadir "12500"
+#   _ctordatadir
 #
 
 function _ctordatadir() {
