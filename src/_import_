@@ -121,7 +121,7 @@ function _dtorproc() {
       kill -9 $_tpr
 
       # Init _dtordatadir to removed tor process data directory.
-      _init_function "_dtordatadir"
+      _init_function "_dtordatadir ${_tpr}"
 
     done
 
@@ -141,15 +141,13 @@ function _dtorproc() {
 # Function name: _dtordatadir()
 #
 # Description:
-#   It deals with launching functions:
-#     - creates a simple environment for the functions you perform
-#     - operates on message to display and command to execute
+#   It destroys currently tor processes data directory.
 #
 # Usage:
-#   _dtordatadir function_name params
+#   _dtordatadir params
 #
 # Examples:
-#   _dtordatadir "CheckConn 172.20.20.50 22"
+#   _dtordatadir "12500"
 #
 
 function _dtordatadir() {
