@@ -91,31 +91,54 @@ function _init_function() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: KillInstance()
+# Function name: _dtorproc()
 #
 # Description:
-#   It deals with launching functions:
-#     - creates a simple environment for the functions you perform
-#     - operates on message to display and command to execute
+#   It destroys currently running tor processes.
 #
 # Usage:
-#   KillInstance function_name params
+#   _dtorproc
 #
 # Examples:
-#   KillInstance "CheckConn 172.20.20.50 22"
+#   _dtorproc
 #
 
-function KillInstance() {
+function _dtorproc() {
 
-  local _FUNCTION_ID="KillInstance"
+  local _FUNCTION_ID="_dtorproc"
   local _STATE=0
+
+  local _tor_processes=$(pidof tor)
+
+  if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+    for _tpr in "${_tor_processes[@]}" ; do
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "kill tor process by id: ${_tpr}"
+
+      kill -9 $_tpr
+
+      # Init _dtordatadir to removed tor process data directory.
+      _init_function "_dtordatadir"
+
+    done
+
+  else
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "not found tor processes"
+
+  fi
 
   return $_STATE
 
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: RemoveDataDirectory()
+# Function name: _dtordatadir()
 #
 # Description:
 #   It deals with launching functions:
@@ -123,15 +146,15 @@ function KillInstance() {
 #     - operates on message to display and command to execute
 #
 # Usage:
-#   RemoveDataDirectory function_name params
+#   _dtordatadir function_name params
 #
 # Examples:
-#   RemoveDataDirectory "CheckConn 172.20.20.50 22"
+#   _dtordatadir "CheckConn 172.20.20.50 22"
 #
 
-function RemoveDataDirectory() {
+function _dtordatadir() {
 
-  local _FUNCTION_ID="RemoveDataDirectory"
+  local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
 
   return $_STATE
