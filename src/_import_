@@ -168,11 +168,18 @@ function _dtordatadir() {
 
   if [[ -d "$_tor_id_directory" ]] ; then
 
-    rm -fr "$_tor_id_directory"
-
+    rm -fr "$_tor_id_directory" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "removed tor process directory: ${_tor_id_directory}"
+
+  else
+
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "not found tor process directory: ${_tor_id_directory}"
+
+  fi
 
   return $_STATE
 
