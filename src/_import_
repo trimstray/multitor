@@ -194,19 +194,25 @@ function _ctorproc() {
   local _arg_socks="$2"
   local _arg_control="$3"
 
+  local _arg_proc_dir="${_multitor_directory}/${_arg_socks}"
+  local _arg_tconfig="${_arg_proc_dir}/torrc.${_arg_socks}"
+
   _init_function "_ctordatadir"
 
   local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
   local _pass_hash=$(tor --hash-password "${_pass_gen}")
 
+  echo "$_pass_gen" > "${_arg_tconfig}"
+
   sudo -u $_arg_uname tor \
+      -f "${_arg_tconfig}" \
       --RunAsDaemon 1 \
       --CookieAuthentication 0 \
       --HashedControlPassword "${_pass_hash}" \
       --SocksPort $_arg_socks \
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
-      --DataDirectory "${_multitor_directory}/${_arg_socks}" \
+      --DataDirectory "${_arg_proc_dir}" \
       > "$_log_stdout" 2>&1
 
   _init_function "_tor_output"
@@ -233,20 +239,15 @@ function _ctordatadir() {
   local _FUNCTION_ID="_ctordatadir"
   local _STATE=0
 
-  cd "$_multitor_directory" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$_multitor_directory'"
-
-  mkdir -m 0700 "$_arg_socks" > /dev/null 2>&1 ; _kstate="$?"
+  mkdir -m 0700 "$_arg_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "created tor process directory: ${_arg_socks}"
+      "created tor process directory: ${_arg_proc_dir}"
 
-    chown -R "${_arg_uname}" "${_arg_socks}" && \
+    chown -R "${_arg_uname}" "${_arg_proc_dir}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \
