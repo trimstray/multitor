@@ -114,14 +114,18 @@ function _dtorproc() {
 
     for _tpr in "${_tor_processes[@]}" ; do
 
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "kill tor process by id: ${_tpr}"
+      kill -9 $_tpr ; _kstate="$?"
 
-      kill -9 $_tpr
+      if [[ $_kstate -q 0 ]] ; then
 
-      # Init _dtordatadir to removed tor process data directory.
-      _init_function "_dtordatadir ${_tpr}"
+        _logger "info" \
+          "${_FUNCTION_ID}()" \
+          "killed tor process by id: ${_tpr}"
+
+        # Init _dtordatadir to removed tor process data directory.
+        _init_function "_dtordatadir ${_tpr}"
+
+      else
 
     done
 
@@ -154,6 +158,21 @@ function _dtordatadir() {
 
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
+
+  local _tor_id_directory="$1"
+
+  cd "$_inst_dir" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_inst_dir'"
+
+  if [[ -d "$_tor_id_directory" ]] ; then
+
+    rm -fr "$_tor_id_directory"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "removed tor process directory: ${_tor_id_directory}"
 
   return $_STATE
 
