@@ -628,6 +628,37 @@ function _before_init() {
 
   : >"$_log_stdout"
 
+  if [[ ! -d "$_multitor_directory" && ! -L "$_multitor_directory" ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "creating a instance directory: '$_multitor_directory'"
+
+    mkdir -m 0700 -p "$_multitor_directory" > /dev/null 2>&1 ; _kstate="$?"
+
+    if [[ $_kstate -eq 0 ]] ; then
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "created tor process directory: ${_multitor_directory}"
+
+      chown -R "${user_name}" "${_multitor_directory}" && \
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "changed owner properly to: ${_multitor_directory}" || \
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "the owner could not be changed"
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "not created tor process directory"
+
+    fi
+
+  fi
   return $_STATE
 
 }
@@ -844,38 +875,6 @@ function __main__() {
       _logger "stop" \
         "${_FUNCTION_ID}()" \
         "debug mode can not occur together with '--verbose' and '--time'"
-
-    fi
-
-  fi
-
-  if [[ ! -d "$_multitor_directory" && ! -L "$_multitor_directory" ]] ; then
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "creating a instance directory: '$_multitor_directory'"
-
-    mkdir -m 0700 -p "$_multitor_directory" > /dev/null 2>&1 ; _kstate="$?"
-
-    if [[ $_kstate -eq 0 ]] ; then
-
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "created tor process directory: ${_multitor_directory}"
-
-      chown -R "${user_name}" "${_multitor_directory}" && \
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "changed owner properly to: ${_multitor_directory}" || \
-      _logger "warn" \
-        "${_FUNCTION_ID}()" \
-        "the owner could not be changed"
-
-    else
-
-      _logger "warn" \
-        "${_FUNCTION_ID}()" \
-        "not created tor process directory"
 
     fi
 
