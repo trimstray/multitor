@@ -855,7 +855,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "creating a instance directory: '$_multitor_directory'"
 
-    mkdir -m 0750 -p "$_multitor_directory" > /dev/null 2>&1 ; _kstate="$?"
+    mkdir -m 0700 -p "$_multitor_directory" > /dev/null 2>&1 ; _kstate="$?"
 
     if [[ $_kstate -eq 0 ]] ; then
 
