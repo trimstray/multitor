@@ -902,8 +902,8 @@ function __main__() {
 
   for i in $(seq 0 $(($instance_number - 1))) ; do
 
-    socks_port_number=$(($socks_port_number + $i))
-    control_port_number=$(($control_port_number + $i))
+    socks_port_number=$(($socks_port_number + 1))
+    control_port_number=$(($control_port_number + 1))
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
