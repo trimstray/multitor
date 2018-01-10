@@ -120,7 +120,7 @@ readonly _multitor_directory="/var/lib/multitor"
 # We place here used commands at script runtime, as strings to anything
 # unnecessarily run.
 readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
-                   pidof tor)
+                   pidof tor sudo)
 
 # If you intend to specify the full path to the command we do it like:
 # readonly exec_gzip="/bin/gzip"
