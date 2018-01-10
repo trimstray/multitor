@@ -968,7 +968,9 @@ function __main__() {
 
     (read -sp 'Enter password: ' _pass_in
 
-     printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\r\n" \
+     echo 
+
+     printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
      | nc 127.0.0.1 $control_port_number)
 
   fi
