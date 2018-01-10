@@ -959,8 +959,13 @@ function __main__() {
     _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
     _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
+    _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $15}')
+    _tor_proc_control=$(echo "$_arg_tdir" | awk '{print $17}')
 
-    printf "%s\n" "id: $_tor_proc_id"
+    printf "id: %s\nsocks_port: %d\ncontrol_port: %d\n" \
+           "$_tor_proc_id" \
+           "$_tor_proc_socks" \
+           "$_tor_proc_control"
 
   fi
 
