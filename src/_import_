@@ -125,7 +125,7 @@ function _dtorproc() {
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "not killed tor process: ${_tpr}"
+      "not killed tor process (maybe not found?)"
 
   fi
 
@@ -169,7 +169,7 @@ function _dtordatadir() {
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "not found tor process directory: ${_arg_tdir}"
+      "not found tor process directory"
 
   fi
 
