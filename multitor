@@ -6,7 +6,8 @@
 #
 #         fname : "multitor"
 #         cdate : "09.01.2018"
-#        author : "Jan Seidl <jseidl@wroot.org>"
+#        author : "Sebastian Wain <sebastian_wain@gmx.net>"
+#                 "Jan Seidl <jseidl@wroot.org>"
 #                 "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
@@ -15,12 +16,15 @@
 #
 #   See README.md file for more information.
 #
+#   Original source is (Sebastian Wain project):
+#     http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/
+#
 #   This is fork Multi-TOR project written by Jai Seidl:
 #     https://github.com/jseidl/Multi-TOR
 #
 # License:
 #
-#   multitor, Copyright (C) 2017  Jan Seidl, Michał Żurawski
+#   multitor, Copyright (C) 2017  Sebastian Wain, Jan Seidl, Michał Żurawski
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -571,7 +575,7 @@ function _help_() {
         --debug                     displays information on the screen (debug mode)
         --verbose                   displays 'info' messages on the screen (verbose mode)
         --time                      displays execution time, occurs only with --verbose
-    -u, --user <username>           set the user controlling the tor instances
+    -u, --user <string>             set the user controlling the tor instances
     -i, --instance <num>            set tor instance number
         --socks-port <port_num>     set socks port number
         --control-port <port_num>   set control port number
