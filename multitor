@@ -855,7 +855,29 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "creating a instance directory: '$_multitor_directory'"
 
-    mkdir -m 0700 -p "$_multitor_directory" ; fi
+    mkdir -m 0750 -p "$_multitor_directory"  > /dev/null 2>&1 ; _kstate="$?"
+
+    if [[ $_kstate -eq 0 ]] ; then
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "created tor process directory: ${_multitor_directory}"
+
+      chown -R "$_arg_uname": "${_multitor_directory}" && \
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "changed owner properly to: ${_multitor_directory}" || \
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "the owner could not be changed"
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "not created tor process directory"
+
+    fi
 
   # First, we remove current processes.
   export _tor_processes=$(pidof tor)
