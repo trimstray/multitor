@@ -865,6 +865,14 @@ function __main__() {
     export _multitor_args=("socks_port_state" "socks_port_number" \
                            "control_port_state" "control_port_number")
 
+  else
+
+    _sprintf "stop" "one of the required parameters was not found"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "one of the required parameters was not found"
+    
   fi
 
   # Checking the value of the variables (if they are unset or empty):
