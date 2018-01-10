@@ -941,7 +941,7 @@ function __main__() {
     fi
 
     local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
-    local _pass_hash=$(tor --hash-password "${_pass_gen}" | grep "16:")
+    local _pass_hash=$(sudo -u $user_name tor --hash-password "${_pass_gen}" | grep "16:")
 
     for i in $(seq 0 $(($instance_number - 1))) ; do
 
