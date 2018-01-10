@@ -186,7 +186,7 @@ function _dtordatadir() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CreateInstance()
+# Function name: _ctorproc()
 #
 # Description:
 #   It deals with launching functions:
@@ -194,15 +194,15 @@ function _dtordatadir() {
 #     - operates on message to display and command to execute
 #
 # Usage:
-#   CreateInstance function_name params
+#   _ctorproc "12500"
 #
 # Examples:
-#   CreateInstance "CheckConn 172.20.20.50 22"
+#   _ctorproc "12500"
 #
 
-function CreateInstance() {
+function _ctorproc() {
 
-  local _FUNCTION_ID="CreateInstance"
+  local _FUNCTION_ID="_ctorproc"
   local _STATE=0
 
   return $_STATE
