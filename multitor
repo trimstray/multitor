@@ -109,6 +109,9 @@ s_color="true"
 time_tracking="true"
 time_mode=0
 
+# Create tor instance directory.
+readonly _instdir="/var/lib/multitor"
+
 
 ################################################################################
 ############################## External commands ###############################
@@ -844,6 +847,14 @@ function __main__() {
     fi
 
   fi
+
+  if [[ ! -d "$_instdir" && ! -L "$_instdir" ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "creating a instance directory: '$_instdir'"
+
+    mkdir -m 0700 -p "$_instdir" ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
 
