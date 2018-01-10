@@ -956,7 +956,7 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    _arg_tdir=$(ps -p $show_id -u | grep "tor" | awk '{print $27}')
+    _arg_tdir=$(ps -ax | grep "${show_id}.pid" | grep -v "grep")
 
     printf "%s" "$_arg_tdir"
 
