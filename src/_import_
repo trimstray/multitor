@@ -195,14 +195,15 @@ function _ctorproc() {
   local _arg_control="$3"
 
   local _arg_proc_dir="${_multitor_directory}/${_arg_socks}"
-  local _arg_tconfig="${_arg_proc_dir}/torrc.${_arg_socks}"
+  local _arg_tconfig="${_arg_proc_dir}/${_arg_socks}.torrc"
 
   _init_function "_ctordatadir"
 
   local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
   local _pass_hash=$(tor --hash-password "${_pass_gen}")
 
-  echo "$_pass_gen" > "${_arg_tconfig}"
+  echo "$_pass_gen" > "${_arg_tconfig}" && \
+  chown "${_arg_uname}" "${_arg_tconfig}"
 
   sudo -u $_arg_uname tor \
       -f "${_arg_tconfig}" \
@@ -247,7 +248,7 @@ function _ctordatadir() {
       "${_FUNCTION_ID}()" \
       "created tor process directory: ${_arg_proc_dir}"
 
-    chown -R "${_arg_uname}" "${_arg_proc_dir}" && \
+    chown "${_arg_uname}" "${_arg_proc_dir}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \
