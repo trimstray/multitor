@@ -106,7 +106,7 @@ printf_mode=""
 s_color="true"
 
 # Declaration of total execution time.
-time_tracking="true"
+time_tracking="false"
 time_mode=0
 
 # Create multitor directory.
