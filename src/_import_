@@ -151,7 +151,7 @@ function _dtordatadir() {
   local _FUNCTION_ID="_dtordatadir"
   local _STATE=0
 
-  local _arg_tdir=$(ps ax | grep tor | grep "$_arg_tproc" | awk '{print $18}')
+  local _arg_tdir=$(ps ax | grep tor | grep -v "grep" | grep "$_arg_tproc" | awk '{print $18}')
 
   if [[ -d "$_arg_tdir" ]] ; then
 
