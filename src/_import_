@@ -286,8 +286,19 @@ function _tor_output() {
   local _FUNCTION_ID="_tor_output"
   local _STATE=0
 
-  printf "%s - %s\n" "tor num" "$_arg_socks"
-  printf "%s - %s\n" "tor pass" "$_pass_gen"
+  _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+
+  _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
+  _tor_proc_config=$(echo "$_arg_tdir" | awk '{print $7}')
+  _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $15}')
+  _tor_proc_control=$(echo "$_arg_tdir" | awk '{print $17}')
+  _tor_prod_data_dir=$(echo "$_arg_tdir" | awk '{print $21}')
+
+  printf "         \e[1;32mpid\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+  printf "  \e[1;32msocks_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_socks"
+  printf "\e[1;32mcontrol_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_control"
+  printf "    \e[1;32mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
+  printf "      \e[1;32mconfig\e[m: \e[0;30m%s\e[m\n" "$_tor_proc_config"
 
   return $_STATE
 
