@@ -879,6 +879,8 @@ function __main__() {
 
     fi
 
+  fi
+
   # First, we remove current processes.
   export _tor_processes=$(pidof tor)
 
