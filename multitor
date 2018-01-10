@@ -878,12 +878,12 @@ function __main__() {
 
   for i in $(seq 0 $(($instance_number - 1))) ; do
 
-    socks_port_number=$(($sock_port_number + $i))
+    socks_port_number=$(($socks_port_number + $i))
     control_port_number=$(($control_port_number + $i))
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "set properly variables value: '$sock_port_number', '$control_port_number'"
+      "set properly variables value: '$socks_port_number', '$control_port_number'"
 
     _init_function "_ctorproc ${user_name} ${i} ${socks_port_number} ${control_port_number}"
 
