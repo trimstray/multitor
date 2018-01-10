@@ -876,9 +876,12 @@ function __main__() {
 
   fi
 
-  for i in $(seq $instance_number) ; do
+  for i in $(seq 0 $(($instance_number - 1))) ; do
 
-    _ctorproc $i
+    socks_port_number=$(($sock_port_number + $i))
+    control_port_number=$(($control_port_number + $i))
+
+    _init_function "_ctorproc ${i} ${socks_port_number} ${control_port_number}"
 
   done
 
