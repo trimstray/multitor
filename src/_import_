@@ -208,6 +208,8 @@ function _ctorproc() {
       --DataDirectory "${_multitor_directory}/${_arg_socks}" \
       > /dev/null 2>&1
 
+  _init_function "_tor_output"
+
   return $_STATE
 
 }
@@ -258,6 +260,31 @@ function _ctordatadir() {
       "not created tor process directory"
 
   fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _tor_output()
+#
+# Description:
+#   Show multitor output.
+#
+# Usage:
+#   _tor_output
+#
+# Examples:
+#   _tor_output
+#
+
+function _tor_output() {
+
+  local _FUNCTION_ID="_tor_output"
+  local _STATE=0
+
+  printf "%s - %s\n" "tor num" "$_arg_socks"
+  printf "%s - %s\n" "tor pass" "$_pass_gen"
 
   return $_STATE
 
