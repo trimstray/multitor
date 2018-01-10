@@ -206,7 +206,7 @@ function _ctorproc() {
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
       --DataDirectory "${_multitor_directory}/${_arg_socks}" \
-      > /dev/null 2>&1
+      > "$_log_stdout" 2>&1
 
   _init_function "_tor_output"
 
