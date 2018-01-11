@@ -198,13 +198,13 @@ function CreateTorDirectory() {
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \
-    _logger "warn" \
+    _logger "stop" \
       "${_FUNCTION_ID}()" \
       "the owner could not be changed"
 
   else
 
-    _logger "warn" \
+    _logger "stop" \
       "${_FUNCTION_ID}()" \
       "not created tor process directory"
 
