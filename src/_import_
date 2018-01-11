@@ -94,21 +94,21 @@ function DestroyTorDirectory() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _ctorproc()
+# Function name: CreateTorProcess()
 #
 # Description:
 #   It creates tor processes.
 #
 # Usage:
-#   _ctorproc "username" "id" "id"
+#   CreateTorProcess "username" "id" "id"
 #
 # Examples:
-#   _ctorproc ${user_name} ${socks_port_number} ${control_port_number}
+#   CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
 #
 
-function _ctorproc() {
+function CreateTorProcess() {
 
-  local _FUNCTION_ID="_ctorproc"
+  local _FUNCTION_ID="CreateTorProcess"
   local _STATE=0
 
   local _arg_uname="$1"
