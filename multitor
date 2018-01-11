@@ -955,14 +955,14 @@ function __main__() {
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
-    control_port_number=$(echo "$_arg_tdir" | awk '{print $7}')
+    control_port_number_new_id=$(echo "$_arg_tdir" | awk '{print $15}')
 
     (read -sp 'Enter password: ' _pass_in
 
      echo 
 
      printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-     | nc 127.0.0.1 $control_port_number >/dev/null 2>&1)
+     | nc 127.0.0.1 $control_port_number_new_id >/dev/null 2>&1)
 
   fi
 
