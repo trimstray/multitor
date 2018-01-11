@@ -203,25 +203,6 @@ function CreateTorProcess() {
 
     _tor_processes_done=$(($_tor_processes_done + 1))
 
-    # Check that socks_port_number and control_port_number are available.
-    CheckConn $_arg_socks ; local _tport_state_socks="$?"
-    CheckConn $_arg_control ; local _tport_state_control="$?"
-
-    if [[ $_tport_state_socks -ne 0 ]] ; then
-
-      export _tport_status_socks="false"
-
-    elif [[ $_tport_state_control -ne 0 ]] ; then
-
-      export _tport_status_control="false"
-
-    else
-
-      export _tport_status_socks="true"
-      export _tport_status_control="true"
-
-    fi
-
   else
 
     _logger "warn" \
@@ -331,6 +312,25 @@ function OutputGen() {
 
   local _FUNCTION_ID="OutputGen"
   local _STATE=0
+
+  # Check that socks_port_number and control_port_number are available.
+  CheckConn $_arg_socks ; local _tport_state_socks="$?"
+  CheckConn $_arg_control ; local _tport_state_control="$?"
+
+  if [[ $_tport_state_socks -ne 0 ]] ; then
+
+    export _tport_status_socks="false"
+
+  elif [[ $_tport_state_control -ne 0 ]] ; then
+
+    export _tport_status_control="false"
+
+  else
+
+    export _tport_status_socks="true"
+    export _tport_status_control="true"
+
+  fi
 
   printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
   printf "    \e[1;30msocks_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
