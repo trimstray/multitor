@@ -869,8 +869,8 @@ function __main__() {
 
       done
 
-      # Init DestroyTorDirectory to removed tor process data directory.
-      DestroyTorDirectory
+      # Removed all multitor process data directory.
+      find ${_multitor_directory}/* -delete >>"$_log_stdout" 2>&1
 
     else
 
