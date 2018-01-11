@@ -780,8 +780,9 @@ function __main__() {
           "init_number is less then or equal 0"
 
     elif [[ "$socks_port_state" -eq 1 ]] && \
-         [[ "$socks_port_number" -le 1023 ]] || \
-         [[ "$control_port_number" -le 1023 ]] ; then
+         ( [[ "$socks_port_number" -le 1023 ]] || \
+         [[ "$control_port_number" -le 1023 ]] && \
+         [[ "$control_id_state" -eq 1 ]] ) ; then
 
       _sprintf "stop" "value is less then or equal 1023"
 
@@ -790,8 +791,9 @@ function __main__() {
           "value is less or equal 1023"
 
     elif [[ "$socks_port_state" -eq 1 ]] && \
-         [[ "$socks_port_number" -ge 65536 ]] || \
-         [[ "$control_port_number" -ge 65536 ]] ; then
+         ( [[ "$socks_port_number" -le 65536 ]] || \
+         [[ "$control_port_number" -le 65536 ]] && \
+         [[ "$control_id_state" -eq 1 ]] ) ; then
 
       _sprintf "stop" "value is equal or grather then 65536"
 
