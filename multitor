@@ -773,7 +773,7 @@ function __main__() {
   # Generate random value.
   _random=$(date +"%s")
 
-  local _arg_tdir
+  local _arg_tdir=""
   local _tor_processes_done=0
   local _tor_processes_fail=0
 
@@ -858,7 +858,14 @@ function __main__() {
 
       for _tpr in ${_tor_processes[@]} ; do
 
-        DestroyTorProcess ${_tpr}
+        # In this case, we can search for a specific identifier (${_tpr}.pid)
+        _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${_tpr}")
+
+        if [[ ! -z "$_arg_tdir" ]] ; then
+
+          DestroyTorProcess ${_tpr}
+
+        fi
 
       done
 
