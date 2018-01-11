@@ -920,9 +920,9 @@ function __main__() {
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
-    local _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+    _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
-    local control_port_number_new_id=$(echo "$_arg_tdir" | awk '{print $15}')
+    GetTorProcess
 
     # The round brackets cause the _pass_in variable to be destroyed.
     (read -sp 'Enter password: ' _pass_in
@@ -930,7 +930,7 @@ function __main__() {
      echo 
 
      printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-     | nc 127.0.0.1 $control_port_number_new_id >/dev/null 2>&1)
+     | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1)
 
   fi
 
