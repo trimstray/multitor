@@ -867,8 +867,8 @@ function __main__() {
 
       for _tpr in ${_tor_processes[@]} ; do
 
-        # In this case, we can search for a specific identifier (${_tpr}.pid)
-        _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${_tpr}")
+        # In this case, we can search for a specific identifier (${_tpr}).
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
 
         if [[ ! -z "$_arg_tdir" ]] ; then
 
@@ -902,8 +902,8 @@ function __main__() {
 
       CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
 
-      # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
+      # In this case, we can search for a specific identifier (${socks_port_number}).
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $socks_port_number)
 
       # We get process information and display it on the screen.
       GetTorProcess && OutputGen
@@ -928,7 +928,7 @@ function __main__() {
       for _tpr in $(pidof tor) ; do
 
         # In this case, we can search for a specific identifier (${_tpr}).
-        _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep $_tpr)
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
 
         # We get process information and display it on the screen.
         GetTorProcess && OutputGen
@@ -937,8 +937,8 @@ function __main__() {
 
     else
 
-      # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
+      # In this case, we can search for a specific identifier (${socks_port_number}).
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $socks_port_number)
 
       if [[ -z "$_arg_tdir" ]] ; then
 
@@ -977,7 +977,7 @@ function __main__() {
     for _tpr in ${_tor_proc[@]} ; do
 
       # In this case, we can search for a specific identifier (${_tpr}).
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep $_tpr)
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
 
       if [[ -z "$_arg_tdir" ]] ; then
 
