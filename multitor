@@ -992,14 +992,16 @@ function __main__() {
         # We get process information.
         GetTorProcess
 
-        printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
-        | nc 127.0.0.1 $_tor_proc_control >>"$_log_stdout" 2>&1
+        _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
+        | nc 127.0.0.1 $_tor_proc_control)
 
-        _new_id_state="$?"
-
-        if [[ "$_new_id_state" -eq 0 ]] ; then
+        if $(echo "$_newnym" | grep -qi "250 closing connection") ; then
 
           _identity_state="true"
+
+        elif $(echo "$_newnym" | grep -q "Authentication failed") ; then
+
+          _identity_state="false"
 
         else
 
