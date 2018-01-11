@@ -908,6 +908,8 @@ function __main__() {
 
   fi
 
+  export _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
@@ -949,13 +951,9 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
-
     _init_function "_tor_output"
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
-
-    _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
     control_port_number=$(echo "$_arg_tdir" | awk '{print $7}')
 
