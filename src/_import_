@@ -33,7 +33,7 @@ function DestroyTorProcess() {
 
   local _arg_tdir=$(ps -p $_arg_tproc -u | grep "tor" | awk '{print $25}')
 
-  kill -9 $_arg_tproc > /dev/null 2>&1 ; _kstate="$?"
+  kill -9 $_arg_tproc >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
 
@@ -76,7 +76,7 @@ function DestroyTorDirectory() {
 
   if [[ -d "$_arg_tdir" ]] ; then
 
-    rm -fr "$_arg_tdir" && \
+    rm -fr "$_arg_tdir" >>"$_log_stdout" 2>&1 && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "removed tor process directory: '${_arg_tdir}'"
@@ -130,8 +130,8 @@ function CreateTorProcess() {
     "${_FUNCTION_ID}()" \
     "not saved HashedControlPassword correctly"
 
-  chmod 0400 "${_torrc_config}" && \
-  chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" && \
+  chmod 0400 "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
+  chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
     _logger "info" \
     "${_FUNCTION_ID}()" \
     "change permission and owner correctly" ||
@@ -146,7 +146,7 @@ function CreateTorProcess() {
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
       --DataDirectory "${_proc_dir}" \
-      > "$_log_stdout" 2>&1 ; _kstate="$?"
+      >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
 
@@ -194,7 +194,7 @@ function CreateTorDirectory() {
       "${_FUNCTION_ID}()" \
       "created tor process directory: ${_proc_dir}"
 
-    chown "${_arg_uname}" "${_proc_dir}" && \
+    chown "${_arg_uname}" "${_proc_dir}" >>"$_log_stdout" 2>&1 && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \
