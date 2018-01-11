@@ -883,8 +883,6 @@ function __main__() {
 
       OutputGen
 
-      echo
-
       socks_port_number=$(($socks_port_number + 1))
       control_port_number=$(($control_port_number + 1))
 

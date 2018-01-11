@@ -244,7 +244,7 @@ function OutputGen() {
   printf "  \e[1;32msocks_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_socks"
   printf "\e[1;32mcontrol_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_control"
   printf "    \e[1;32mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
-  printf "      \e[1;32mconfig\e[m: \e[0;30m%s\e[m\n" "$_tor_proc_config"
+  printf "      \e[1;32mconfig\e[m: \e[0;30m%s\e[m\n\n" "$_tor_proc_config"
 
   return $_STATE
 
