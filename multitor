@@ -776,14 +776,14 @@ function __main__() {
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
-    export _multitor_args=("init_state" "init_number" \
+    local _multitor_args=("init_state" "init_number" \
                            "user_state" "user_name" \
                            "socks_port_state" "socks_port_number" \
                            "control_port_state" "control_port_number")
 
   elif [[ "$show_id_state" -eq 1 ]] || [[ "$new_id_state" -eq 1 ]] ; then
 
-    export _multitor_args=("socks_port_state" "socks_port_number")
+    local _multitor_args=("socks_port_state" "socks_port_number")
 
   else
 
@@ -848,7 +848,7 @@ function __main__() {
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
-    export _tor_processes=$(pidof tor)
+    local _tor_processes=$(pidof tor)
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
