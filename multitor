@@ -117,8 +117,8 @@ readonly _multitor_directory="/var/lib/multitor"
 
 # We place here used commands at script runtime, as strings to anything
 # unnecessarily run.
-readonly commands=(basename dirname stat date grep cut sed chown chmod \
-                   mkdir pidof tor sudo nc)
+readonly commands=(basename dirname stat ps date grep cut sed awk chown chmod \
+                   mkdir pidof tor sudo nc kill)
 
 # If you intend to specify the full path to the command we do it like:
 # readonly exec_gzip="/bin/gzip"
@@ -572,7 +572,7 @@ function _before_init() {
       "${_FUNCTION_ID}()" \
       "creating a instance directory: '$_multitor_directory'"
 
-    mkdir -m 0700 -p "$_multitor_directory" > /dev/null 2>&1 ; _kstate="$?"
+    mkdir -m 0700 -p "$_multitor_directory" >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
     if [[ $_kstate -eq 0 ]] ; then
 
@@ -580,7 +580,7 @@ function _before_init() {
         "${_FUNCTION_ID}()" \
         "created tor process directory: ${_multitor_directory}"
 
-      chown -R "${user_name}" "${_multitor_directory}" && \
+      chown -R "${user_name}" "${_multitor_directory}" >>"$_log_stdout" 2>&1 && \
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "changed owner properly to: ${_multitor_directory}" || \
@@ -955,7 +955,7 @@ function __main__() {
       echo 
 
       printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-      | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1
+      | nc 127.0.0.1 $_tor_proc_control >>"$_log_stdout" 2>&1
 
       export _new_id_state="$?")
 
