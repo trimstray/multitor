@@ -419,68 +419,6 @@ function _sprintf() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _init_cmd()
-#
-# Description:
-#   Function executing given as a command parameter.
-#
-# Usage:
-#   _init_cmd "parameter"
-#
-# Examples:
-#   _init_cmd "eval cd /etc/init.d && ls"
-#
-
-function _init_cmd() {
-
-  local _FUNCTION_ID="_init_cmd"
-  local _STATE=0
-
-  local _cmd="$1"
-
-  # Uncomment if you want to display executed commands.
-  # _sprintf "info" "init: \"$_cmd\""
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "init: $_cmd"
-
-  # Execute command and exit save to file.
-  $_cmd >>"$_log_stdout" 2>&1 &
-
-  # We keep pid of the last command.
-  _pid=$!
-
-  # When the '(command) &' command is performed.
-  _sprintf "spin" "$_pid"
-
-  # Very important line:
-  # We define the state of the output job from the background.
-  wait $_pid &>/dev/null && _state="0" || _state="1"
-
-  if [[ "$_state" -eq 0 ]] ; then
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "result: pass"
-
-  else
-
-    _sprintf "stop" "result: fail"
-
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "result: fail"
-
-  fi
-
-  _STATE=$_state
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _load()
 #
 # Description:
@@ -915,7 +853,7 @@ function __main__() {
 
       for _tpr in ${_tor_processes[@]} ; do
 
-        _init_function "_dtorproc ${_tpr}"
+        _dtorproc ${_tpr}
 
       done
 
@@ -936,11 +874,11 @@ function __main__() {
         "${_FUNCTION_ID}()" \
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
 
-      _init_function "_ctorproc ${user_name} ${socks_port_number} ${control_port_number}"
+      _ctorproc ${user_name} ${socks_port_number} ${control_port_number}
 
       export _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
-      _init_function "_tor_output"
+      _tor_output
 
       echo
 
@@ -955,7 +893,7 @@ function __main__() {
 
     export _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
-    _init_function "_tor_output"
+    _tor_output
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
