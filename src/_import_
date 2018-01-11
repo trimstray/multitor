@@ -284,8 +284,6 @@ function _tor_output() {
   local _FUNCTION_ID="_tor_output"
   local _STATE=0
 
-  _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
-
   _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
   _tor_proc_config=$(echo "$_arg_tdir" | awk '{print $7}')
   _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $13}')
