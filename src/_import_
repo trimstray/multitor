@@ -69,9 +69,6 @@ function DestroyTorProcess() {
       "${_FUNCTION_ID}()" \
       "killed tor process: '${_arg_tproc}'"
 
-      # Init DestroyTorDirectory to removed tor process data directory.
-      DestroyTorDirectory
-
   else
 
     _logger "warn" \

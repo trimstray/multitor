@@ -869,6 +869,9 @@ function __main__() {
 
       done
 
+      # Init DestroyTorDirectory to removed tor process data directory.
+      DestroyTorDirectory
+
     else
 
       _logger "warn" \
