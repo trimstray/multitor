@@ -217,6 +217,31 @@ function CreateTorDirectory() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: GetTorProcess()
+#
+# Description:
+#   Show multitor output.
+#
+# Usage:
+#   GetTorProcess
+#
+# Examples:
+#   GetTorProcess
+#
+
+function GetTorProcess() {
+
+  local _FUNCTION_ID="GetTorProcess"
+  local _STATE=0
+
+  local _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+
+  return $_STATE
+
+}
+
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: OutputGen()
 #
 # Description:
