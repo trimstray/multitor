@@ -118,17 +118,17 @@ function CreateTorProcess() {
   local _proc_dir="${_multitor_directory}/${_arg_socks}"
   local _torrc_config="${_arg_socks}.torrc"
 
-  local _tport_state=1
+  local _tport_state=0
 
   # Check that socks_port_number and control_port_number are available.
   for _tport in $_arg_socks $_arg_control ; do
 
     timeout 1 bash -c "</dev/tcp/127.0.0.1/${_tport}" >>"$_log_stdout" 2>&1 || \
-    _tport_state=0
+    _tport_state=1
 
   done
 
-  if [[ $_tport_state -eq 0 ]] ; then
+  if [[ $_tport_state -eq 1 ]] ; then
 
     # We create a directory for the new tor process.
     CreateTorDirectory
