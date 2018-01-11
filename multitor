@@ -768,7 +768,9 @@ function __main__() {
   # Checking whether the variable value is a numeric value.
   if [[ "$init_number" =~ $_num ]] || \
      [[ "$socks_port_number" =~ $_num ]] || \
-     [[ "$control_port_number" =~ $_num ]] ; then
+     [[ "$socks_port_number" == "all" ]] || \
+     [[ "$control_port_number" =~ $_num ]] || \
+     [[ "$control_port_number" == "all" ]] ; then
 
     if [[ "$init_state" -eq 1 ]] && \
        [[ "$init_number" -le 0 ]] ; then
@@ -896,6 +898,8 @@ function __main__() {
 
     for i in $(seq 0 $(($init_number - 1))) ; do
 
+      echo
+
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
@@ -930,6 +934,8 @@ function __main__() {
         # In this case, we can search for a specific identifier (${_tpr}).
         _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
 
+        echo
+
         # We get process information and display it on the screen.
         GetTorProcess && OutputGen
 
@@ -950,12 +956,16 @@ function __main__() {
 
       else
 
+        echo
+
         # We get process information and display it on the screen.
         GetTorProcess && OutputGen
 
       fi
 
     fi
+
+    echo
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
@@ -1026,15 +1036,17 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m" "$_key_id" "$_key_state"
 
       else
 
-        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m" "$_key_id" "$_key_state"
 
       fi
 
     done
+
+    echo
 
   fi
 
