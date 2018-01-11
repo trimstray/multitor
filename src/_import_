@@ -118,47 +118,71 @@ function CreateTorProcess() {
   local _proc_dir="${_multitor_directory}/${_arg_socks}"
   local _torrc_config="${_proc_dir}/torrc"
 
-  # We create a directory for the new tor process.
-  CreateTorDirectory
+  local _tport_state=0
 
-  # We save the hash of the password to the configuration file.
-  echo "HashedControlPassword ${_pass_hash}" > "${_torrc_config}" && \
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "saved HashedControlPassword correctly" ||
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "not saved HashedControlPassword correctly"
+  # Check that socks_port_number and control_port_number are available.
+  for _tport in $_arg_socks $_arg_control ; do
 
-  chmod 0400 "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
-  chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
-    _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "change permission and owner correctly" ||
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "not changed permission and owner correctly"
+    timeout 1 bash -c "</dev/tcp/127.0.0.1/${_tport}" && \
+    _tport_state=1
 
-  sudo -u $_arg_uname tor -f "${_torrc_config}" \
-      --RunAsDaemon 1 \
-      --CookieAuthentication 0 \
-      --SocksPort $_arg_socks \
-      --ControlPort $_arg_control \
-      --PidFile "$_arg_socks.pid" \
-      --DataDirectory "${_proc_dir}" \
-      >>"$_log_stdout" 2>&1 ; _kstate="$?"
+  done
 
-  if [[ $_kstate -eq 0 ]] ; then
+  if [[ $_tport_state -eq 1 ]] ; then
 
+    # We create a directory for the new tor process.
+    CreateTorDirectory
+
+    # We save the hash of the password to the configuration file.
+    echo "HashedControlPassword ${_pass_hash}" > "${_torrc_config}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "create process: '${_arg_socks}.pid'"
+      "saved HashedControlPassword correctly" ||
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "not saved HashedControlPassword correctly"
+
+    chmod 0400 "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
+    chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
+      _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "change permission and owner correctly" ||
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "not changed permission and owner correctly"
+
+    sudo -u $_arg_uname tor -f "${_torrc_config}" \
+         --RunAsDaemon 1 \
+         --CookieAuthentication 0 \
+         --SocksPort $_arg_socks \
+         --ControlPort $_arg_control \
+         --PidFile "$_arg_socks.pid" \
+         --DataDirectory "${_proc_dir}" \
+         >>"$_log_stdout" 2>&1 ; _kstate="$?"
+
+    if [[ $_kstate -eq 0 ]] ; then
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "create process: '${_arg_socks}.pid'"
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "no process was created"
+
+    fi
+
+    _tor_processes_done=$(($_tor_processes_done + 1))
 
   else
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "no process was created"
+      "${_tport} is not available, drop this tor instance"
+
+    _tor_processes_fail=$(($_tor_processes_fail + 1))
 
   fi
 
