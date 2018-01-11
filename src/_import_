@@ -116,7 +116,7 @@ function CreateTorProcess() {
   local _arg_control="$3"
 
   local _proc_dir="${_multitor_directory}/${_arg_socks}"
-  local _torrc_config="${_proc_dir}/torrc"
+  local _torrc_config="${_arg_socks}.torrc"
 
   local _tport_state=1
 
@@ -151,12 +151,12 @@ function CreateTorProcess() {
       "${_FUNCTION_ID}()" \
       "not changed permission and owner correctly"
 
-    sudo -u $_arg_uname tor -f "${_torrc_config}" \
+    sudo -u $_arg_uname tor -f "${_proc_dir}/${_torrc_config}" \
          --RunAsDaemon 1 \
          --CookieAuthentication 0 \
          --SocksPort $_arg_socks \
          --ControlPort $_arg_control \
-         --PidFile "$_arg_socks.pid" \
+         --PidFile "${_proc_dir}/${_arg_socks}.pid" \
          --DataDirectory "${_proc_dir}" \
          >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
