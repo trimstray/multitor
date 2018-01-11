@@ -767,9 +767,9 @@ function __main__() {
   if [[ "$init_state" -eq 1 ]] ; then
 
     local _multitor_args=("init_state" "init_number" \
-                           "user_state" "user_name" \
-                           "socks_port_state" "socks_port_number" \
-                           "control_port_state" "control_port_number")
+                          "user_state" "user_name" \
+                          "socks_port_state" "socks_port_number" \
+                          "control_port_state" "control_port_number")
 
   elif [[ "$show_id_state" -eq 1 ]] || [[ "$new_id_state" -eq 1 ]] ; then
 
