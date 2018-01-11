@@ -922,6 +922,7 @@ function __main__() {
 
       for _tpr in $(pidof tor) ; do
 
+        # In this case, we can search for a specific identifier (${_tpr}).
         _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep $_tpr)
 
         # We get process information and display it on the screen.
@@ -953,32 +954,47 @@ function __main__() {
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
-    # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-    _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
+    # Password required at this stage.
+    read -sp 'Enter password: ' _pass_in
 
-    if [[ -z "$_arg_tdir" ]] ; then
+    if [[ "$socks_port_number" == "all" ]] ; then
 
-      _sprintf "stop" "not found tor process"
-
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "not found tor process"
+      _tor_proc=($(pidof tor))
 
     else
-    
-      GetTorProcess
 
-      # The round brackets cause the _pass_in variable to be destroyed.
-      (read -sp 'Enter password: ' _pass_in
-
-      echo 
-
-      printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-      | nc 127.0.0.1 $_tor_proc_control >>"$_log_stdout" 2>&1
-
-      export _new_id_state="$?")
+      _tor_proc=($socks_port_number)
 
     fi
+
+    for _tpr in ${_tor_proc[@]} ; do
+
+      # In this case, we can search for a specific identifier (${_tpr}).
+      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep $_tpr)
+
+      if [[ -z "$_arg_tdir" ]] ; then
+
+        _sprintf "stop" "not found tor process"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "not found tor process"
+
+      else
+
+        # We get process information.
+        GetTorProcess
+
+        printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
+        | nc 127.0.0.1 $_tor_proc_control >>"$_log_stdout" 2>&1
+
+        _new_id_state="$?"
+
+      fi
+
+    done
+
+    unset _pass_in
 
     printf "A new identity was created correctly.\n"
     printf "Tor process id: \e[1;39m%d\e[m\n" "$_tor_proc_id"
