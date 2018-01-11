@@ -955,9 +955,14 @@ function __main__() {
       echo 
 
       printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-      | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1)
+      | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1
+
+      export _new_id_state="$?")
 
     fi
+
+    printf "A new identity was created correctly.\n"
+    printf "Tor socks port: \e[0;32m%d\e[m\n" "$_tor_proc_control"
 
   fi
 
