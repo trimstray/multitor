@@ -118,7 +118,7 @@ function CreateTorProcess() {
   local _arg_proc_dir="${_multitor_directory}/${_arg_socks}"
   local _arg_tconfig="${_arg_proc_dir}/torrc"
 
-  _ctordatadir
+  CreateTorDirectory
 
   echo "HashedControlPassword ${_pass_hash}" > "${_arg_tconfig}" && \
   chmod 0400 "${_arg_tconfig}" && \
@@ -138,21 +138,21 @@ function CreateTorProcess() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _ctordatadir()
+# Function name: CreateTorDirectory()
 #
 # Description:
 #   It creates tor processes data directory.
 #
 # Usage:
-#   _ctordatadir
+#   CreateTorDirectory
 #
 # Examples:
-#   _ctordatadir
+#   CreateTorDirectory
 #
 
-function _ctordatadir() {
+function CreateTorDirectory() {
 
-  local _FUNCTION_ID="_ctordatadir"
+  local _FUNCTION_ID="CreateTorDirectory"
   local _STATE=0
 
   mkdir -m 0700 "$_arg_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
