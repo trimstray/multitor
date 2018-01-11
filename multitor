@@ -6,9 +6,7 @@
 #
 #         fname : "multitor"
 #         cdate : "09.01.2018"
-#        author : "Sebastian Wain <sebastian_wain@gmx.net>"
-#                 "Jan Seidl <jseidl@wroot.org>"
-#                 "Michał Żurawski <contact@nslab.at>"
+#        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
 #
@@ -24,7 +22,7 @@
 #
 # License:
 #
-#   multitor, Copyright (C) 2017  Sebastian Wain, Jan Seidl, Michał Żurawski
+#   multitor, Copyright (C) 2017  Michał Żurawski
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -119,8 +117,8 @@ readonly _multitor_directory="/var/lib/multitor"
 
 # We place here used commands at script runtime, as strings to anything
 # unnecessarily run.
-readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
-                   pidof tor sudo nc)
+readonly commands=(basename dirname stat date grep cut sed chown chmod \
+                   mkdir pidof tor sudo nc)
 
 # If you intend to specify the full path to the command we do it like:
 # readonly exec_gzip="/bin/gzip"
@@ -579,10 +577,10 @@ function _help_() {
         --debug                     displays information on the screen (debug mode)
         --verbose                   displays 'info' messages on the screen (verbose mode)
         --time                      displays execution time, occurs only with --verbose
-        --init <num>                init new tor processes
-        --show-id                   show specific tor process id
-        --new-id                    regenerate tor circuit
-    -u, --user <string>             set the user controlling the tor instances
+    -i, --init <num>                init new tor processes
+    -s, --show-id                   show specific tor process id
+    -n, --new-id                    regenerate tor circuit
+    -u, --user <string>             set the user (only with -i|--init)
         --socks-port <port_num>     set socks port number
         --control-port <port_num>   set control port number
 
@@ -715,7 +713,7 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="c:u:"
+  local _short_opt="c:i:snu:"
   local _long_opt="help,debug,verbose,time,init:,show-id,new-id,user:,socks-port:,control-port:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
