@@ -184,21 +184,21 @@ function CreateTorDirectory() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _tor_output()
+# Function name: OutputGen()
 #
 # Description:
 #   Show multitor output.
 #
 # Usage:
-#   _tor_output
+#   OutputGen
 #
 # Examples:
-#   _tor_output
+#   OutputGen
 #
 
-function _tor_output() {
+function OutputGen() {
 
-  local _FUNCTION_ID="_tor_output"
+  local _FUNCTION_ID="OutputGen"
   local _STATE=0
 
   _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
