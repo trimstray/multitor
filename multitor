@@ -770,7 +770,8 @@ function __main__() {
      [[ "$socks_port_number" =~ $_num ]] || \
      [[ "$control_port_number" =~ $_num ]] ; then
 
-    if [[ "$init_number" -le 0 ]] ; then
+    if [[ "$init_number" -le 0 ]] && \
+       [[ "$init_state" -eq 1 ]] ; then
 
       _sprintf "stop" "init_number is less or equal 0"
 
