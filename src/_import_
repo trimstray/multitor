@@ -15,13 +15,13 @@ export _cmdtime_state=0
 # Function name: DestroyTorProcess()
 #
 # Description:
-#   It destroys currently running tor processes.
+#   It destroys currently running tor process.
 #
 # Usage:
-#   DestroyTorProcess "username" "id"
+#   DestroyTorProcess "id"
 #
 # Examples:
-#   DestroyTorProcess ${user_name} ${_tpr}"
+#   DestroyTorProcess ${_tpr}"
 #
 
 function DestroyTorProcess() {

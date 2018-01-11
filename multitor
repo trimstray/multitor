@@ -773,6 +773,7 @@ function __main__() {
   # Generate random value.
   _random=$(date +"%s")
 
+  # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
     export _multitor_args=("init_state" "init_number" \
