@@ -59,8 +59,6 @@ function DestroyTorProcess() {
 
   local _arg_tproc="$1"
 
-  local _arg_tdir=$(ps -p $_arg_tproc -u | grep "tor" | awk '{print $25}')
-
   kill -9 $_arg_tproc >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
@@ -74,43 +72,6 @@ function DestroyTorProcess() {
     _logger "warn" \
       "${_FUNCTION_ID}()" \
       "not killed tor process (maybe not found?)"
-
-  fi
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: DestroyTorDirectory()
-#
-# Description:
-#   It destroys currently tor processes data directory.
-#
-# Usage:
-#   DestroyTorDirectory
-#
-# Examples:
-#   DestroyTorDirectory
-#
-
-function DestroyTorDirectory() {
-
-  local _FUNCTION_ID="DestroyTorDirectory"
-  local _STATE=0
-
-  if [[ -d "$_arg_tdir" ]] ; then
-
-    rm -fr "$_arg_tdir" >>"$_log_stdout" 2>&1 && \
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "removed tor process directory: '${_arg_tdir}'"
-
-  else
-
-    _logger "warn" \
-      "${_FUNCTION_ID}()" \
-      "not found tor process directory"
 
   fi
 
