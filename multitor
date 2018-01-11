@@ -882,7 +882,7 @@ function __main__() {
       CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
 
       # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | "${socks_port_number}.pid")
+      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
       # We get process information and display it on the screen.
       GetTorProcess && OutputGen
@@ -913,7 +913,7 @@ function __main__() {
     else
 
       # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | "${socks_port_number}.pid")
+      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
       # We get process information and display it on the screen.
       GetTorProcess && OutputGen
@@ -923,7 +923,7 @@ function __main__() {
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
     # In this case, we can search for a specific identifier (${socks_port_number}.pid)
-      _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | "${socks_port_number}.pid")
+    _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
     GetTorProcess
 
