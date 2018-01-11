@@ -1024,11 +1024,11 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "New identity for \e[1;39m%d\e[m\n: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "New identity for \e[0;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
 
       else
 
-        printf "New identity for \e[1;39m%d\e[m\n: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "New identity for \e[0;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
 
       fi
 
