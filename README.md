@@ -1,4 +1,4 @@
-# Multi-TOR
+# multitor
 
 ## Version
 
@@ -38,7 +38,7 @@ Provides the following options:
 
 ## Requirements
 
-**<u>Multi-TOR</u>** uses external utilities to be installed before running:
+**<u>Multitor</u>** uses external utilities to be installed before running:
 
 - [tor](https://www.torproject.org/)
 - [netcat](http://netcat.sourceforge.net/)
@@ -67,7 +67,7 @@ Specifies the port number of the **Tor** process control. Increased by 1 for eac
 
 - `--control-port 9900`
 
-Examples of obtaining information about a given **Tor** process created by **Multi-TOR**:
+Examples of obtaining information about a given **Tor** process created by **multitor**:
 
 ```
 multitor --show-id --socks-port 9000
@@ -93,11 +93,13 @@ We set up creating a new identity for **Tor** process:
 
 - `--new-id`
 
+> You can use the **all** value to regenerate identity for all processes.
+
 Specifies the port number for communication. Allows you to find the process after this port number:
 
 - `--socks-port 9000`
 
-So if We created 2 **Tor** processes by **Multi-TOR** example output will be given:
+So if We created 2 **Tor** processes by **multitor** example output will be given:
 
 ![multitor_output](doc/img/multitor_output.png)
 
