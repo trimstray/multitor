@@ -41,8 +41,8 @@ function DestroyTorProcess() {
       "${_FUNCTION_ID}()" \
       "killed tor process: '${_arg_tproc}'"
 
-      # Init _dtordatadir to removed tor process data directory.
-      _dtordatadir
+      # Init DestroyTorDirectory to removed tor process data directory.
+      DestroyTorDirectory
 
   else
 
@@ -57,21 +57,21 @@ function DestroyTorProcess() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _dtordatadir()
+# Function name: DestroyTorDirectory()
 #
 # Description:
 #   It destroys currently tor processes data directory.
 #
 # Usage:
-#   _dtordatadir
+#   DestroyTorDirectory
 #
 # Examples:
-#   _dtordatadir
+#   DestroyTorDirectory
 #
 
-function _dtordatadir() {
+function DestroyTorDirectory() {
 
-  local _FUNCTION_ID="_dtordatadir"
+  local _FUNCTION_ID="DestroyTorDirectory"
   local _STATE=0
 
   if [[ -d "$_arg_tdir" ]] ; then
