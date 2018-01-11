@@ -992,7 +992,7 @@ function __main__() {
         # We get process information.
         GetTorProcess
 
-        printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
+        printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
         | nc 127.0.0.1 $_tor_proc_control >>"$_log_stdout" 2>&1
 
         _new_id_state="$?"
@@ -1024,11 +1024,11 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "New identity for \e[0;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
 
       else
 
-        printf "New identity for \e[0;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
 
       fi
 
