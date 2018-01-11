@@ -765,7 +765,7 @@ function __main__() {
 
         export init_number=${2:-"1"}
 
-        shift ;;
+        shift 2 ;;
 
       --show-id)
 
