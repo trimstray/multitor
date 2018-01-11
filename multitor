@@ -942,6 +942,10 @@ function __main__() {
 
       _init_function "_ctorproc ${user_name} ${socks_port_number} ${control_port_number}"
 
+      _init_function "_tor_output"
+
+      echo
+
       socks_port_number=$(($socks_port_number + 1))
       control_port_number=$(($control_port_number + 1))
 

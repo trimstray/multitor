@@ -212,10 +212,6 @@ function _ctorproc() {
       --DataDirectory "${_arg_proc_dir}" \
       > "$_log_stdout" 2>&1
 
-  _init_function "_tor_output"
-
-  echo
-
   return $_STATE
 
 }
