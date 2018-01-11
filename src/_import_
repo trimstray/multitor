@@ -220,7 +220,7 @@ function CreateTorDirectory() {
 # Function name: GetTorProcess()
 #
 # Description:
-#   Show multitor output.
+#   Get info about tor process..
 #
 # Usage:
 #   GetTorProcess
@@ -234,18 +234,21 @@ function GetTorProcess() {
   local _FUNCTION_ID="GetTorProcess"
   local _STATE=0
 
-  local _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+  _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
+  _tor_proc_config=$(echo "$_arg_tdir" | awk '{print $7}')
+  _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $13}')
+  _tor_proc_control=$(echo "$_arg_tdir" | awk '{print $15}')
+  _tor_prod_data_dir=$(echo "$_arg_tdir" | awk '{print $19}')
 
   return $_STATE
 
 }
 
-
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: OutputGen()
 #
 # Description:
-#   Show multitor output.
+#   Show info about process on the screen.
 #
 # Usage:
 #   OutputGen
@@ -258,12 +261,6 @@ function OutputGen() {
 
   local _FUNCTION_ID="OutputGen"
   local _STATE=0
-
-  _tor_proc_id=$(echo "$_arg_tdir" | awk '{print $1}')
-  _tor_proc_config=$(echo "$_arg_tdir" | awk '{print $7}')
-  _tor_proc_socks=$(echo "$_arg_tdir" | awk '{print $13}')
-  _tor_proc_control=$(echo "$_arg_tdir" | awk '{print $15}')
-  _tor_prod_data_dir=$(echo "$_arg_tdir" | awk '{print $19}')
 
   printf "         \e[1;32mpid\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
   printf "  \e[1;32msocks_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_socks"
