@@ -913,10 +913,10 @@ function __main__() {
 
     done
 
-    printf "     Max processes: \e[0;39m%d\e[m\n" "$init_number"
+    printf "\n     Max processes: \e[0;39m%d\e[m\n" "$init_number"
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
     printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
-    printf "  Control password: \e[2;38m%s\e[m\n" "$_pass_gen"
+    printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
 
     # Unset password variables.
     unset _pass_gen ; unset _pass_hash
