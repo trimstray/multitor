@@ -774,6 +774,8 @@ function __main__() {
   _random=$(date +"%s")
 
   local _arg_tdir
+  local _tor_processes_done=0
+  local _tor_processes_fail=0
 
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
@@ -864,7 +866,7 @@ function __main__() {
 
       _logger "warn" \
         "${_FUNCTION_ID}()" \
-        "not found tor processes"
+        "not found tor processes: ${_tpr}"
 
     fi
 
@@ -896,6 +898,11 @@ function __main__() {
 
     # Unset password variables.
     unset _pass_gen ; unset _pass_hash
+
+    printf "\nReport:\n"
+    printf " Processes to create: \e[0;30m%d\e[m\n" "$init_number"
+    printf " Correctly created:   \e[0;32m%d\e[m\n" "$_tor_processes_done"
+    printf " Inorrectly created:  \e[0;33m%s\e[m\n" "$_tor_processes_fail"
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
