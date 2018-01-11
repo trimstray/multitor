@@ -579,11 +579,10 @@ function _help_() {
         --debug                     displays information on the screen (debug mode)
         --verbose                   displays 'info' messages on the screen (verbose mode)
         --time                      displays execution time, occurs only with --verbose
-        --init                      init new tor processes
+        --init <num>                init new tor processes
         --show-id                   show specific tor process id
         --new-id                    regenerate tor circuit
     -u, --user <string>             set the user controlling the tor instances
-    -i, --instance <num>            set tor instance number
         --socks-port <port_num>     set socks port number
         --control-port <port_num>   set control port number
 
@@ -716,8 +715,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="c:u:i:"
-  local _long_opt="help,debug,verbose,time,config:,init,show-id,new-id,user:,instance:,socks-port:,control-port:"
+  local _short_opt="c:u:"
+  local _long_opt="help,debug,verbose,time,init:,show-id,new-id,user:,socks-port:,control-port:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -764,6 +763,8 @@ function __main__() {
 
         export init_state=1
 
+        export init_number=${2:-"1"}
+
         shift ;;
 
       --show-id)
@@ -783,14 +784,6 @@ function __main__() {
         export user_state=1
 
         export user_name=${2:-"1"}
-
-        shift 2 ;;
-
-      -i|--instance)
-
-        export instance_state=1
-
-        export instance_number=${2:-"1"}
 
         shift 2 ;;
 
@@ -846,8 +839,8 @@ function __main__() {
 
   if [[ "$init_state" -eq 1 ]] ; then
 
-    export _multitor_args=("user_state" "user_name" \
-                           "instance_state" "instance_number" \
+    export _multitor_args=("init_state" "init_number" \
+                           "user_state" "user_name" \
                            "socks_port_state" "socks_port_number" \
                            "control_port_state" "control_port_number")
 
@@ -943,7 +936,7 @@ function __main__() {
     local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
     local _pass_hash=$(sudo -u $user_name tor --hash-password "${_pass_gen}" | grep "16:")
 
-    for i in $(seq 0 $(($instance_number - 1))) ; do
+    for i in $(seq 0 $(($init_number - 1))) ; do
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
