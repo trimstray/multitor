@@ -866,6 +866,8 @@ function __main__() {
 
     fi
 
+    # Generate random password.
+    # Does storing the password in this form is security issue?
     local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
     local _pass_hash=$(sudo -u $user_name tor --hash-password "${_pass_gen}" | grep "16:")
 
@@ -889,6 +891,9 @@ function __main__() {
     done
 
     printf "    Password: \e[0;31m%s\e[m\n" "$_pass_gen"
+
+    # Unset password variables.
+    unset _pass_gen ; unset _pass_hash
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
