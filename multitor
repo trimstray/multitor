@@ -763,6 +763,51 @@ function __main__() {
   local _tor_processes_done=0
   local _tor_processes_fail=0
 
+  local _num='^[0-9]+$'
+
+  # Checking whether the variable value is a numeric value.
+  if [[ "$init_number" =~ $_num ]] || \
+     [[ "$socks_port_number" =~ $_num ]] || \
+     [[ "$control_port_number" =~ $_num ]] ; then
+
+    if [[ "$init_number" -le 0 ]] ; then
+
+      _sprintf "stop" "init_number is less or equal 0"
+
+      _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "init_number is less then or equal 0"
+
+    elif [[ "$socks_port_number" -le 1023 ]] || \
+         [[ "$control_port_number" -le 1023 ]] ; then
+
+      _sprintf "stop" "value is less then or equal 1023"
+
+      _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is less or equal 1023"
+
+    elif [[ "$socks_port_number" -ge 65536 ]] || \
+         [[ "$control_port_number" -ge 65536 ]] ; then
+
+      _sprintf "stop" "value is equal or grather then 65536"
+
+      _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is equal or grather then 65536"
+
+    fi
+
+  else
+
+    _sprintf "stop" "no numeric value"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "no numeric value"
+
+  fi
+
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
