@@ -12,6 +12,34 @@ export _cmdtime_state=0
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckConn()
+#
+# Description:
+#   Check connection to remote host.
+#
+# Usage:
+#   CheckConn host port
+#
+# Examples:
+#   CheckConn 172.20.20.50 22
+#
+
+function CheckConn() {
+
+  local _FUNCTION_ID="CheckConn"
+  local _STATE=0
+
+  local _port="$1"
+
+  timeout 1 bash -c "</dev/tcp/127.0.0.1/${_port}" >>"$_log_stdout" 2>&1
+
+  _STATE="$?"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: DestroyTorProcess()
 #
 # Description:
@@ -123,8 +151,7 @@ function CreateTorProcess() {
   # Check that socks_port_number and control_port_number are available.
   for _tport in $_arg_socks $_arg_control ; do
 
-    timeout 1 bash -c "</dev/tcp/127.0.0.1/${_tport}" >>"$_log_stdout" 2>&1 || \
-    _tport_state=1
+    CheckConn $_tport ; _tport_state="$?"
 
   done
 
@@ -175,6 +202,20 @@ function CreateTorProcess() {
     fi
 
     _tor_processes_done=$(($_tor_processes_done + 1))
+
+    # Check that socks_port_number and control_port_number are available.
+    CheckConn $_arg_socks ; local _tport_state_socks="$?"
+    CheckConn $_arg_socks ; local _tport_state_control="$?"
+
+    if [[ $_tport_state_socks -ne 0 ]] ; then
+
+      export _tport_status_socks="false"
+
+    elif [[ $_tport_state_control -ne 0 ]] ; then
+
+      export _tport_status_control="false"
+
+    fi
 
   else
 
@@ -286,11 +327,13 @@ function OutputGen() {
   local _FUNCTION_ID="OutputGen"
   local _STATE=0
 
-  printf "  \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-  printf "  \e[1;30msocks_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
-  printf "\e[1;30mcontrol_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_control"
-  printf "    \e[1;30mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
-  printf "      \e[1;30mconfig\e[m: \e[0;30m%s\e[m\n\n" "$_tor_proc_config"
+  printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+  printf "    \e[1;30msocks_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
+  printf "  \e[1;30msocks_status\e[m: \e[0;31m%d\e[m\n" "$_tport_status_socks"
+  printf "  \e[1;30mcontrol_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_control"
+  printf "\e[1;30mcontrol_status\e[m: \e[0;31m%d\e[m\n" "$_tport_status_control"
+  printf "      \e[1;30mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
+  printf "        \e[1;30mconfig\e[m: \e[0;30m%s\e[m\n\n" "$_tor_proc_config"
 
   return $_STATE
 
