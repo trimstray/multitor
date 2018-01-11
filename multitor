@@ -773,6 +773,8 @@ function __main__() {
   # Generate random value.
   _random=$(date +"%s")
 
+  local _arg_tdir
+
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
@@ -879,7 +881,7 @@ function __main__() {
 
       CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
 
-      local _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
+      _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
       OutputGen
 
@@ -895,6 +897,11 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
+    if [[ "$socks_port_number" == "all" ]] ; then
+
+      for _tpr in $(pidof tor) ; do
+
+        _arg_tdir=$(ps -ax | grep "multitor" | grep $_tpr | grep -v "grep")
     local _arg_tdir=$(ps -ax | grep "${socks_port_number}.pid" | grep "multitor" | grep -v "grep")
 
     OutputGen
