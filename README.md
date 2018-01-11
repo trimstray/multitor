@@ -32,7 +32,7 @@ Provides the following options:
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit
     -u, --user <string>             set the user (only with -i|--init)
-        --socks-port <port_num>     set socks port number
+        --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
 ``````
 
@@ -76,6 +76,8 @@ multitor --show-id --socks-port 9000
 We want to get information about a given **Tor** process:
 
 - `--show-id`
+
+> You can use the **all** value to display all processes.
 
 Specifies the port number for communication. Allows you to find the process after this port number:
 

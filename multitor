@@ -517,7 +517,7 @@ function _help_() {
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit
     -u, --user <string>             set the user (only with -i|--init)
-        --socks-port <port_num>     set socks port number
+        --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
 
 
