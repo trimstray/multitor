@@ -959,8 +959,10 @@ function __main__() {
 
   elif [[ "$new_id_state" -eq 1 ]] ; then
 
+    _output_tparams=()
+
     # Password required at this stage.
-    read -sp 'Enter password: ' _pass_in
+    read -sp "Enter password: " _pass_in
 
     if [[ "$socks_port_number" == "all" ]] ; then
 
@@ -995,16 +997,40 @@ function __main__() {
 
         _new_id_state="$?"
 
+        if [[ "$_new_id_state" -eq 0 ]] ; then
+
+          _identity_state="true"
+
+        else
+
+          _identity_state="false"
+
+        fi
+
+        _output_tparams+=("$_tor_proc_id":"$_tor_proc_socks":"$_tor_proc_control":"$_identity_state")
+
       fi
 
     done
 
     unset _pass_in
 
-    printf "A new identity was created correctly.\n"
-    printf "Tor process id: \e[1;39m%d\e[m\n" "$_tor_proc_id"
-    printf "Tor socks port: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
-    printf "Tor control port: \e[0;32m%d\e[m\n" "$_tor_proc_control"
+    for i in "${_output_tparams[@]}" ; do
+
+      _key_id=$(echo "$i" | awk -v FS="(:|:)" '{print $1}')
+      _key_socks=$(echo "$i" | awk -v FS="(:|:)" '{print $2}')
+      _key_control=$(echo "$i" | awk -v FS="(:|:)" '{print $3}')
+      _key_state=$(echo "$i" | awk -v FS="(:|:)" '{print $4}')
+
+      if [[ "$_key_state" == "true" ]] ; then
+
+        printf "New identity for \e[1;39m%d\e[m\n: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
+
+      else
+
+        printf "New identity for \e[1;39m%d\e[m\n: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
+
+      fi
 
   fi
 
