@@ -152,7 +152,7 @@ function CreateTorProcess() {
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "create process: '${_arg_socks.pid}'"
+      "create process: '${_arg_socks}.pid'"
 
   else
 
