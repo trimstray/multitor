@@ -100,7 +100,7 @@ function DestroyTorDirectory() {
 #   It creates tor processes.
 #
 # Usage:
-#   CreateTorProcess "username" "id" "id"
+#   CreateTorProcess "username" "num" "num"
 #
 # Examples:
 #   CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
@@ -115,23 +115,54 @@ function CreateTorProcess() {
   local _arg_socks="$2"
   local _arg_control="$3"
 
-  local _arg_proc_dir="${_multitor_directory}/${_arg_socks}"
-  local _arg_tconfig="${_arg_proc_dir}/torrc"
+  local _proc_dir="${_multitor_directory}/${_arg_socks}"
+  local _torrc_config="${_proc_dir}/torrc"
 
+  # We create a directory for the new tor process.
   CreateTorDirectory
 
-  echo "HashedControlPassword ${_pass_hash}" > "${_arg_tconfig}" && \
-  chmod 0400 "${_arg_tconfig}" && \
-  chown "${_arg_uname}:${_arg_uname}" "${_arg_tconfig}"
+  # We save the hash of the password to the configuration file.
+  echo "HashedControlPassword ${_pass_hash}" > "${_torrc_config}" && \
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "saved HashedControlPassword correctly" ||
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "not saved HashedControlPassword correctly"
 
-  sudo -u $_arg_uname tor -f "${_arg_tconfig}" \
+  chmod 0400 "${_torrc_config}" && \
+  chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" && \
+    _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "change permission and owner correctly" ||
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "not changed permission and owner correctly"
+
+  sudo -u $_arg_uname tor -f "${_torrc_config}" \
       --RunAsDaemon 1 \
       --CookieAuthentication 0 \
       --SocksPort $_arg_socks \
       --ControlPort $_arg_control \
       --PidFile "$_arg_socks.pid" \
-      --DataDirectory "${_arg_proc_dir}" \
-      > "$_log_stdout" 2>&1
+      --DataDirectory "${_proc_dir}" \
+      > "$_log_stdout" 2>&1 ; _kstate="$?"
+
+  if [[ $_kstate -eq 0 ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "create process: '${_arg_socks.pid}'"
+
+  else
+
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "no process was created"
+
+  fi
+
+  unset _kstate
 
   return $_STATE
 
@@ -155,15 +186,15 @@ function CreateTorDirectory() {
   local _FUNCTION_ID="CreateTorDirectory"
   local _STATE=0
 
-  mkdir -m 0700 "$_arg_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
+  mkdir -m 0700 "$_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "created tor process directory: ${_arg_proc_dir}"
+      "created tor process directory: ${_proc_dir}"
 
-    chown "${_arg_uname}" "${_arg_proc_dir}" && \
+    chown "${_arg_uname}" "${_proc_dir}" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "changed owner properly to: '${_arg_uname}'" || \
@@ -178,6 +209,8 @@ function CreateTorDirectory() {
       "not created tor process directory"
 
   fi
+
+  unset _kstate
 
   return $_STATE
 
