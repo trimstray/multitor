@@ -853,7 +853,7 @@ function __main__() {
 
       for _tpr in ${_tor_processes[@]} ; do
 
-        _dtorproc ${_tpr}
+        DestroyTorProcess ${_tpr}
 
       done
 

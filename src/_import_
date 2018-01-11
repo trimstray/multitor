@@ -12,21 +12,21 @@ export _cmdtime_state=0
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _dtorproc()
+# Function name: DestroyTorProcess()
 #
 # Description:
 #   It destroys currently running tor processes.
 #
 # Usage:
-#   _dtorproc "username" "id"
+#   DestroyTorProcess "username" "id"
 #
 # Examples:
-#   _dtorproc ${user_name} ${_tpr}"
+#   DestroyTorProcess ${user_name} ${_tpr}"
 #
 
-function _dtorproc() {
+function DestroyTorProcess() {
 
-  local _FUNCTION_ID="_dtorproc"
+  local _FUNCTION_ID="DestroyTorProcess"
   local _STATE=0
 
   local _arg_tproc="$1"
