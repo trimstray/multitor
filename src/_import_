@@ -313,9 +313,9 @@ function OutputGen() {
   local _FUNCTION_ID="OutputGen"
   local _STATE=0
 
-  # Check that socks_port_number and control_port_number are available.
-  CheckConn $_arg_socks ; local _tport_state_socks="$?"
-  CheckConn $_arg_control ; local _tport_state_control="$?"
+  # Check that _tor_proc_socks and _tor_proc_control are available.
+  CheckConn $_tor_proc_socks ; local _tport_state_socks="$?"
+  CheckConn $_tor_proc_control ; local _tport_state_control="$?"
 
   if [[ $_tport_state_socks -ne 0 ]] ; then
 
