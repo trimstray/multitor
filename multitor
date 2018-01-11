@@ -915,8 +915,20 @@ function __main__() {
       # In this case, we can search for a specific identifier (${socks_port_number}.pid)
       _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
-      # We get process information and display it on the screen.
-      GetTorProcess && OutputGen
+      if [[ -z "$_arg_tdir" ]] ; then
+
+        _sprintf "stop" "not found tor process"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "not found tor process"
+
+      else
+
+        # We get process information and display it on the screen.
+        GetTorProcess && OutputGen
+
+      fi
 
     fi
 
@@ -925,15 +937,27 @@ function __main__() {
     # In this case, we can search for a specific identifier (${socks_port_number}.pid)
     _arg_tdir=$(ps -ax | grep "multitor" | grep -v "grep" | grep "${socks_port_number}.pid")
 
-    GetTorProcess
+    if [[ -z "$_arg_tdir" ]] ; then
 
-    # The round brackets cause the _pass_in variable to be destroyed.
-    (read -sp 'Enter password: ' _pass_in
+      _sprintf "stop" "not found tor process"
 
-     echo 
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not found tor process"
 
-     printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
-     | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1)
+    else
+    
+      GetTorProcess
+
+      # The round brackets cause the _pass_in variable to be destroyed.
+      (read -sp 'Enter password: ' _pass_in
+
+      echo 
+
+      printf "AUTHENTICATE \"${_pass_in}\"\r\nSIGNAL NEWNYM\nQUIT\n" \
+      | nc 127.0.0.1 $_tor_proc_control >/dev/null 2>&1)
+
+    fi
 
   fi
 
