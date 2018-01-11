@@ -962,7 +962,8 @@ function __main__() {
     fi
 
     printf "A new identity was created correctly.\n"
-    printf "Tor socks port: \e[0;32m%d\e[m\n" "$_tor_proc_control"
+    printf "Tor socks port: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
+    printf "Tor control port: \e[0;32m%d\e[m\n" "$_tor_proc_control"
 
   fi
 
