@@ -959,7 +959,8 @@ function __main__() {
       # We get process information and display it on the screen.
       GetTorProcess
 
-      if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+      if [[ "$socks_port_number" -eq "all" ]] || \
+         [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
         OutputGen
 
@@ -1014,7 +1015,8 @@ function __main__() {
         # We get process information and display it on the screen.
         GetTorProcess
 
-        if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+        if [[ "$socks_port_number" -eq "all" ]] || \
+           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
           OutputGen
 
@@ -1051,7 +1053,8 @@ function __main__() {
         # We get process information and display it on the screen.
         GetTorProcess
 
-        if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+        if [[ "$socks_port_number" -eq "all" ]] || \
+           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
           OutputGen
 
@@ -1109,7 +1112,8 @@ function __main__() {
         # We get process information.
         GetTorProcess
 
-        if [[ "$socks_port_number" -ne "$_tor_proc_socks" ]] ; then
+        if [[ ! "$socks_port_number" -eq "all" ]] || \
+           [[ ! "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
           _sprintf "stop" "not found tor process"
 
