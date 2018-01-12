@@ -1001,7 +1001,7 @@ function __main__() {
       GetTorProcess
 
       # shellcheck disable=SC2154
-      if [[ "$socks_port_number" -eq "all" ]] || \
+      if [[ "$socks_port_number" == "all" ]] || \
          [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
         _tor_pid_status="true"
@@ -1062,7 +1062,7 @@ function __main__() {
           # We get process information and display it on the screen.
           GetTorProcess
 
-          if [[ "$socks_port_number" -eq "all" ]] || \
+          if [[ "$socks_port_number" == "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
             _tor_pid_status="true"
@@ -1101,7 +1101,7 @@ function __main__() {
           # We get process information and display it on the screen.
           GetTorProcess
 
-          if [[ "$socks_port_number" -eq "all" ]] || \
+          if [[ "$socks_port_number" == "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
             _tor_pid_status="true"
@@ -1176,7 +1176,7 @@ function __main__() {
           # We get process information.
           GetTorProcess
 
-          if [[ "$socks_port_number" -eq "all" ]] || \
+          if [[ "$socks_port_number" == "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
             _tor_pid_status="true"
