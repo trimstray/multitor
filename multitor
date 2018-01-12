@@ -830,6 +830,17 @@ function __main__() {
 
   fi
 
+  # Checking if the user exists.
+  if ! id "$user_name" >/dev/null 2>&1 ; then
+
+    _sprintf "stop" "incorrect user"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "incorrect user"
+
+  fi
+
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
