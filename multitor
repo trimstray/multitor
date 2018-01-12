@@ -907,9 +907,6 @@ function __main__() {
 
       done
 
-      # Removed all multitor process data directory.
-      find ${_multitor_directory}/* -delete >>"$_log_stdout" 2>&1
-
     else
 
       _logger "warn" \
@@ -917,6 +914,9 @@ function __main__() {
         "not found tor processes: ${_tpr}"
 
     fi
+
+    # Removed all multitor process data directory.
+    find ${_multitor_directory}/* -delete >>"$_log_stdout" 2>&1
 
     # Generate random password.
     # Does storing the password in this form is security issue?
