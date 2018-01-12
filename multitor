@@ -961,7 +961,7 @@ function __main__() {
 
           _logger "warn" \
             "${_FUNCTION_ID}()" \
-            "not found tor process"
+            "not found or unknown tor process"
 
         else
 
@@ -1186,11 +1186,9 @@ function __main__() {
 
         if [[ -z "$_tproc" ]] ; then
 
-          _sprintf "stop" "not found tor process"
-
-          _logger "stop" \
+          _logger "warn" \
             "${_FUNCTION_ID}()" \
-            "not found tor process"
+            "not found or unknown tor process"
 
         else
 
@@ -1266,12 +1264,11 @@ function __main__() {
 
         if [[ "$_tor_pid_status" == "false" ]] ; then
 
-          # This stop the script, maybe better will be 'warn'?
-          _sprintf "stop" "not found tor process"
-
-          _logger "stop" \
+          _logger "warn" \
             "${_FUNCTION_ID}()" \
-            "not found tor process"
+            "not found or unknown tor process"
+
+          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "unknown"
 
         else
 
