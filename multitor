@@ -820,16 +820,16 @@ function __main__() {
           "${_FUNCTION_ID}()" \
           "value is equal or grather then 65536"
 
+      elif [[ "$socks_port_number" -gt "$_ports_limit" ]] || \
+           [[ "$control_port_number" -gt "$_ports_limit" ]] ; then
+
+        _sprintf "stop" "too many set processes"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "too many set processes"
+
       fi
-
-    elif [[ "$socks_port_number" -gt "$_ports_limit" ]] || \
-         [[ "$control_port_number" -gt "$_ports_limit" ]] ; then
-
-      _sprintf "stop" "too many set processes"
-
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "too many set processes"
 
     fi
 
