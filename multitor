@@ -105,6 +105,7 @@ s_color="true"
 
 # Declaration of total execution time.
 time_tracking="false"
+# shellcheck disable=SC2034
 time_mode=0
 
 # Create multitor directory.
@@ -570,7 +571,8 @@ function _before_init() {
       "${_FUNCTION_ID}()" \
       "creating a instance directory: '$_multitor_directory'"
 
-    mkdir -m 0700 -p "$_multitor_directory" >>"$_log_stdout" 2>&1 ; _kstate="$?"
+    mkdir -m 0700 "$_multitor_directory" >>"$_log_stdout" 2>&1
+    _kstate="$?"
 
     if [[ $_kstate -eq 0 ]] ; then
 
@@ -578,13 +580,22 @@ function _before_init() {
         "${_FUNCTION_ID}()" \
         "created tor process directory: ${_multitor_directory}"
 
-      chown -R "${user_name}" "${_multitor_directory}" >>"$_log_stdout" 2>&1 && \
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "changed owner properly to: ${_multitor_directory}" || \
-      _logger "warn" \
-        "${_FUNCTION_ID}()" \
-        "the owner could not be changed"
+      chown -R "${user_name}" "${_multitor_directory}" >>"$_log_stdout" 2>&1
+      _kstate="$?"
+
+      if [[ $_kstate -eq 0 ]] ; then
+      
+        _logger "info" \
+          "${_FUNCTION_ID}()" \
+          "changed owner properly to: ${_multitor_directory}"
+
+      else
+
+        _logger "warn" \
+          "${_FUNCTION_ID}()" \
+          "the owner could not be changed"
+
+      fi
 
     else
 
@@ -762,6 +773,10 @@ function __main__() {
   local _arg_tdir=""
   local _tor_processes_done=0
   local _tor_processes_fail=0
+  local _tor_processes=0
+
+  local _pass_gen
+  local _pass_hash
 
   local _num='^[0-9]+$'
 
@@ -772,8 +787,8 @@ function __main__() {
      [[ "$control_port_number" =~ $_num ]] || \
      [[ "$control_port_number" == "all" ]] ; then
 
-    if [[ "$init_state" -eq 1 ]] && \
-       [[ "$init_number" -le 0 ]] ; then
+    # shellcheck disable=SC2154
+    if [[ "$init_state" -eq 1 ]] && [[ "$init_number" -le 0 ]] ; then
 
       _sprintf "stop" "init_number is less or equal 0"
 
@@ -782,9 +797,9 @@ function __main__() {
           "init_number is less then or equal 0"
 
     elif [[ "$socks_port_state" -eq 1 ]] && \
-         ( [[ "$socks_port_number" -le 1023 ]] || \
+         [[ "$socks_port_number" -le 1023 ]] || \
          [[ "$control_port_number" -le 1023 ]] && \
-         [[ "$control_id_state" -eq 1 ]] ) ; then
+         [[ "$control_id_state" -eq 1 ]] ; then
 
       _sprintf "stop" "value is less then or equal 1023"
 
@@ -793,9 +808,9 @@ function __main__() {
           "value is less or equal 1023"
 
     elif [[ "$socks_port_state" -eq 1 ]] && \
-         ( [[ "$socks_port_number" -le 65536 ]] || \
+         [[ "$socks_port_number" -le 65536 ]] || \
          [[ "$control_port_number" -le 65536 ]] && \
-         [[ "$control_id_state" -eq 1 ]] ) ; then
+         [[ "$control_id_state" -eq 1 ]] ; then
 
       _sprintf "stop" "value is equal or grather then 65536"
 
@@ -842,7 +857,7 @@ function __main__() {
   #   - variables from the additional configuration files
   for i in "${_multitor_args[@]}" ; do
 
-    _i="" ; eval _i='$'$i
+    _i="" ; eval _i='$'"$i"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
@@ -863,18 +878,19 @@ function __main__() {
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
-    local _tor_processes=$(pidof tor)
+    _tor_processes=$(pidof tor)
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
-      for _tpr in ${_tor_processes[@]} ; do
+      for _tpr in "${_tor_processes[@]}" ; do
 
         # In this case, we can search for a specific identifier (${_tpr}).
-        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
+        # shellcheck disable=SC2009
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
         if [[ ! -z "$_arg_tdir" ]] ; then
 
-          DestroyTorProcess ${_tpr}
+          DestroyTorProcess "${_tpr}"
 
         fi
 
@@ -893,10 +909,12 @@ function __main__() {
 
     # Generate random password.
     # Does storing the password in this form is security issue?
-    local _pass_gen=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
-    local _pass_hash=$(sudo -u $user_name tor --hash-password "${_pass_gen}" | grep "16:")
+    # shellcheck disable=SC2034
+    _pass_gen=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+    # shellcheck disable=SC2034
+    _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" | grep "16:")
 
-    for i in $(seq 0 $(($init_number - 1))) ; do
+    for i in $(seq 0 $((init_number - 1))) ; do
 
       echo
 
@@ -904,16 +922,17 @@ function __main__() {
         "${_FUNCTION_ID}()" \
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
 
-      CreateTorProcess ${user_name} ${socks_port_number} ${control_port_number}
+      CreateTorProcess "${user_name}" "${socks_port_number}" "${control_port_number}"
 
       # In this case, we can search for a specific identifier (${socks_port_number}).
-      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $socks_port_number)
+      # shellcheck disable=SC2009
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
 
       # We get process information and display it on the screen.
       GetTorProcess && OutputGen
 
-      socks_port_number=$(($socks_port_number + 1))
-      control_port_number=$(($control_port_number + 1))
+      socks_port_number=$((socks_port_number + 1))
+      control_port_number=$((control_port_number + 1))
 
     done
 
@@ -932,7 +951,8 @@ function __main__() {
       for _tpr in $(pidof tor) ; do
 
         # In this case, we can search for a specific identifier (${_tpr}).
-        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
+        # shellcheck disable=SC2009
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
         echo
 
@@ -944,7 +964,8 @@ function __main__() {
     else
 
       # In this case, we can search for a specific identifier (${socks_port_number}).
-      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $socks_port_number)
+      # shellcheck disable=SC2009
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
 
       if [[ -z "$_arg_tdir" ]] ; then
 
@@ -972,7 +993,7 @@ function __main__() {
     _output_tparams=()
 
     # Password required at this stage.
-    read -sp "Enter password: " _pass_in
+    read -rsp "Enter password: " _pass_in
 
     if [[ "$socks_port_number" == "all" ]] ; then
 
@@ -984,10 +1005,11 @@ function __main__() {
 
     fi
 
-    for _tpr in ${_tor_proc[@]} ; do
+    for _tpr in "${_tor_proc[@]}" ; do
 
       # In this case, we can search for a specific identifier (${_tpr}).
-      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep $_tpr)
+      # shellcheck disable=SC2009
+      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
       if [[ -z "$_arg_tdir" ]] ; then
 
@@ -1002,14 +1024,15 @@ function __main__() {
         # We get process information.
         GetTorProcess
 
+        # shellcheck disable=SC2154
         _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
-        | nc 127.0.0.1 $_tor_proc_control)
+        | nc 127.0.0.1 "$_tor_proc_control")
 
-        if $(echo "$_newnym" | grep -qi "250 closing connection") ; then
+        if echo "$_newnym" | grep -qi "250 closing connection" ; then
 
           _identity_state="true"
 
-        elif $(echo "$_newnym" | grep -q "Authentication failed") ; then
+        elif echo "$_newnym" | grep -q "Authentication failed" ; then
 
           _identity_state="false"
 
@@ -1029,9 +1052,13 @@ function __main__() {
 
     for i in "${_output_tparams[@]}" ; do
 
+      # shellcheck disable=SC2034
       _key_id=$(echo "$i" | awk -v FS="(:|:)" '{print $1}')
+      # shellcheck disable=SC2034
       _key_socks=$(echo "$i" | awk -v FS="(:|:)" '{print $2}')
+      # shellcheck disable=SC2034
       _key_control=$(echo "$i" | awk -v FS="(:|:)" '{print $3}')
+      # shellcheck disable=SC2034
       _key_state=$(echo "$i" | awk -v FS="(:|:)" '{print $4}')
 
       if [[ "$_key_state" == "true" ]] ; then
