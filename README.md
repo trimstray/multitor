@@ -7,7 +7,7 @@ Testing release: **testing**
 
 ## Description
 
-A tool that allows you to create multiple **Tor** instances.
+A tool that allows you to create multiple **Tor** instances. In addition, it allows you to view previously started **Tor** processes and create a new identity for each of them.
 
 This is fork **Multi-TOR** project written by *Jai Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
 
@@ -45,6 +45,8 @@ Provides the following options:
 
 ## Use example
 
+### Creating processes
+
 Then an example of starting the tool:
 
 ``````
@@ -67,6 +69,8 @@ Specifies the port number of the **Tor** process control. Increased by 1 for eac
 
 - `--control-port 9900`
 
+### Reviewing processes
+
 Examples of obtaining information about a given **Tor** process created by **multitor**:
 
 ```
@@ -82,6 +86,8 @@ We want to get information about a given **Tor** process:
 Specifies the port number for communication. Allows you to find the process after this port number:
 
 - `--socks-port 9000`
+
+### New Tor identity
 
 If there is a need to create a new identity:
 
@@ -99,9 +105,15 @@ Specifies the port number for communication. Allows you to find the process afte
 
 - `--socks-port 9000`
 
+### Output example
+
 So if We created 2 **Tor** processes by **multitor** example output will be given:
 
 ![multitor_output](doc/img/multitor_output.png)
+
+## Password authentication
+
+**Multitor** uses password for authorization on the control port. The password is generated automatically and contains 18 random characters - it is displayed in the final report after the creation of new processes.
 
 ## Limitations
 
