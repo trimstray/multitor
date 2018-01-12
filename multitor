@@ -609,13 +609,17 @@ function _before_init() {
 
     _multitor_directory_owner=$(stat -c %U "$_multitor_directory")
 
-    if [[ "$_multitor_directory_owner" != "$user_name" ]]  ; then
+    if [[ "$init_state" -eq 1 ]] ; then
 
-      _sprintf "stop" "bad multitor directory owner"
+      if [[ "$_multitor_directory_owner" != "$user_name" ]]  ; then
 
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "bad multitor directory owner"
+        _sprintf "stop" "bad multitor directory owner"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "bad multitor directory owner"
+
+      fi
 
     fi
 
