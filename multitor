@@ -998,88 +998,102 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    if [[ "$socks_port_number" == "all" ]] ; then
+    _tor_processes=($(pidof tor))
 
-      for _tpr in $(pidof tor) ; do
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
-        # In this case, we can search for a specific identifier (${_tpr}).
-        # shellcheck disable=SC2009
-        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+      if [[ "$socks_port_number" == "all" ]] ; then
 
-        _proc_socks_num+=($(echo "$_arg_tdir" | awk '{print $13}'))
+        for _tpr in "${_tor_processes[@]}" ; do
 
-      done
+          # In this case, we can search for a specific identifier (${_tpr}).
+          # shellcheck disable=SC2009
+          _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-      IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
-      unset IFS
+          _proc_socks_num+=($(echo "$_arg_tdir" | awk '{print $13}'))
 
-      for _tpr in "${_proc_socks_num_sorted[@]}" ; do
+        done
 
-        # In this case, we can search for a specific identifier (${_tpr}).
-        # shellcheck disable=SC2009
-        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+        IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
+        unset IFS
 
-        echo
+        for _tpr in "${_proc_socks_num_sorted[@]}" ; do
 
-        # We get process information and display it on the screen.
-        GetTorProcess
+          # In this case, we can search for a specific identifier (${_tpr}).
+          # shellcheck disable=SC2009
+          _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-        if [[ "$socks_port_number" -eq "all" ]] || \
-           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+          echo
 
-          _pid_status="true"
+          # We get process information and display it on the screen.
+          GetTorProcess
 
-          OutputGen
+          if [[ "$socks_port_number" -eq "all" ]] || \
+             [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-        else
+            _pid_status="true"
 
-          _pid_status="false"
+            OutputGen
 
-          printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-          printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+          else
 
-        fi
+            _pid_status="false"
 
-      done
+            printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
 
-    else
+          fi
 
-      # In this case, we can search for a specific identifier (${socks_port_number}).
-      # shellcheck disable=SC2009
-      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
-
-      if [[ -z "$_arg_tdir" ]] ; then
-
-        _sprintf "stop" "not found tor process"
-
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "not found tor process"
+        done
 
       else
 
-        echo
+        # In this case, we can search for a specific identifier (${socks_port_number}).
+        # shellcheck disable=SC2009
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
 
-        # We get process information and display it on the screen.
-        GetTorProcess
+        if [[ -z "$_arg_tdir" ]] ; then
 
-        if [[ "$socks_port_number" -eq "all" ]] || \
-           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+          _sprintf "stop" "not found tor process"
 
-          _pid_status="true"
-
-          OutputGen
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
 
         else
 
-          _pid_status="false"
+          echo
 
-          printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-          printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+          # We get process information and display it on the screen.
+          GetTorProcess
+
+          if [[ "$socks_port_number" -eq "all" ]] || \
+             [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+            _pid_status="true"
+
+            OutputGen
+
+          else
+
+            _pid_status="false"
+
+            printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+
+          fi
 
         fi
 
       fi
+
+    else
+
+      _sprintf "stop" "not found tor process"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not found tor process"
 
     fi
 
@@ -1096,63 +1110,75 @@ function __main__() {
 
     if [[ "$socks_port_number" == "all" ]] ; then
 
-      _tor_proc=($(pidof tor))
+      _tor_processes=($(pidof tor))
 
     else
 
-      _tor_proc=($socks_port_number)
+      _tor_processes=($socks_port_number)
 
     fi
 
-    for _tpr in "${_tor_proc[@]}" ; do
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
-      # In this case, we can search for a specific identifier (${_tpr}).
-      # shellcheck disable=SC2009
-      _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+      for _tpr in "${_tor_processes[@]}" ; do
 
-      if [[ -z "$_arg_tdir" ]] ; then
+        # In this case, we can search for a specific identifier (${_tpr}).
+        # shellcheck disable=SC2009
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-        _sprintf "stop" "not found tor process"
+        if [[ -z "$_arg_tdir" ]] ; then
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "not found tor process"
+          _sprintf "stop" "not found tor process"
 
-      else
-
-        # We get process information.
-        GetTorProcess
-
-        if [[ "$socks_port_number" -eq "all" ]] || \
-           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
-
-          _pid_status="true"
-
-        fi
-
-        # shellcheck disable=SC2154
-        _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
-        | nc 127.0.0.1 "$_tor_proc_control")
-
-        if echo "$_newnym" | grep -qi "250 closing connection" ; then
-
-          _identity_state="true"
-
-        elif echo "$_newnym" | grep -q "Authentication failed" ; then
-
-          _identity_state="false"
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
 
         else
 
-          _identity_state="false"
+          # We get process information.
+          GetTorProcess
+
+          if [[ "$socks_port_number" -eq "all" ]] || \
+             [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+            _pid_status="true"
+
+          fi
+
+          # shellcheck disable=SC2154
+          _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
+          | nc 127.0.0.1 "$_tor_proc_control")
+
+          if echo "$_newnym" | grep -qi "250 closing connection" ; then
+
+            _identity_state="true"
+
+          elif echo "$_newnym" | grep -q "Authentication failed" ; then
+
+            _identity_state="false"
+
+          else
+
+            _identity_state="false"
+
+          fi
+
+          _output_tparams+=("$_tor_proc_id":"$_tor_proc_socks":"$_tor_proc_control":"$_identity_state")
 
         fi
 
-        _output_tparams+=("$_tor_proc_id":"$_tor_proc_socks":"$_tor_proc_control":"$_identity_state")
+      done
 
-      fi
+    else
 
-    done
+      _sprintf "stop" "not found tor process"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not found tor process"
+
+    fi
 
     unset _pass_in
 
