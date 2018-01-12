@@ -981,6 +981,7 @@ function __main__() {
       # We get process information and display it on the screen.
       GetTorProcess
 
+      # shellcheck disable=SC2154
       if [[ "$socks_port_number" -eq "all" ]] || \
          [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
