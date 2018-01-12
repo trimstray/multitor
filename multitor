@@ -954,6 +954,19 @@ function __main__() {
         # shellcheck disable=SC2009
         _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
+        _proc_socks_num+=($(echo "$_arg_tdir" | awk '{print $13}'))
+
+      done
+
+      IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
+      unset IFS
+
+      for _tpr in "${_proc_socks_num_sorted[@]}" ; do
+
+        # In this case, we can search for a specific identifier (${_tpr}).
+        # shellcheck disable=SC2009
+        _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
         echo
 
         # We get process information and display it on the screen.
