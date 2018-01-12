@@ -839,13 +839,17 @@ function __main__() {
   fi
 
   # Checking if the user exists.
-  if ! id "$user_name" >/dev/null 2>&1 ; then
+  if [[ "$user_state" -eq 1 ]] ; then
 
-    _sprintf "stop" "incorrect user"
+    if ! id "$user_name" >/dev/null 2>&1 ; then
 
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "incorrect user"
+      _sprintf "stop" "incorrect user"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "incorrect user"
+
+    fi
 
   fi
 
