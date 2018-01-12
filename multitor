@@ -681,7 +681,7 @@ function __main__() {
 
         shift ;;
 
-      --init)
+      -i|--init)
 
         export init_state=1
 
@@ -689,13 +689,13 @@ function __main__() {
 
         shift 2 ;;
 
-      --show-id)
+      -s|--show-id)
 
         export show_id_state=1
 
         shift ;;
 
-      --new-id)
+      -n|--new-id)
 
         export new_id_state=1
 
