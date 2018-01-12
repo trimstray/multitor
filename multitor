@@ -957,7 +957,15 @@ function __main__() {
         # shellcheck disable=SC2009
         _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-        if [[ ! -z "$_arg_tdir" ]] ; then
+        if [[ -z "$_arg_tdir" ]] ; then
+
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        else
 
           DestroyTorProcess "${_tpr}"
 
