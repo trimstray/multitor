@@ -799,23 +799,28 @@ function __main__() {
         "${_FUNCTION_ID}()" \
         "init_number is less then or equal 0"
 
-    elif [[ "$socks_port_state" -eq 1 && "$socks_port_number" -le 1023 ]] || \
+    elif [[ "$socks_port_number" -ne "all" ]] || \
+         [[ "$control_port_number" -ne "all" ]] ; then
+
+      if [[ "$socks_port_state" -eq 1 && "$socks_port_number" -le 1023 ]] || \
          [[ "$control_id_state" -eq 1 && "$control_port_number" -le 1023 ]] ; then
 
-      _sprintf "stop" "value is less then or equal 1023"
+        _sprintf "stop" "value is less then or equal 1023"
 
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "value is less or equal 1023"
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is less or equal 1023"
 
-    elif [[ "$socks_port_state" -eq 1 && "$socks_port_number" -ge 65536 ]] || \
-         [[ "$control_id_state" -eq 1 && "$control_port_number" -ge 65536 ]] ; then
+      elif [[ "$socks_port_state" -eq 1 && "$socks_port_number" -ge 65536 ]] || \
+           [[ "$control_id_state" -eq 1 && "$control_port_number" -ge 65536 ]] ; then
 
-      _sprintf "stop" "value is equal or grather then 65536"
+        _sprintf "stop" "value is equal or grather then 65536"
 
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "value is equal or grather then 65536"
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is equal or grather then 65536"
+
+      fi
 
     elif [[ "$socks_port_number" -gt "$_ports_limit" ]] || \
          [[ "$control_port_number" -gt "$_ports_limit" ]] ; then
