@@ -307,6 +307,7 @@ function OutputGen() {
   fi
 
   printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+  printf "        \e[1;30mstatus\e[m: \e[1;32m%s\e[m\n" "$_pid_status"
   printf "    \e[1;30msocks_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_socks"
   printf "  \e[1;30msocks_status\e[m: \e[0;33m%s\e[m\n" "$_tport_status_socks"
   printf "  \e[1;30mcontrol_port\e[m: \e[0;32m%d\e[m\n" "$_tor_proc_control"

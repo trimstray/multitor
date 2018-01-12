@@ -962,15 +962,16 @@ function __main__() {
       if [[ "$socks_port_number" -eq "all" ]] || \
          [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
+        _pid_status="true"
+
         OutputGen
 
       else
 
-        _sprintf "stop" "not found tor process"
+        _pid_status="false"
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "not found tor process"
+        printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+        printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
 
       fi
 
@@ -1018,15 +1019,16 @@ function __main__() {
         if [[ "$socks_port_number" -eq "all" ]] || \
            [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
+          _pid_status="true"
+
           OutputGen
 
         else
 
-          _sprintf "stop" "not found tor process"
+          _pid_status="false"
 
-          _logger "stop" \
-            "${_FUNCTION_ID}()" \
-            "not found tor process"
+          printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+          printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
 
         fi
 
@@ -1056,15 +1058,16 @@ function __main__() {
         if [[ "$socks_port_number" -eq "all" ]] || \
            [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
+          _pid_status="true"
+
           OutputGen
 
         else
 
-          _sprintf "stop" "not found tor process"
+          _pid_status="false"
 
-          _logger "stop" \
-            "${_FUNCTION_ID}()" \
-            "not found tor process"
+          printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+          printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
 
         fi
 
@@ -1112,14 +1115,10 @@ function __main__() {
         # We get process information.
         GetTorProcess
 
-        if [[ ! "$socks_port_number" -eq "all" ]] || \
-           [[ ! "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+        if [[ "$socks_port_number" -eq "all" ]] || \
+           [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-          _sprintf "stop" "not found tor process"
-
-          _logger "stop" \
-            "${_FUNCTION_ID}()" \
-            "not found tor process"
+          _pid_status="true"
 
         fi
 
