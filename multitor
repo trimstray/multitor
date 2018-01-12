@@ -959,9 +959,7 @@ function __main__() {
 
         if [[ -z "$_tproc" ]] ; then
 
-          _sprintf "stop" "not found tor process"
-
-          _logger "stop" \
+          _logger "warn" \
             "${_FUNCTION_ID}()" \
             "not found tor process"
 
