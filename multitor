@@ -878,7 +878,7 @@ function __main__() {
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
-    _tor_processes=$(pidof tor)
+    _tor_processes=($(pidof tor))
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
