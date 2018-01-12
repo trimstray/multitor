@@ -1148,11 +1148,6 @@ function __main__() {
 
     _output_tparams=()
 
-    # Password required at this stage.
-    read -rsp "Enter password: " _pass_in
-
-    echo
-
     if [[ "$socks_port_number" == "all" ]] ; then
 
       _tor_processes=($(pidof tor))
@@ -1162,6 +1157,11 @@ function __main__() {
       _tor_processes=($socks_port_number)
 
     fi
+
+    # Password required at this stage.
+    read -rsp "Enter password: " _pass_in
+
+    echo
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
