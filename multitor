@@ -802,8 +802,8 @@ function __main__() {
     elif [[ "$socks_port_number" -ne "all" ]] || \
          [[ "$control_port_number" -ne "all" ]] ; then
 
-      if [[ "$socks_port_state" -eq 1 && "$socks_port_number" -le 1023 ]] || \
-         [[ "$control_id_state" -eq 1 && "$control_port_number" -le 1023 ]] ; then
+      if [[ "$socks_port_number" -le 1023 ]] || \
+         [[ "$control_port_number" -le 1023 ]] ; then
 
         _sprintf "stop" "value is less then or equal 1023"
 
@@ -811,8 +811,8 @@ function __main__() {
           "${_FUNCTION_ID}()" \
           "value is less or equal 1023"
 
-      elif [[ "$socks_port_state" -eq 1 && "$socks_port_number" -ge 65536 ]] || \
-           [[ "$control_id_state" -eq 1 && "$control_port_number" -ge 65536 ]] ; then
+      elif [[ "$socks_port_number" -ge 65536 ]] || \
+           [[ "$control_port_number" -ge 65536 ]] ; then
 
         _sprintf "stop" "value is equal or grather then 65536"
 
@@ -828,6 +828,14 @@ function __main__() {
         _logger "stop" \
           "${_FUNCTION_ID}()" \
           "too many set processes"
+
+      elif [[ "$socks_port_number" -eq "$control_port_number" ]] ; then
+
+        _sprintf "stop" "value mismatch"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value mismatch"
 
       fi
 
