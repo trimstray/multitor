@@ -980,7 +980,7 @@ function __main__() {
 
     done
 
-    printf "\n     Max processes: \e[0;39m%d\e[m\n" "$init_number"
+    printf "\n   Set processes: \e[0;39m%d\e[m\n" "$init_number"
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
     printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
     printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
@@ -1161,11 +1161,11 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "OK"
 
       else
 
-        printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
+        printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "FAIL"
 
       fi
 
