@@ -1008,6 +1008,8 @@ function __main__() {
     # Password required at this stage.
     read -rsp "Enter password: " _pass_in
 
+    echo
+
     if [[ "$socks_port_number" == "all" ]] ; then
 
       _tor_proc=($(pidof tor))
@@ -1076,17 +1078,15 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m" "$_key_id" "$_key_state"
+        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "$_key_state"
 
       else
 
-        printf "\nNew identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m" "$_key_id" "$_key_state"
+        printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "$_key_state"
 
       fi
 
     done
-
-    echo
 
   fi
 
