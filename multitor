@@ -569,7 +569,7 @@ function _before_init() {
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "creating a instance directory: '$_multitor_directory'"
+      "creating a multitor directory: '$_multitor_directory'"
 
     mkdir -m 0700 "$_multitor_directory" >>"$_log_stdout" 2>&1
     _kstate="$?"
@@ -605,7 +605,22 @@ function _before_init() {
 
     fi
 
+  else
+
+    _multitor_directory_owner=$(stat -c %U "$_multitor_directory")
+
+    if [[ "$_multitor_directory_owner" != "$user_name" ]]  ; then
+
+      _sprintf "stop" "bad multitor directory owner"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "bad multitor directory owner"
+
+    fi
+
   fi
+
   return $_STATE
 
 }
@@ -716,7 +731,7 @@ function __main__() {
 
         export user_state=1
 
-        export user_name=${2:-"1"}
+        export user_name=${2:-}
 
         shift 2 ;;
 
@@ -985,16 +1000,16 @@ function __main__() {
       if [[ "$socks_port_number" -eq "all" ]] || \
          [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-        _pid_status="true"
+        _tor_pid_status="true"
 
         OutputGen
 
       else
 
-        _pid_status="false"
+        _tor_pid_status="false"
 
-        printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-        printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+        printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
+        printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
 
       fi
 
@@ -1046,16 +1061,16 @@ function __main__() {
           if [[ "$socks_port_number" -eq "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-            _pid_status="true"
+            _tor_pid_status="true"
 
             OutputGen
 
           else
 
-            _pid_status="false"
+            _tor_pid_status="false"
 
-            printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+            printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
+            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
 
           fi
 
@@ -1085,13 +1100,13 @@ function __main__() {
           if [[ "$socks_port_number" -eq "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-            _pid_status="true"
+            _tor_pid_status="true"
 
             OutputGen
 
           else
 
-            _pid_status="false"
+            _tor_pid_status="false"
 
             _sprintf "stop" "not found tor process"
 
@@ -1160,11 +1175,11 @@ function __main__() {
           if [[ "$socks_port_number" -eq "all" ]] || \
              [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
-            _pid_status="true"
+            _tor_pid_status="true"
 
           else
 
-            _pid_status="false"
+            _tor_pid_status="false"
 
           fi
 
@@ -1217,11 +1232,11 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "OK"
+        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "regenerated"
 
       else
 
-        if [[ "$_pid_status" == "false" ]] ; then
+        if [[ "$_tor_pid_status" == "false" ]] ; then
 
           # This stop the script, maybe better will be 'warn'?
           _sprintf "stop" "not found tor process"
@@ -1232,7 +1247,7 @@ function __main__() {
 
         else
 
-          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "FAIL"
+          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "failed"
 
         fi
 
