@@ -957,7 +957,21 @@ function __main__() {
       _arg_tdir=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
 
       # We get process information and display it on the screen.
-      GetTorProcess && OutputGen
+      GetTorProcess
+
+      if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+        OutputGen
+
+      else
+
+        _sprintf "stop" "not found tor process"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "not found tor process"
+
+      fi
 
       socks_port_number=$((socks_port_number + 1))
       control_port_number=$((control_port_number + 1))
@@ -998,7 +1012,21 @@ function __main__() {
         echo
 
         # We get process information and display it on the screen.
-        GetTorProcess && OutputGen
+        GetTorProcess
+
+        if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+          OutputGen
+
+        else
+
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        fi
 
       done
 
@@ -1021,7 +1049,21 @@ function __main__() {
         echo
 
         # We get process information and display it on the screen.
-        GetTorProcess && OutputGen
+        GetTorProcess
+
+        if [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+          OutputGen
+
+        else
+
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        fi
 
       fi
 
@@ -1066,6 +1108,16 @@ function __main__() {
 
         # We get process information.
         GetTorProcess
+
+        if [[ "$socks_port_number" -ne "$_tor_proc_socks" ]] ; then
+
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        fi
 
         # shellcheck disable=SC2154
         _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
