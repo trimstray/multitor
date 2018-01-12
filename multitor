@@ -1092,8 +1092,11 @@ function __main__() {
 
             _pid_status="false"
 
-            printf "    \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
-            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_pid_status"
+            _sprintf "stop" "not found tor process"
+
+            _logger "stop" \
+              "${_FUNCTION_ID}()" \
+              "not found tor process"
 
           fi
 
@@ -1158,6 +1161,10 @@ function __main__() {
 
             _pid_status="true"
 
+          else
+
+            _pid_status="false"
+
           fi
 
           # shellcheck disable=SC2154
@@ -1213,7 +1220,20 @@ function __main__() {
 
       else
 
-        printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "FAIL"
+        if [[ "$_pid_status" == "false" ]] ; then
+
+          # This stop the script, maybe better will be 'warn'?
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        else
+
+          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "FAIL"
+
+        fi
 
       fi
 
