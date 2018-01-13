@@ -22,7 +22,7 @@ Provides the following options:
     multitor <option|long-option>
 
   Examples:
-    multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900
+    multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900
     multitor --show-id --socks-port 9000
 
   Options:

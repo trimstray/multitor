@@ -509,7 +509,8 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name --help
+    $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900
+    $_init_name --show-id --socks-port 9000
 
   Options:
         --help                      show this message
