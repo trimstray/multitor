@@ -9,9 +9,10 @@ Testing release: **testing**
 
 A tool that allows you to create multiple **Tor** instances. In addition, it allows you to view previously started **Tor** processes and create a new identity for each of them.
 
-This is fork **Multi-TOR** project written by *Jai Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
-
-Original source is (*Sebastian Wain* project): [http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
+> The **multitor** has been completely rewritten on the basis of:
+>
+> - fork **Multi-TOR** project written by *Jai Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
+> - original source is (*Sebastian Wain* project): [http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
 ## Parameters
 
