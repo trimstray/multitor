@@ -1,9 +1,11 @@
 # multitor
 
-## Version
+## Releases
 
-Stable release: **v1.0.0**  
-Testing release: **testing**
+| STABLE RELEASE                           | TESTING RELEASE                          |
+| ---------------------------------------- | ---------------------------------------- |
+| [![](https://img.shields.io/badge/Branch-master-brightgreen.svg)]() | [![](https://img.shields.io/badge/Branch-testing-red.svg)]() |
+| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() |                                          |
 
 ## Description
 
@@ -116,20 +118,44 @@ So if We created 2 **Tor** processes by **multitor** example output will be give
 
 **Multitor** uses password for authorization on the control port. The password is generated automatically and contains 18 random characters - it is displayed in the final report after the creation of new processes.
 
+## Logging
+
+After running the script, the `log/` directory is created and in it the following files with logs:
+
+- `<script_name>.<date>.log` - all `_logger()` function calls are saved in it
+- `stdout.log` - a standard output and errors from the `_init_cmd()` and other function are written in it
+
+## Important
+
+If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version.
+
 ## Limitations
 
 - each **Tor** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Project architecture
 
-    |-- multitor                # main script (init)
-    |-- LICENSE.md              # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
-    |-- README.md               # this simple documentation
-    |-- .gitignore              # ignore untracked files
-    |-- .gitkeep                # track empty directory
-    |-- src                     # includes external project files
-        |-- _import_            # external variables and functions
-    |-- doc                     # includes documentation, images and manuals
+    |-- LICENSE.md                 # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
+    |-- README.md                  # this simple documentation
+    |-- CONTRIBUTING.md            # principles of project support
+    |-- .gitignore                 # ignore untracked files
+    |-- setup.sh                   # install multitor on the system
+    |-- bin
+        |-- multitor               # main script (init)
+    |-- doc                        # includes documentation, images and manuals
+        |-- man8
+            |-- multitor           # man page for multitor
+    |-- lib                        # libraries, external functions
+    |-- log                        # contains logs, created after init
+    |-- src                        # includes external project files
+        |-- helpers                # contains core functions
+        |-- import                 # appends the contents of the lib directory
+        |-- __init__               # contains the __main__ function
+        |-- settings               # contains multitor settings
 
 ## License
 
