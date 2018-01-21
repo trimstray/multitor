@@ -1,0 +1,40 @@
+.\" Manpage for multitor.
+.\" Contact contact@nslab.at.
+.TH man 8 "21.01.2018" "1.0.0" "multitor man page"
+.SH NAME
+multitor \- create multiple Tor instances
+.SH SYNOPSIS
+multitor <option|long-option>
+.SH DESCRIPTION
+A tool that allows you to create multiple Tor instances. In addition, it allows you to view previously started Tor processes and create a new identity for each of them.
+.SH OPTIONS
+--help
+        show this message
+
+--debug
+        displays information on the screen (debug mode)
+
+-i, --init <num>
+        init new tor processes
+
+-s, --show-id
+        show specific tor process id
+
+-n, --new-id
+        regenerate tor circuit
+
+-u, --user <string>
+        set the user (only with -i|--init)
+
+--socks-port <port_num|all>
+        set socks port number
+
+--control-port <port_num>
+        set control port number
+
+.SH SEE ALSO
+https://github.com/trimstray/multitor
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+trimstray (contact@nslab.at)
