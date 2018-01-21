@@ -1,0 +1,803 @@
+# shellcheck shell=bash
+
+################################################################################
+######################### Main function (script init) ##########################
+################################################################################
+
+function __main__() {
+
+  local _FUNCTION_ID="__main__"
+  local _STATE="0"
+
+  # The tables that store call parameters.
+  __init_params=()
+  __script_params=("$@")
+
+  # Store the name of the script and directory call.
+  readonly _init_name="$(basename "$0")"
+  readonly _init_directory="$(dirname "$(readlink -f "$0")")"
+
+  # Set root directory.
+  readonly _rel_path="${_init_directory}/.."
+
+  # Directory structure.
+  readonly _src_directory="${_rel_path}/src"
+  readonly _lib_directory="${_rel_path}/lib"
+
+  # Stores the current date.
+  readonly _cdate=$(date +%Y%m%d)
+
+  # Variables related to the log file. Divided into three parts due
+  # to the better possibility of manipulation for the user.
+  readonly _log_directory="${_rel_path}/log"
+  readonly _log_file="${_init_name}.${_cdate}.log"
+  readonly _log_stdout="${_log_directory}/stdout.log"
+  readonly _log_path="${_log_directory}/${_log_file}"
+
+  # Path to import file.
+  readonly _import_path="${_src_directory}/import"
+
+  # External configuration file (-c|--config script param).
+  config=""
+  load_state="0"
+
+  # Declaration of output variables (--debug and --verbose params).
+  stdout_mode=""
+  printf_mode=""
+  # Enable/disable output colors.
+  # shellcheck disable=SC2034
+  s_color="true"
+
+  # Declaration of total execution time.
+  time_tracking="false"
+  time_mode="0"
+  export _cmdtime_state="0"
+
+  # Create multitor directory.
+  readonly _multitor_directory="/var/lib/multitor"
+
+  # We place here used commands at script runtime, as strings to anything
+  # unnecessarily run.
+  readonly commands=(basename dirname stat ps date grep cut sed awk chown \
+                     chmod mkdir pidof tor sudo nc kill)
+
+  # If you intend to specify the full path to the command we do it like:
+  # readonly exec_gzip="/bin/gzip"
+
+  # Stores the names of the missing commands.
+  missing_hash=()
+  missing_counter="0"
+
+  for i in "${commands[@]}" ; do
+
+    if [[ ! -z "$i" ]] ; then
+
+      hash "$i" >/dev/null 2>&1 ; state="$?"
+
+      # If the command was not found put it in the array
+      if [[ "$state" -ne 0 ]] ; then
+
+        missing_hash+=("$i")
+        ((missing_counter++))
+
+      fi
+
+    fi
+
+  done
+
+  # It is a good idea to terminate the script at this stage
+  # with information for the user to fix the errors if at least one
+  # of the required commands in the commands array is not found.
+  if [[ "$missing_counter" -gt 0 ]] ; then
+
+    printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
+    _exit_ "1"
+
+  fi
+
+  if [[ "$time_tracking" == "true" ]] ; then
+    _begtime=$(date +%s) ; fi
+
+  _logger "init" \
+    "init '${_init_name}' in '${_init_directory}'" && \
+  _logger "info" \
+    "__init_params[] = (${__init_params[*]})," \
+    "__script_params[] = (${__script_params[*]})"
+
+  # Include import file.
+  _load "null" "$_import_path"
+
+  # Specifies the call parameters of the script, the exact description
+  # can be found in _help_ and file README.md.
+  local _short_opt="c:"
+  local _long_opt="help,debug,verbose,time,config:"
+
+  _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
+                   -n "${_init_name}" -- "${__script_params[@]}")
+
+  # With this structure, in the case of problems with the parameters placed
+  # in the _GETOPT_PARAMS variable we finish the script. Keep this in mind
+  # because it has some consequences - the __main __() function will not be
+  # executed.
+
+  # Ends an error if the parameter or its argument is not valid.
+  _getopt_state="$?"
+  if [ "$_getopt_state" != 0 ] ; then
+    _exit_ "1"
+  # Ends if no parameter is specified.
+  elif [[ "${#__script_params[@]}" -eq 0 ]] ; then
+    _exit_ "0"
+  fi
+
+  eval set -- "$_GETOPT_PARAMS"
+  while true ; do
+
+    case $1 in
+
+      --help)
+
+        _help_
+
+        shift ; _exit_ "0" ;;
+
+      --debug)
+
+        export stdout_mode="debug"
+
+        shift ;;
+
+      --verbose)
+
+        export printf_mode="verbose"
+
+        shift ;;
+
+      --time)
+
+        export time_mode="1"
+
+        shift ;;
+
+      -c|--config)
+
+        export load_state="1"
+
+        export config="${2}"
+
+        shift 2 ;;
+
+      -i|--init)
+
+        export init_state="1"
+
+        export init_number="${2}"
+
+        shift 2 ;;
+
+      -s|--show-id)
+
+        export show_id_state="1"
+
+        shift ;;
+
+      -n|--new-id)
+
+        export new_id_state="1"
+
+        shift ;;
+
+      -u|--user)
+
+        export user_state="1"
+
+        export user_name="${2}"
+
+        shift 2 ;;
+
+      --socks-port)
+
+        export socks_port_state=1
+
+        export socks_port_number="${2}"
+
+        shift 2 ;;
+
+      --control-port)
+
+        export control_port_state=1
+
+        export control_port_number=${2:-"15000"}
+
+        shift 2 ;;
+
+      *)
+
+        if [[ "$2" == "-" ]] || [[ ! -z "$2" ]] ; then
+
+          printf "%s: invalid option -- '%s'\n" "$_init_name" "$2"
+          _exit_ "1"
+
+        # elif [[ -z "$2" ]] ; then break ; fi
+        else break ; fi
+
+        ;;
+
+    esac
+
+  done
+
+  # If you run the script in debug mode, the information
+  # will be displayed on the screen from this point.
+  if [[ "$stdout_mode" == "debug" ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "starting debug mode"
+
+  fi
+
+  # Running tasks before start user functions.
+  _before_init
+
+  ################################# USER SPACE #################################
+  # ````````````````````````````````````````````````````````````````````````````
+  # Put here all your variable declarations, function calls
+  # and all the other code blocks.
+
+  # In this section we add external file (for -c|--config script param).
+  if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
+
+  # shellcheck disable=SC2034
+  # Generate random value.
+  _random=$(date +"%s")
+
+  # Array that stores the names of variables used that are part of the script
+  # call parameters (_GETOPT_PARAMS). Useful when checking whether all
+  # or selected parameters without which the script can not work properly
+  # have been used. Do not add the load_state variable to the _opt_values array,
+  # which is supported above.
+  _opt_values=()
+
+  local _tproc=""
+  local _tor_processes_done=0
+  local _tor_processes_fail=0
+  local _tor_processes=0
+
+  local _pass_gen
+  local _pass_hash
+
+  local _num='^[0-9]+$'
+
+  # Checking whether the variable value is a numeric value.
+  if [[ "$init_number" =~ $_num ]] || \
+     [[ "$socks_port_number" =~ $_num ]] || \
+     [[ "$socks_port_number" == "all" ]] || \
+     [[ "$control_port_number" =~ $_num ]] || \
+     [[ "$control_port_number" == "all" ]] ; then
+
+    # shellcheck disable=SC2034
+    _ports_limit=$((65536 - init_number))
+
+    # shellcheck disable=SC2154
+    if [[ "$init_state" -eq 1 ]] && [[ "$init_number" -le 0 ]] ; then
+
+      _sprintf "stop" "init_number is less or equal 0"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "init_number is less then or equal 0"
+
+    elif [[ "$socks_port_number" -ne "all" ]] || \
+         [[ "$control_port_number" -ne "all" ]] ; then
+
+      if [[ "$socks_port_state" -eq 1 && "$socks_port_number" -le 1023 ]] ; then
+
+        _sprintf "stop" "value is less then or equal 1023"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is less or equal 1023"
+
+      elif [[ "$control_port_state" -eq 1 && "$control_port_number" -le 1023 ]] ; then
+
+        _sprintf "stop" "value is less then or equal 1023"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is less or equal 1023"
+
+      elif [[ "$socks_port_state" -eq 1 && "$socks_port_number" -ge 65536 ]] ; then
+
+        _sprintf "stop" "value is equal or grather then 65536"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is equal or grather then 65536"
+
+      elif [[ "$socks_port_state" -eq 1 && "$control_port_number" -ge 65536 ]] ; then
+
+        _sprintf "stop" "value is equal or grather then 65536"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value is equal or grather then 65536"
+
+      elif [[ "$socks_port_number" -gt "$_ports_limit" ]] || \
+           [[ "$control_port_number" -gt "$_ports_limit" ]] ; then
+
+        _sprintf "stop" "too many set processes"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "too many set processes"
+
+      elif [[ "$socks_port_number" -eq "$control_port_number" ]] ; then
+
+        _sprintf "stop" "value mismatch"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "value mismatch"
+
+      fi
+
+    fi
+
+  else
+
+    _sprintf "stop" "no numeric value"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "no numeric value"
+
+  fi
+
+  # Checking if the user exists.
+  if [[ "$user_state" -eq 1 ]] ; then
+
+    if ! id "$user_name" >/dev/null 2>&1 ; then
+
+      _sprintf "stop" "incorrect user"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "incorrect user"
+
+    fi
+
+  fi
+
+  # We set the value of the variable depending on the call option.
+  if [[ "$init_state" -eq 1 ]] ; then
+
+    local _opt_values=("init_state" "init_number" \
+                       "user_state" "user_name" \
+                       "socks_port_state" "socks_port_number" \
+                       "control_port_state" "control_port_number")
+
+  elif [[ "$show_id_state" -eq 1 ]] || [[ "$new_id_state" -eq 1 ]] ; then
+
+    local _opt_values=("socks_port_state" "socks_port_number")
+
+  else
+
+    _sprintf "stop" "one of the required parameters was not found"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "one of the required parameters was not found"
+
+  fi
+
+  # Checking the value of the variables (if they are unset or empty):
+  #   - variables for call parameters
+  #   - variables from the additional configuration files
+  if [[ "${#_opt_values[@]}" -ne 0 ]] ; then
+
+    for i in "${_opt_values[@]}" ; do
+
+      _i="" ; eval _i='$'"$i"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "$i: '$_i'"
+
+      if [[ -z "$_i" ]] ; then
+
+        _sprintf "stop" "error of argument value: '$i' is unset or empty"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "error of argument value: '$i' is unset or empty"
+
+      fi
+
+    done
+
+  fi
+
+
+  if [[ "$init_state" -eq 1 ]] ; then
+
+    # First, we remove current processes.
+    _tor_processes=($(pidof tor))
+
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+      for _tpr in "${_tor_processes[@]}" ; do
+
+        # In this case, we can search for a specific identifier (${_tpr}).
+        # shellcheck disable=SC2009
+        _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+        if [[ -z "$_tproc" ]] ; then
+
+          _logger "warn" \
+            "${_FUNCTION_ID}()" \
+            "not found or unknown tor process"
+
+        else
+
+          DestroyTorProcess "${_tpr}"
+
+        fi
+
+      done
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "not found tor processes: ${_tpr}"
+
+    fi
+
+    # Removed all multitor process data directory.
+    find ${_multitor_directory}/* -delete >>"$_log_stdout" 2>&1
+
+    # Generate random password.
+    # Does storing the password in this form is security issue?
+    # shellcheck disable=SC2034
+    _pass_gen=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+    # shellcheck disable=SC2034
+    _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" | grep "16:")
+
+    for i in $(seq 0 $((init_number - 1))) ; do
+
+      echo
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
+
+      CreateTorProcess "${user_name}" "${socks_port_number}" "${control_port_number}"
+
+      # In this case, we can search for a specific identifier (${socks_port_number}).
+      # shellcheck disable=SC2009
+      _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
+
+      # We get process information and display it on the screen.
+      GetTorProcess
+
+      # shellcheck disable=SC2154
+      if [[ "$socks_port_number" == "all" ]] ; then
+
+        _tor_pid_status="true"
+
+        OutputGen
+
+      elif [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+        _tor_pid_status="true"
+
+        OutputGen
+
+      else
+
+        _tor_pid_status="false"
+
+        printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
+        printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
+
+      fi
+
+      socks_port_number=$((socks_port_number + 1))
+      control_port_number=$((control_port_number + 1))
+
+    done
+
+    printf "\n     Set processes: \e[0;39m%d\e[m\n" "$init_number"
+    printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
+    printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
+    printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
+
+    # Unset password variables.
+    unset _pass_gen ; unset _pass_hash
+
+  elif [[ "$show_id_state" -eq 1 ]] ; then
+
+    _tor_processes=($(pidof tor))
+
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+      if [[ "$socks_port_number" == "all" ]] ; then
+
+        for _tpr in "${_tor_processes[@]}" ; do
+
+          # In this case, we can search for a specific identifier (${_tpr}).
+          # shellcheck disable=SC2009
+          _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+          _proc_socks_num+=($(echo "$_tproc" | awk '{print $13}'))
+
+        done
+
+        IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
+        unset IFS
+
+        for _tpr in "${_proc_socks_num_sorted[@]}" ; do
+
+          # In this case, we can search for a specific identifier (${_tpr}).
+          # shellcheck disable=SC2009
+          _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+          echo
+
+          # We get process information and display it on the screen.
+          GetTorProcess
+
+          if [[ "$socks_port_number" == "all" ]] ; then
+
+            _tor_pid_status="true"
+
+            OutputGen
+
+          elif [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+            _tor_pid_status="true"
+
+            OutputGen
+
+          else
+
+            _tor_pid_status="false"
+
+            printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
+            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
+
+          fi
+
+        done
+
+      else
+
+        # In this case, we can search for a specific identifier (${socks_port_number}).
+        # shellcheck disable=SC2009
+        _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$socks_port_number")
+
+        if [[ -z "$_tproc" ]] ; then
+
+          _sprintf "stop" "not found tor process"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "not found tor process"
+
+        else
+
+          echo
+
+          # We get process information and display it on the screen.
+          GetTorProcess
+
+          if [[ "$socks_port_number" == "all" ]] ; then
+
+            _tor_pid_status="true"
+
+            OutputGen
+
+          elif [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+            _tor_pid_status="true"
+
+            OutputGen
+
+          else
+
+            _tor_pid_status="false"
+
+            _sprintf "stop" "not found tor process"
+
+            _logger "stop" \
+              "${_FUNCTION_ID}()" \
+              "not found tor process"
+
+          fi
+
+        fi
+
+      fi
+
+    else
+
+      _sprintf "stop" "not found tor process"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not found tor process"
+
+    fi
+
+    echo
+
+  elif [[ "$new_id_state" -eq 1 ]] ; then
+
+    _output_tparams=()
+
+    if [[ "$socks_port_number" == "all" ]] ; then
+
+      _tor_processes=($(pidof tor))
+
+    else
+
+      _tor_processes=($socks_port_number)
+
+    fi
+
+    # Password required at this stage.
+    read -rsp "Enter password: " _pass_in
+
+    echo
+
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+      for _tpr in "${_tor_processes[@]}" ; do
+
+        # In this case, we can search for a specific identifier (${_tpr}).
+        # shellcheck disable=SC2009
+        _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+        if [[ -z "$_tproc" ]] ; then
+
+          _logger "warn" \
+            "${_FUNCTION_ID}()" \
+            "not found or unknown tor process"
+
+        else
+
+          # We get process information.
+          GetTorProcess
+
+          if [[ "$socks_port_number" == "all" ]] ; then
+
+            _tor_pid_status="true"
+
+          elif [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
+
+            _tor_pid_status="true"
+
+          else
+
+            _tor_pid_status="false"
+
+          fi
+
+          # shellcheck disable=SC2154
+          _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
+          | nc 127.0.0.1 "$_tor_proc_control")
+
+          if echo "$_newnym" | grep -qi "250 closing connection" ; then
+
+            _identity_state="true"
+
+          elif echo "$_newnym" | grep -q "Authentication failed" ; then
+
+            _identity_state="false"
+
+          else
+
+            _identity_state="false"
+
+          fi
+
+          _output_tparams+=("$_tor_proc_id":"$_tor_proc_socks":"$_tor_proc_control":"$_identity_state")
+
+        fi
+
+      done
+
+    else
+
+      _sprintf "stop" "not found tor process"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not found tor process"
+
+    fi
+
+    unset _pass_in
+
+    for i in "${_output_tparams[@]}" ; do
+
+      # shellcheck disable=SC2034
+      _key_id=$(echo "$i" | awk -v FS="(:|:)" '{print $1}')
+      # shellcheck disable=SC2034
+      _key_socks=$(echo "$i" | awk -v FS="(:|:)" '{print $2}')
+      # shellcheck disable=SC2034
+      _key_control=$(echo "$i" | awk -v FS="(:|:)" '{print $3}')
+      # shellcheck disable=SC2034
+      _key_state=$(echo "$i" | awk -v FS="(:|:)" '{print $4}')
+
+      if [[ "$_key_state" == "true" ]] ; then
+
+        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "regenerated"
+
+      else
+
+        if [[ "$_tor_pid_status" == "false" ]] ; then
+
+          _logger "warn" \
+            "${_FUNCTION_ID}()" \
+            "not found or unknown tor process"
+
+          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "unknown"
+
+        else
+
+          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "failed"
+
+        fi
+
+      fi
+
+    done
+
+  fi
+
+  # Checking the relationship between call parameters.
+  if [[ "$time_mode" -eq 1 ]] ; then
+
+    if [[ "$printf_mode" != "verbose" ]] ; then
+
+      _sprintf "stop" "missing argument: '--time' is dependent on '--verbose'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "missing argument: '--time' occurs only with '--verbose'"
+
+    fi
+
+  elif [[ "$stdout_mode" == "debug" ]] ; then
+
+    if [[ "$printf_mode" == "verbose" ]] || [[ "$time_mode" -eq 1 ]] ; then
+
+      _sprintf "stop" "debug mode can not occur together with '--verbose' and '--time'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "debug mode can not occur together with '--verbose' and '--time'"
+
+    fi
+
+  fi
+
+  # ````````````````````````````````````````````````````````````````````````````
+
+  if [[ "$time_tracking" == "true" ]] ; then
+
+    # Counting the execution time.
+    _endtime=$(date +%s)
+    _totaltime=$((_endtime - _begtime))
+
+    # Print time header.
+    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+            $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
+
+  fi
+
+  return "$_STATE"
+
+}
