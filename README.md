@@ -5,7 +5,7 @@
 | STABLE RELEASE                           | TESTING RELEASE                          |
 | ---------------------------------------- | ---------------------------------------- |
 | [![](https://img.shields.io/badge/Branch-master-brightgreen.svg)]() | [![](https://img.shields.io/badge/Branch-testing-red.svg)]() |
-| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() |                                          |
+| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() |
 
 ## Description
 
