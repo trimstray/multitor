@@ -1,0 +1,57 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CreateTorDirectory()
+#
+# Description:
+#   It creates tor processes data directory.
+#
+# Usage:
+#   CreateTorDirectory
+#
+# Examples:
+#   CreateTorDirectory
+#
+
+function CreateTorDirectory() {
+
+  local _FUNCTION_ID="CreateTorDirectory"
+  local _STATE=0
+
+  mkdir -m 0700 "$_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
+
+  if [[ $_kstate -eq 0 ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "created tor process directory: ${_proc_dir}"
+
+    chown "${_arg_uname}" "${_proc_dir}" >>"$_log_stdout" 2>&1
+    _kstate="$?"
+
+    if [[ $_kstate -eq 0 ]] ; then
+      
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "changed owner properly to: '${_arg_uname}'"
+
+    else
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "the owner could not be changed"
+
+    fi
+
+  else
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "not created tor process directory"
+
+  fi
+
+  unset _kstate
+
+  return $_STATE
+
+}
+

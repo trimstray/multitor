@@ -1,0 +1,50 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: OutputGen()
+#
+# Description:
+#   Show info about process on the screen.
+#
+# Usage:
+#   OutputGen
+#
+# Examples:
+#   OutputGen
+#
+
+function OutputGen() {
+
+  local _FUNCTION_ID="OutputGen"
+  local _STATE=0
+
+  # Check that _tor_proc_socks and _tor_proc_control are available.
+  CheckConn "$_tor_proc_socks" ; local _tport_state_socks="$?"
+  CheckConn "$_tor_proc_control" ; local _tport_state_control="$?"
+
+  if [[ $_tport_state_socks -ne 0 ]] ; then
+
+    export _tport_status_socks="false"
+
+  elif [[ $_tport_state_control -ne 0 ]] ; then
+
+    export _tport_status_control="false"
+
+  else
+
+    export _tport_status_socks="true"
+    export _tport_status_control="true"
+
+  fi
+
+  printf "     \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
+  # shellcheck disable=SC2154
+  printf " \e[1;30mprocess_status\e[m: \e[1;32m%s\e[m\n" "$_tor_pid_status"
+  printf "     \e[1;30msocks_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_socks"
+  printf "   \e[1;30msocks_status\e[m: \e[0;32m%s\e[m\n" "$_tport_status_socks"
+  printf "   \e[1;30mcontrol_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_control"
+  printf " \e[1;30mcontrol_status\e[m: \e[0;32m%s\e[m\n" "$_tport_status_control"
+  printf "       \e[1;30mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
+
+  return $_STATE
+
+}
+

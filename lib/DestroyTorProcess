@@ -1,0 +1,40 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: DestroyTorProcess()
+#
+# Description:
+#   It destroys currently running tor process.
+#
+# Usage:
+#   DestroyTorProcess "id"
+#
+# Examples:
+#   DestroyTorProcess ${_tpr}"
+#
+
+function DestroyTorProcess() {
+
+  local _FUNCTION_ID="DestroyTorProcess"
+  local _STATE=0
+
+  local _arg_tproc="$1"
+
+  kill -9 "$_arg_tproc" >>"$_log_stdout" 2>&1 ; _kstate="$?"
+
+  if [[ $_kstate -eq 0 ]] ; then
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "killed tor process: '${_arg_tproc}'"
+
+  else
+
+    _logger "warn" \
+      "${_FUNCTION_ID}()" \
+      "not killed tor process (maybe not found?)"
+
+  fi
+
+  return $_STATE
+
+}
+
