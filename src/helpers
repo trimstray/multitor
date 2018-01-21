@@ -607,6 +607,35 @@ function _before_init() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: _after_init()
+#
+# Description:
+#   INFOs performed after calling the __main__ function, e.g.
+#   cleaning logs (if you need a function that will deal with it,
+#   put it here).
+#
+# Usage:
+#   _after_init
+#
+# Examples:
+#   _after_init
+#
+
+function _after_init() {
+
+  local _FUNCTION_ID="_after_init"
+  local _STATE=0
+
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_init_directory'"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _init_function()
 #
 # Description:
