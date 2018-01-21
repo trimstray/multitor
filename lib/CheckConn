@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckConn()
 #
@@ -26,4 +28,3 @@ function CheckConn() {
   return $_STATE
 
 }
-

@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: GetTorProcess()
 #
@@ -27,4 +29,3 @@ function GetTorProcess() {
   return $_STATE
 
 }
-

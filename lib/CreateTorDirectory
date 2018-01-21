@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: CreateTorDirectory()
 #
@@ -54,4 +56,3 @@ function CreateTorDirectory() {
   return $_STATE
 
 }
-

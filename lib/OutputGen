@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: OutputGen()
 #
@@ -47,4 +49,3 @@ function OutputGen() {
   return $_STATE
 
 }
-
