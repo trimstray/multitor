@@ -147,26 +147,6 @@ function __main__() {
 
         shift ;;
 
-      --verbose)
-
-        export printf_mode="verbose"
-
-        shift ;;
-
-      --time)
-
-        export time_mode="1"
-
-        shift ;;
-
-      -c|--config)
-
-        export load_state="1"
-
-        export config="${2}"
-
-        shift 2 ;;
-
       -i|--init)
 
         export init_state="1"
