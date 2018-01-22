@@ -15,11 +15,14 @@
 
 function OutputGen() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="OutputGen"
   local _STATE=0
 
   # Check that _tor_proc_socks and _tor_proc_control are available.
+  # shellcheck disable=SC2154
   CheckConn "$_tor_proc_socks" ; local _tport_state_socks="$?"
+  # shellcheck disable=SC2154
   CheckConn "$_tor_proc_control" ; local _tport_state_control="$?"
 
   if [[ $_tport_state_socks -ne 0 ]] ; then
@@ -37,13 +40,17 @@ function OutputGen() {
 
   fi
 
+  # shellcheck disable=SC2154
   printf "     \e[1;30mprocess_id\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_id"
   # shellcheck disable=SC2154
   printf " \e[1;30mprocess_status\e[m: \e[1;32m%s\e[m\n" "$_tor_pid_status"
   printf "     \e[1;30msocks_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_socks"
+  # shellcheck disable=SC2154
   printf "   \e[1;30msocks_status\e[m: \e[0;32m%s\e[m\n" "$_tport_status_socks"
   printf "   \e[1;30mcontrol_port\e[m: \e[0;33m%d\e[m\n" "$_tor_proc_control"
+  # shellcheck disable=SC2154
   printf " \e[1;30mcontrol_status\e[m: \e[0;32m%s\e[m\n" "$_tport_status_control"
+  # shellcheck disable=SC2154
   printf "       \e[1;30mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
 
   return $_STATE

@@ -51,6 +51,7 @@ function CreateTorProcess() {
 
   fi
 
+  # shellcheck disable=SC2154
   chmod 0400 "${_torrc_config}" >>"$_log_stdout" 2>&1 && \
   chown "${_arg_uname}:${_arg_uname}" "${_torrc_config}" >>"$_log_stdout" 2>&1
   _kstate="$?"

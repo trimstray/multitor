@@ -609,6 +609,7 @@ function _before_init() {
   local _FUNCTION_ID="_before_init"
   local _STATE=0
 
+  # shellcheck disable=2154
   cd "$_init_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
@@ -616,6 +617,7 @@ function _before_init() {
 
   : >"$_log_stdout"
 
+  # shellcheck disable=2154
   if [[ ! -d "$_multitor_directory" && ! -L "$_multitor_directory" ]] ; then
 
     _logger "info" \
@@ -627,6 +629,7 @@ function _before_init() {
 
     if [[ $_kstate -eq 0 ]] ; then
 
+      # shellcheck disable=2154
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "created tor process directory: ${_multitor_directory}"

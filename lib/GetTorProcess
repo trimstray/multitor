@@ -15,15 +15,19 @@
 
 function GetTorProcess() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="GetTorProcess"
   local _STATE=0
 
-  # shellcheck disable=SC2154
+  # shellcheck disable=SC2034,SC2154
   _tor_proc_id=$(echo "$_tproc" | awk '{print $1}')
   # shellcheck disable=SC2034
   _tor_proc_config=$(echo "$_tproc" | awk '{print $7}')
+  # shellcheck disable=SC2034
   _tor_proc_socks=$(echo "$_tproc" | awk '{print $13}')
+  # shellcheck disable=SC2034
   _tor_proc_control=$(echo "$_tproc" | awk '{print $15}')
+  # shellcheck disable=SC2034
   _tor_prod_data_dir=$(echo "$_tproc" | awk '{print $19}')
 
   return $_STATE

@@ -18,6 +18,7 @@ function CreateTorDirectory() {
   local _FUNCTION_ID="CreateTorDirectory"
   local _STATE=0
 
+  # shellcheck disable=SC2154
   mkdir -m 0700 "$_proc_dir" > /dev/null 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
@@ -26,6 +27,7 @@ function CreateTorDirectory() {
       "${_FUNCTION_ID}()" \
       "created tor process directory: ${_proc_dir}"
 
+    # shellcheck disable=SC2154
     chown "${_arg_uname}" "${_proc_dir}" >>"$_log_stdout" 2>&1
     _kstate="$?"
 

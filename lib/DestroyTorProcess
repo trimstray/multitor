@@ -20,6 +20,7 @@ function DestroyTorProcess() {
 
   local _arg_tproc="$1"
 
+  # shellcheck disable=SC2154
   kill -9 "$_arg_tproc" >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
