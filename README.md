@@ -143,6 +143,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
     |-- README.md                  # this simple documentation
     |-- CONTRIBUTING.md            # principles of project support
     |-- .gitignore                 # ignore untracked files
+    |-- .travis.yml                # continuous integration with Travis CI
     |-- setup.sh                   # install multitor on the system
     |-- bin
         |-- multitor               # main script (init)
