@@ -150,7 +150,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
         |-- multitor               # main script (init)
     |-- doc                        # includes documentation, images and manuals
         |-- man8
-            |-- multitor           # man page for multitor
+            |-- multitor.8         # man page for multitor
     |-- lib                        # libraries, external functions
     |-- log                        # contains logs, created after init
     |-- src                        # includes external project files
