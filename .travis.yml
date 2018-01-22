@@ -16,16 +16,18 @@ sudo: required
 
 addons:
   apt:
-    sources:
-      - debian-sid
     packages:
-      - shellcheck
-      - netcat
-      - tor
+      - bash
+
+before_install:
+  - curl -sSL "https://ftp-master.debian.org/keys/archive-key-7.0.asc" | sudo -E apt-key add -
+  - echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" | sudo tee -a /etc/apt/sources.list > /dev/null
+  - sudo apt-get update
+  - sudo apt-get install shellcheck
 
 # after_success:
 #   - test $TRAVIS_PULL_REQUEST = false && git push
 
 script:
   - shellcheck --version
-  - shellcheck -s bash -e 1072 -x src/* -x lib/* bin/multitor
+  - shellcheck -s bash -e 1072 -x /scripts/src/* -x /scripts/lib/* /scripts/bin/multitor
