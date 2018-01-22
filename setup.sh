@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-_arg="$1"
-
 # To adapt this script to your project, do the following:
 #   - vim: ESC:%s/multitor/your-project/g
 #   - sed: set -i 's/multitor/your-project/g'
+
+_arg="$1"
 
 if [[ "$1" == "install" ]] ; then
 
