@@ -54,8 +54,8 @@ readonly _rel="${_init_directory}/.."
 
 # Directory structure.
 # shellcheck disable=SC2154
-readonly _src="${_rel_path}/src"
-readonly _lib="${_rel_path}/lib"
+readonly _src="${_rel}/src"
+readonly _lib="${_rel}/lib"
 
 
 # shellcheck disable=SC1090,SC1091
