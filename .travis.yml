@@ -1,0 +1,31 @@
+notifications:
+  email:
+    recipients:
+      - git@nslab.at
+    on_success: always
+    on_failure: always
+
+branches:
+  only:
+    - master
+    - testing
+
+language: bash
+
+sudo: required
+
+addons:
+  apt:
+    sources:
+      - debian-sid
+    packages:
+      - shellcheck
+      - netcat
+      - tor
+
+# after_success:
+#   - test $TRAVIS_PULL_REQUEST = false && git push
+
+script:
+  - shellcheck --version
+  - shellcheck -s bash -e 1072 -x src/* -x lib/* bin/multitor
