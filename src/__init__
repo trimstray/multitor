@@ -9,21 +9,6 @@ function __main__() {
   local _FUNCTION_ID="__main__"
   local _STATE="0"
 
-  # The tables that store call parameters.
-  __init_params=()
-  __script_params=("$@")
-
-  # Store the name of the script and directory call.
-  readonly _init_name="$(basename "$0")"
-  readonly _init_directory="$(dirname "$(readlink -f "$0")")"
-
-  # Set root directory.
-  readonly _rel_path="${_init_directory}/.."
-
-  # Directory structure.
-  readonly _src_directory="${_rel_path}/src"
-  readonly _lib_directory="${_rel_path}/lib"
-
   # Stores the current date.
   readonly _cdate=$(date +%Y%m%d)
 
