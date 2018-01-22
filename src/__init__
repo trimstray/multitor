@@ -14,12 +14,15 @@ function __main__() {
 
   # Variables related to the log file. Divided into three parts due
   # to the better possibility of manipulation for the user.
+  # shellcheck disable=SC2154
   readonly _log_directory="${_rel}/log"
+  # shellcheck disable=SC2154
   readonly _log_file="${_init_name}.${_cdate}.log"
   readonly _log_stdout="${_log_directory}/stdout.log"
   readonly _log_path="${_log_directory}/${_log_file}"
 
   # Path to import file.
+  # shellcheck disable=SC2154
   readonly _import_path="${_src}/import"
 
   # External configuration file (-c|--config script param).
@@ -84,6 +87,7 @@ function __main__() {
   if [[ "$time_tracking" == "true" ]] ; then
     _begtime=$(date +%s) ; fi
 
+  # shellcheck disable=SC2154
   _logger "init" \
     "init '${_init_name}' in '${_init_directory}'" && \
   _logger "info" \

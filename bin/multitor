@@ -41,6 +41,7 @@
 
 
 # The array that store call parameters.
+# shellcheck disable=SC2034
 __init_params=()
 __script_params=("$@")
 
@@ -52,13 +53,16 @@ readonly _init_directory="$(dirname "$(readlink -f "$0")")"
 readonly _rel="${_init_directory}/.."
 
 # Directory structure.
+# shellcheck disable=SC2154
 readonly _src="${_rel_path}/src"
 readonly _lib="${_rel_path}/lib"
 
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "${_src}/settings"
+# shellcheck disable=SC1090
 source "${_src}/helpers"
+# shellcheck disable=SC1090
 source "${_src}/__init__"
 
 
