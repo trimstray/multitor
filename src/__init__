@@ -31,14 +31,12 @@ function __main__() {
 
   # Declaration of output variables (--debug and --verbose params).
   stdout_mode=""
-  printf_mode=""
   # Enable/disable output colors.
   # shellcheck disable=SC2034
   s_color="true"
 
   # Declaration of total execution time.
   time_tracking="false"
-  time_mode="0"
   export _cmdtime_state="0"
 
   # Create multitor directory.
