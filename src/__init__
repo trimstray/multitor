@@ -726,33 +726,6 @@ function __main__() {
 
   fi
 
-  # Checking the relationship between call parameters.
-  if [[ "$time_mode" -eq 1 ]] ; then
-
-    if [[ "$printf_mode" != "verbose" ]] ; then
-
-      _sprintf "stop" "missing argument: '--time' is dependent on '--verbose'"
-
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "missing argument: '--time' occurs only with '--verbose'"
-
-    fi
-
-  elif [[ "$stdout_mode" == "debug" ]] ; then
-
-    if [[ "$printf_mode" == "verbose" ]] || [[ "$time_mode" -eq 1 ]] ; then
-
-      _sprintf "stop" "debug mode can not occur together with '--verbose' and '--time'"
-
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "debug mode can not occur together with '--verbose' and '--time'"
-
-    fi
-
-  fi
-
   # ````````````````````````````````````````````````````````````````````````````
 
   if [[ "$time_tracking" == "true" ]] ; then
