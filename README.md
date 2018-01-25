@@ -47,6 +47,23 @@ Provides the following options:
 - [tor](https://www.torproject.org/)
 - [netcat](http://netcat.sourceforge.net/)
 
+## Install/uninstall
+
+It's simple - for install:
+
+```
+./setup.sh install
+```
+
+For remove:
+
+```
+./setup.sh uninstall
+```
+
+> - symlink to `bin/multitor` is placed in `/usr/local/bin`
+> - man page is placed in `/usr/local/man/man8`
+
 ## Use example
 
 ### Creating processes
