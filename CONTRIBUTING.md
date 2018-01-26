@@ -19,18 +19,14 @@ The following should help:
 
 One of the requirements before approving your changes is to check them with the **shellcheck** utility. If the returned errors are not critical (eg. [SC2154](https://github.com/koalaman/shellcheck/wiki/SC2154)) you can use the `shellcheck disable=SC2154` design.
 
-## Comments
+## Signature of commit
 
-Comment on all your changes and describe what they are doing. A good idea will be if the code snippet you are changing is going to describe in this way:
+Moving forward all commits to this project must include a "signed-off-by" line indicating the name and email address of the contributor signing off on the change. To enable signatures add the following lines to `.git/hooks/prepare-commit-msg` :
 
-```
-# Author of changes: your_nickane <email_address>
-# Description:
-#   A short description of the changes.
-# __EOF__
-{...}
-# __EOF__
-```
+``````
+SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/- signed-off-by: \1/p')
+grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+``````
 
 ## Pull requests
 
@@ -39,4 +35,5 @@ When creating pull request, please heed the following:
 - Base your code on the latest master branch to avoid manual merges
 - Code review may ensue in order to help shape your proposal
 - Explain the problem and your proposed solution
+
 
