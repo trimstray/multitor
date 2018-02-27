@@ -361,7 +361,7 @@ function _init_cmd() {
 
   # Execute command and exit save to file.
   # shellcheck disable=SC2154
-  "$_cmd" >>"$_log_stdout" 2>&1 &
+  $_cmd >>"$_log_stdout" 2>&1 &
 
   # We keep pid of the last command.
   _pid="$!"
