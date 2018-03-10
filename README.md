@@ -5,7 +5,7 @@
 |            **STABLE RELEASE**            |           **TESTING RELEASE**            |
 | :--------------------------------------: | :--------------------------------------: |
 | [![](https://img.shields.io/badge/Branch-master-green.svg)]() | [![](https://img.shields.io/badge/Branch-testing-orange.svg)]() |
-| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() |
+| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() |
 | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=master)](https://travis-ci.org/trimstray/multitor) | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=testing)](https://travis-ci.org/trimstray/multitor) |
 
 ## Description
