@@ -1,0 +1,29 @@
+# shellcheck shell=bash
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CreateTorProxy()
+#
+# Description:
+#   It creates tor load balancer with haproxy.
+#
+# Usage:
+#   CreateTorProxy "username" "num" "num"
+#
+# Examples:
+#   CreateTorProxy ${user_name} ${socks_port_number} ${control_port_number}
+#
+
+function CreateTorProxy() {
+
+  local _FUNCTION_ID="CreateTorProxy"
+  local _STATE=0
+
+  local _arg_uname="$1"
+  local _arg_socks="$2"
+  local _arg_control="$3"
+
+
+
+  return $_STATE
+
+}
