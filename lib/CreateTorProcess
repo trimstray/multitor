@@ -38,7 +38,7 @@ function CreateTorProcess() {
   _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
-      
+
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "saved HashedControlPassword correctly"
@@ -57,7 +57,7 @@ function CreateTorProcess() {
   _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
-      
+
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "change permission and owner correctly"
@@ -99,6 +99,13 @@ function CreateTorProcess() {
   fi
 
   unset _kstate
+
+  # shellcheck disable=SC2154
+  if [[ "$proxy_state" -eq 1 ]] ; then
+
+    CreateTorProxy
+
+  fi
 
   return $_STATE
 
