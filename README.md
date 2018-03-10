@@ -168,6 +168,8 @@ req 3: 176.10.99.200
 req 4: 185.220.101.29
 ```
 
+> If you do not need a working haproxy at the moment and the processes of this service are still working, you can do one of many available commands to manage processes in GNU/Linux and kill them: `pkill -f haproxy`.
+
 ### HAProxy stats interface
 
 If you want to view traffic statistics, go to http://127.0.0.1:16380/stats.
