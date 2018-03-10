@@ -498,7 +498,27 @@ function __main__() {
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
-      haproxy -f "${_tml_file1}"
+      pkill -f haproxy
+
+      _kstate=$?
+      if [[ $_kstate -eq 0 ]] ; then
+
+        _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "kill haproxy process properly"
+
+        haproxy -f "${_tml_file1}" && \
+        _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "init haproxy process with '${_tml_file1}' config file"
+
+      else
+
+        _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "kill haproxy process not properly"
+
+      fi
 
     fi
 
