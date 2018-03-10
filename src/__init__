@@ -515,11 +515,9 @@ function __main__() {
 
       CreateProxyProcess
 
-    else
-
-      CheckProxyProcess
-
     fi
+
+    CheckProxyProcess
 
     printf "\n     Set processes: \e[0;39m%d\e[m\n" "$init_number"
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
