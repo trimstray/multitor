@@ -20,6 +20,13 @@ function CreateTorProxy() {
   local _STATE=0
 
   # shellcheck disable=SC2154
+  # Init proxy process.
+  haproxy -f "${_tml_file1}" && \
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "init proxy process with '${_tml_file1}' config file"
+
+  # shellcheck disable=SC2154
   printf "  server            tor%d 127.0.0.1:%d\n" "$_arg_socks" "$_arg_socks" \
   >>"${_tml_file1}"
 
