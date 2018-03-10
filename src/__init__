@@ -413,7 +413,7 @@ function __main__() {
 
         else
 
-          DestroyTorProcess "${_tpr}"
+          DestroyProcess "${_tpr}"
 
         fi
 
@@ -498,39 +498,7 @@ function __main__() {
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
-      # shellcheck disable=SC2009,SC2034
-      _hproc=$(ps -ax | grep "haproxy" | grep -v "grep")
-
-      if [[ ! -z "$_hproc" ]] ; then
-
-        killall "haproxy"
-
-        _kstate=$?
-
-      else
-
-        _kstate=0
-
-      fi
-
-      if [[ $_kstate -eq 0 ]] ; then
-
-        _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "kill haproxy process properly"
-
-        haproxy -f "${_tml_file1}" && \
-        _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "init haproxy process with '${_tml_file1}' config file"
-
-      else
-
-        _logger "warn" \
-        "${_FUNCTION_ID}()" \
-        "kill haproxy process not properly"
-
-      fi
+      ProxyProcess
 
     fi
 
@@ -538,6 +506,16 @@ function __main__() {
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
     printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
     printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
+
+    if [[ "$proxy_state" -eq 1 ]] ; then
+
+      printf "     socks5 proxy: \e[2;38m%s\e[m\n\n" "enable"
+
+    else
+
+      printf "     socks5 proxy: \e[2;32m%s\e[m\n\n" "disable"
+
+    fi
 
     # Unset password variables.
     unset _pass_gen ; unset _pass_hash
