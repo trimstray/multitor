@@ -508,7 +508,7 @@ function __main__() {
 
       done
 
-      CreateTorProxy
+      CreateProxyProcess
 
     else
 

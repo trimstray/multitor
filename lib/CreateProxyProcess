@@ -1,23 +1,27 @@
 # shellcheck shell=bash
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CreateTorProxy()
+# Function name: CreateProxyProcess()
 #
 # Description:
 #   It creates tor load balancer with haproxy.
 #
 # Usage:
-#   CreateTorProxy
+#   CreateProxyProcess
 #
 # Examples:
-#   CreateTorProxy
+#   CreateProxyProcess
 #
 
-function CreateTorProxy() {
+function CreateProxyProcess() {
 
   # shellcheck disable=SC2034
-  local _FUNCTION_ID="CreateTorProxy"
+  local _FUNCTION_ID="CreateProxyProcess"
   local _STATE=0
+
+  # shellcheck disable=SC2154
+  printf "  server            tor%d 127.0.0.1:%d\n" "$_arg_socks" "$_arg_socks" \
+  >>"${_tml_file1}"
 
   # shellcheck disable=SC2154
   # Init proxy process.
@@ -25,10 +29,6 @@ function CreateTorProxy() {
   _logger "info" \
     "${_FUNCTION_ID}()" \
     "init proxy process with '${_tml_file1}' config file"
-
-  # shellcheck disable=SC2154
-  printf "  server            tor%d 127.0.0.1:%d\n" "$_arg_socks" "$_arg_socks" \
-  >>"${_tml_file1}"
 
   return $_STATE
 
