@@ -10,7 +10,7 @@
 
 ## Description
 
-A tool that allows you to create multiple **Tor** instances. In addition, it allows you to view previously started **Tor** processes and create a new identity for each of them.
+A tool that lets you **create multiple TOR** instances with a **load balancing** traffic between them. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
 
 > The **multitor** has been completely rewritten on the basis of:
 >
@@ -47,6 +47,7 @@ Provides the following options:
 
 - [tor](https://www.torproject.org/)
 - [netcat](http://netcat.sourceforge.net/)
+- [haproxy](https://www.haproxy.org/)
 
 ## Install/uninstall
 
@@ -72,12 +73,12 @@ For remove:
 Then an example of starting the tool:
 
 ``````
-multitor --init 10 -u debian-tor --socks-port 9000 --control-port 9900
+multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900
 ``````
 
 Creates new **Tor** processes and specifies the number of processes to create:
 
-- `--init 10`
+- `--init 2`
 
 Specifies the user from which new processes will be created (the user must exist in the system):
 
@@ -132,6 +133,34 @@ Specifies the port number for communication. Allows you to find the process afte
 So if We created 2 **Tor** processes by **multitor** example output will be given:
 
 ![multitor_output](doc/img/multitor_output.png)
+
+## Load balancing
+
+**Multitor** uses HAProxy to create a local proxy server for all created **TOR** instances and distribute traffic between them. The default configuration is in `templates/haproxy-template.cfg`.
+
+To run the load balancer you need to add the `--proxy` parameter to the command specified in the example.
+
+```bash
+multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900 --proxy
+```
+
+After launching, let's see the working processes:
+
+```bash
+netstat -tapn | grep LISTEN | grep "tor\|haproxy"
+tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      25497/tor           
+tcp        0      0 127.0.0.1:9001          0.0.0.0:*               LISTEN      25560/tor           
+tcp        0      0 127.0.0.1:9900          0.0.0.0:*               LISTEN      25497/tor           
+tcp        0      0 127.0.0.1:9901          0.0.0.0:*               LISTEN      25560/tor           
+tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      25638/haproxy       
+tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      25638/haproxy
+```
+
+HAProxy uses `16379` to communicate.
+
+### HAProxy stats interface
+
+If you want to view traffic statistics, go to http://127.0.0.1:16379/stats.
 
 ## Password authentication
 
