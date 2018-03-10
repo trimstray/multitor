@@ -1,21 +1,21 @@
 # shellcheck shell=bash
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: DestroyTorProcess()
+# Function name: DestroyProcess()
 #
 # Description:
 #   It destroys currently running tor process.
 #
 # Usage:
-#   DestroyTorProcess "id"
+#   DestroyProcess "id"
 #
 # Examples:
-#   DestroyTorProcess ${_tpr}"
+#   DestroyProcess ${_tpr}"
 #
 
-function DestroyTorProcess() {
+function DestroyProcess() {
 
-  local _FUNCTION_ID="DestroyTorProcess"
+  local _FUNCTION_ID="DestroyProcess"
   local _STATE=0
 
   local _arg_tproc="$1"
