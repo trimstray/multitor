@@ -450,6 +450,8 @@ function __main__() {
       # shellcheck disable=SC2154
       cp "${_tml_file0}" "${_tml_file1}"
 
+      local _proxy_ports=()
+
     fi
 
     for i in $(seq 0 $((init_number - 1))) ; do
@@ -491,6 +493,9 @@ function __main__() {
 
       fi
 
+      # For proxy:
+      _proxy_ports+=("$_socks_port_number")
+
       socks_port_number=$((socks_port_number + 1))
       control_port_number=$((control_port_number + 1))
 
@@ -502,13 +507,17 @@ function __main__() {
       CheckProxyProcess
 
       # shellcheck disable=SC2154
-      for i in "${_proxy_processes_list[@]}" ; do
+      for _hproc in "${_proxy_processes_list[@]}" ; do
 
-        DestroyProcess "${i}"
+        DestroyProcess "${_hproc}"
 
       done
 
-      CreateProxyProcess
+      for _hport in "${_proxy_ports[@]}" ; do
+
+        CreateProxyProcess "${_hport}"
+
+      done
 
     else
 
