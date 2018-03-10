@@ -540,8 +540,6 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    echo
-
     _tor_processes=($(pidof tor))
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
@@ -566,8 +564,6 @@ function __main__() {
           # In this case, we can search for a specific identifier (${_tpr}).
           # shellcheck disable=SC2009
           _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
-
-          echo
 
           # We get process information and display it on the screen.
           GetTorProcess
