@@ -450,7 +450,7 @@ function __main__() {
       # shellcheck disable=SC2154
       cp "${_tml_file0}" "${_tml_file1}"
 
-      local _proxy_ports=()
+      _proxy_ports=()
 
     fi
 
@@ -463,6 +463,9 @@ function __main__() {
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
 
       CreateTorProcess "${user_name}" "${socks_port_number}" "${control_port_number}"
+
+      # For proxy:
+      _proxy_ports+=("$socks_port_number")
 
       # In this case, we can search for a specific identifier (${socks_port_number}).
       # shellcheck disable=SC2009
@@ -493,9 +496,6 @@ function __main__() {
 
       fi
 
-      # For proxy:
-      _proxy_ports+=("$_socks_port_number")
-
       socks_port_number=$((socks_port_number + 1))
       control_port_number=$((control_port_number + 1))
 
@@ -513,11 +513,7 @@ function __main__() {
 
       done
 
-      for _hport in "${_proxy_ports[@]}" ; do
-
-        CreateProxyProcess "${_hport}"
-
-      done
+      CreateProxyProcess
 
     else
 
