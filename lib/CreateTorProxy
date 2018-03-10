@@ -7,22 +7,21 @@
 #   It creates tor load balancer with haproxy.
 #
 # Usage:
-#   CreateTorProxy "username" "num" "num"
+#   CreateTorProxy
 #
 # Examples:
-#   CreateTorProxy ${user_name} ${socks_port_number} ${control_port_number}
+#   CreateTorProxy
 #
 
 function CreateTorProxy() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="CreateTorProxy"
   local _STATE=0
 
-  local _arg_uname="$1"
-  local _arg_socks="$2"
-  local _arg_control="$3"
-
-
+  # shellcheck disable=SC2154
+  printf "  server            tor%d 127.0.0.1:%d\n" "$_arg_socks" "$_arg_socks" \
+  >>"${_tml_file1}"
 
   return $_STATE
 
