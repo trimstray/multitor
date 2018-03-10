@@ -161,11 +161,17 @@ HAProxy uses **16379** to communication, so all of your services to use the load
 In order to test the correctness of the setup, you can run the following command:
 
 ```bash
-for i in $(seq 1 4) ; do echo -en "req ${i}: " ; curl -k --location --proxy socks5h://127.0.0.1:16379 http://ipinfo.io/ip ; done
-req 1: 176.10.99.200
-req 2: 185.220.101.29
-req 3: 176.10.99.200
-req 4: 185.220.101.29
+for i in $(seq 1 10) ; do printf "req %2d: " "$i" ; curl -k --location --proxy socks5h://127.0.0.1:16379 http://ipinfo.io/ip ; done
+req  1: 93.115.86.4
+req  2: 185.56.80.242
+req  3: 51.15.34.228
+req  4: 197.231.221.211
+req  5: 62.210.105.116
+req  6: 93.115.86.4
+req  7: 185.56.80.242
+req  8: 51.15.34.228
+req  9: 197.231.221.211
+req 10: 62.210.105.116
 ```
 
 > If you do not need a working haproxy at the moment and the processes of this service are still working, you can do one of many available commands to manage processes in GNU/Linux and kill them: `pkill -f haproxy`.
