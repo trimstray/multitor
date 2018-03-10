@@ -7,10 +7,10 @@
 #   It creates tor load balancer with haproxy.
 #
 # Usage:
-#   CreateProxyProcess port_number
+#   CreateProxyProcess
 #
 # Examples:
-#   CreateProxyProcess ${socks_port_number}
+#   CreateProxyProcess
 #
 
 function CreateProxyProcess() {
@@ -19,12 +19,18 @@ function CreateProxyProcess() {
   local _FUNCTION_ID="CreateProxyProcess"
   local _STATE=0
 
-  # shellcheck disable=SC2034
-  local backend_port="$1"
-
   # shellcheck disable=SC2154
-  printf "  server            tor%d 127.0.0.1:%d\n" "$backend_port" "$backend_port" \
-  >>"${_tml_file1}"
+  for _bk_port in "${_proxy_ports[@]}" ; do
+
+    # shellcheck disable=SC2154
+    printf "  server            tor%d 127.0.0.1:%d\n" "$_bk_port" "$_bk_port" \
+    >>"${_tml_file1}"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "added backend port: '$_bk_port'"
+
+  done
 
   # shellcheck disable=SC2154
   # Init proxy process.
