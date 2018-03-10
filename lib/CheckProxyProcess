@@ -7,10 +7,10 @@
 #   Manages proxy processes.
 #
 # Usage:
-#   CheckProxyProcess port_number
+#   CheckProxyProcess
 #
 # Examples:
-#   CheckProxyProcess 16379
+#   CheckProxyProcess
 #
 
 function CheckProxyProcess() {
