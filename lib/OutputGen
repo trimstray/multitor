@@ -51,7 +51,7 @@ function OutputGen() {
   # shellcheck disable=SC2154
   printf " \e[1;30mcontrol_status\e[m: \e[0;32m%s\e[m\n" "$_tport_status_control"
   # shellcheck disable=SC2154
-  printf "       \e[1;30mdata_dir\e[m: \e[0;30m%s\e[m\n" "$_tor_prod_data_dir"
+  printf "       \e[1;30mdata_dir\e[m: \e[0;37m%s\e[m\n" "$_tor_prod_data_dir"
 
   return $_STATE
 
