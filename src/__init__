@@ -98,7 +98,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:i:snu:"
-  local _long_opt="help,debug,init:,show-id,new-id,user:,socks-port:,control-port:proxy"
+  local _long_opt="help,debug,init:,show-id,new-id,user:,socks-port:,control-port:,proxy"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -437,6 +437,21 @@ function __main__() {
     # shellcheck disable=SC2034
     _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" | grep "16:")
 
+    if [[ "$proxy_state" -eq 1 ]] ; then
+
+      # shellcheck disable=SC2034,SC2154
+      local _tml_file0="${_tml}/haproxy-template.cfg"
+      # shellcheck disable=SC2034,SC2154
+      local _tml_file1="${_etc}/haproxy.cfg"
+
+      # shellcheck disable=SC2154
+      : >"${_tml_file1}"
+
+      # shellcheck disable=SC2154
+      cp "${_tml_file0}" "${_tml_file1}"
+
+    fi
+
     for i in $(seq 0 $((init_number - 1))) ; do
 
       echo
@@ -481,6 +496,12 @@ function __main__() {
 
     done
 
+    if [[ "$proxy_state" -eq 1 ]] ; then
+
+      haproxy -f "${_tml_file1}"
+
+    fi
+
     printf "\n     Set processes: \e[0;39m%d\e[m\n" "$init_number"
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
     printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
@@ -490,6 +511,8 @@ function __main__() {
     unset _pass_gen ; unset _pass_hash
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
+
+    echo
 
     _tor_processes=($(pidof tor))
 
@@ -729,6 +752,8 @@ function __main__() {
     done
 
   fi
+
+  echo
 
   # ````````````````````````````````````````````````````````````````````````````
 
