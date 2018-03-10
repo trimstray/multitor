@@ -498,9 +498,21 @@ function __main__() {
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
-      pkill -f haproxy
+      # shellcheck disable=SC2009,SC2034
+      _hproc=$(ps -ax | grep "haproxy" | grep -v "grep")
 
-      _kstate=$?
+      if [[ ! -z "$_hproc" ]] ; then
+
+        killall "haproxy"
+
+        _kstate=$?
+
+      else
+
+        _kstate=0
+
+      fi
+
       if [[ $_kstate -eq 0 ]] ; then
 
         _logger "info" \
