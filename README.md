@@ -156,17 +156,21 @@ tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      
 tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      25638/haproxy
 ```
 
-HAProxy uses **16379** to communicate.
+HAProxy uses **16379** to communication, so all of your services to use the load balancer should have this port number.
 
-In order to test the correctness of the action, you can run the following command:
+In order to test the correctness of the setup, you can run the following command:
 
 ```bash
-for i in $(seq 1 5) ; do curl -Iks --location --proxy socks5h://ipinfo.io/ip ; done
+for i in $(seq 1 4) ; do echo -en "req ${i}: " ; curl -k --location --proxy socks5h://127.0.0.1:16379 http://ipinfo.io/ip ; done
+req 1: 176.10.99.200
+req 2: 185.220.101.29
+req 3: 176.10.99.200
+req 4: 185.220.101.29
 ```
 
 ### HAProxy stats interface
 
-If you want to view traffic statistics, go to http://127.0.0.1:16379/stats.
+If you want to view traffic statistics, go to http://127.0.0.1:16380/stats.
 
 ## Password authentication
 
