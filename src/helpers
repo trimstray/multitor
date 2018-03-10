@@ -639,7 +639,7 @@ function _before_init() {
       _kstate="$?"
 
       if [[ $_kstate -eq 0 ]] ; then
-      
+
         _logger "info" \
           "${_FUNCTION_ID}()" \
           "changed owner properly to: ${_multitor_directory}"
