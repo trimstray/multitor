@@ -5,7 +5,7 @@
 |            **STABLE RELEASE**            |           **TESTING RELEASE**            |
 | :--------------------------------------: | :--------------------------------------: |
 | [![](https://img.shields.io/badge/Branch-master-green.svg)]() | [![](https://img.shields.io/badge/Branch-testing-orange.svg)]() |
-| [![](https://img.shields.io/badge/Version-v1.1.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() |
+| [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() |
 | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=master)](https://travis-ci.org/trimstray/multitor) | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=testing)](https://travis-ci.org/trimstray/multitor) |
 
 ## Description
@@ -136,7 +136,7 @@ So if We created 2 **Tor** processes by **multitor** example output will be give
 
 ## Load balancing
 
-**Multitor** uses HAProxy to create a local proxy server for all created **TOR** instances and distribute traffic between them. The default configuration is in `templates/haproxy-template.cfg`.
+**Multitor** uses HAProxy to create a local socks proxy server for all created **TOR** instances and distribute traffic between them. The default configuration is in `templates/haproxy-template.cfg`.
 
 To run the load balancer you need to add the `--proxy` parameter to the command specified in the example.
 
@@ -156,7 +156,13 @@ tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      
 tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      25638/haproxy
 ```
 
-HAProxy uses `16379` to communicate.
+HAProxy uses **16379** to communicate.
+
+In order to test the correctness of the action, you can run the following command:
+
+```bash
+for i in $(seq 1 5) ; do curl -Iks --location --proxy socks5h://ipinfo.io/ip ; done
+```
 
 ### HAProxy stats interface
 
@@ -175,7 +181,7 @@ After running the script, the `log/` directory is created and in it the followin
 
 ## Important
 
-If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version.
+If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version. If you do not use regenerate function of single or all **TOR** circuits with a password, you can safely restart the **multitor** which will do it for you.
 
 ## Limitations
 
