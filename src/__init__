@@ -509,11 +509,11 @@ function __main__() {
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
-      printf "     socks5 proxy: \e[2;38m%s\e[m\n\n" "enable"
+      printf "       Socks proxy: \e[2;32m%s\e[m\n\n" "enable"
 
     else
 
-      printf "     socks5 proxy: \e[2;32m%s\e[m\n\n" "disable"
+      printf "       Socks proxy: \e[2;31m%s\e[m\n\n" "disable"
 
     fi
 
