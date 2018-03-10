@@ -391,7 +391,6 @@ function __main__() {
 
   fi
 
-
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
@@ -564,6 +563,8 @@ function __main__() {
           # In this case, we can search for a specific identifier (${_tpr}).
           # shellcheck disable=SC2009
           _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+          echo
 
           # We get process information and display it on the screen.
           GetTorProcess
