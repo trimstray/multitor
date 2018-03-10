@@ -100,13 +100,6 @@ function CreateTorProcess() {
 
   unset _kstate
 
-  # shellcheck disable=SC2154
-  if [[ "$proxy_state" -eq 1 ]] ; then
-
-    CreateTorProxy
-
-  fi
-
   return $_STATE
 
 }
