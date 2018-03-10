@@ -576,6 +576,7 @@ function _help_() {
     -u, --user <string>             set the user (only with -i|--init)
         --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
+        --proxy                     set tor load balancer
 
 
   This program comes with ABSOLUTELY NO WARRANTY.

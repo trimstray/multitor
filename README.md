@@ -38,6 +38,7 @@ Provides the following options:
     -u, --user <string>             set the user (only with -i|--init)
         --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
+        --proxy                     set tor load balancer
 ``````
 
 ## Requirements
@@ -168,6 +169,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
     |-- doc                        # includes documentation, images and manuals
         |-- man8
             |-- multitor.8         # man page for multitor
+    |-- etc                        # contains configuration files
     |-- lib                        # libraries, external functions
     |-- log                        # contains logs, created after init
     |-- src                        # includes external project files
@@ -175,6 +177,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
         |-- import                 # appends the contents of the lib directory
         |-- __init__               # contains the __main__ function
         |-- settings               # contains multitor settings
+    |-- templates                  # contains examples and template files
+        |-- haproxy-template.cfg   # example of user config file
 
 ## License
 
