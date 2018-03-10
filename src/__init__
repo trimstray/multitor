@@ -498,7 +498,21 @@ function __main__() {
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
-      ProxyProcess
+      # Manages proxy processes stack.
+      CheckProxyProcess
+
+      # shellcheck disable=SC2154
+      for i in "${_proxy_processes_list[@]}" ; do
+
+        DestroyProcess "${i}"
+
+      done
+
+      CreateTorProxy
+
+    else
+
+      CheckProxyProcess
 
     fi
 
@@ -507,9 +521,10 @@ function __main__() {
     printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
     printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
 
-    if [[ "$proxy_state" -eq 1 ]] ; then
+    # shellcheck disable=SC2154
+    if [[ ${#_proxy_processes_list[@]} -ne 0 ]] ; then
 
-      printf "       Socks proxy: \e[2;32m%s\e[m\n\n" "enable"
+      printf "       Socks proxy: \e[2;32m%s\e[m\n\n" "running"
 
     else
 
