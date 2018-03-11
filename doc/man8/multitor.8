@@ -1,12 +1,12 @@
 .\" Manpage for multitor.
 .\" Contact contact@nslab.at.
-.TH man 8 "21.01.2018" "1.2.0" "multitor man page"
+.TH man 8 "21.01.2018" "1.2.1" "multitor man page"
 .SH NAME
 multitor \- create multiple TOR instances
 .SH SYNOPSIS
 multitor <option|long-option>
 .SH DESCRIPTION
-A tool that lets you create multiple TOR instances with a load balancing traffic between them. In addition, you can view previously running TOR processes and create a new identity for all or selected processes.
+A tool that lets you create multiple TOR instances with a load-balancing traffic between them by HAProxy. It's provides one single endpoint for clients. In addition, you can view previously running TOR processes and create a new identity for all or selected processes.
 .SH OPTIONS
 --help
         show this message
@@ -32,7 +32,7 @@ A tool that lets you create multiple TOR instances with a load balancing traffic
 --control-port <port_num>
         set control port number
 
---proxy
+--proxy <socks|http>
         set tor load balancer
 .SH SEE ALSO
 https://github.com/trimstray/multitor
