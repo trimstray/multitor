@@ -19,10 +19,11 @@ function CheckProxyProcess() {
   local _FUNCTION_ID="CheckProxyProcess"
   local _STATE=0
 
-  _proxy_processes_list=()
+  # shellcheck disable=SC2034
+  local proc_type="$1"
 
   # First, we remove current processes.
-  _proxy_processes=($(pidof haproxy))
+  _proxy_processes=($(pidof "$proc_type"))
 
   if [[ ${#_proxy_processes[@]} -ne 0 ]] ; then
 
@@ -30,7 +31,7 @@ function CheckProxyProcess() {
 
       # In this case, we can search for a specific identifier (${_tpr}).
       # shellcheck disable=SC2009,SC2034
-      _hpr=$(ps -ax | grep "haproxy" | grep -v "grep" | grep "$_tpr" | grep "multitor")
+      _hpr=$(ps -ax | grep "$proc_type" | grep -v "grep" | grep "$_tpr" | grep "multitor")
 
       if [[ -z "$_hpr" ]] ; then
 
@@ -54,7 +55,7 @@ function CheckProxyProcess() {
 
     _logger "warn" \
       "${_FUNCTION_ID}()" \
-      "not found proxy processes: ${_hpr}"
+      "not found proxy processes"
 
   fi
 
