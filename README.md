@@ -5,12 +5,12 @@
 |            **STABLE RELEASE**            |           **TESTING RELEASE**            |
 | :--------------------------------------: | :--------------------------------------: |
 | [![](https://img.shields.io/badge/Branch-master-green.svg)]() | [![](https://img.shields.io/badge/Branch-testing-orange.svg)]() |
-| [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.0-lightgrey.svg)]() |
+| [![](https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg)]() |
 | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=master)](https://travis-ci.org/trimstray/multitor) | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=testing)](https://travis-ci.org/trimstray/multitor) |
 
 ## Description
 
-A tool that lets you **create multiple TOR** instances with a **load balancing** traffic between them. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
+A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **HAProxy**. It's provides one single endpoint for clients. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
 
 > The **multitor** has been completely rewritten on the basis of:
 >
@@ -21,7 +21,7 @@ A tool that lets you **create multiple TOR** instances with a **load balancing**
 
 Provides the following options:
 
-``````
+```bash
   Usage:
     multitor <option|long-option>
 
@@ -38,8 +38,8 @@ Provides the following options:
     -u, --user <string>             set the user (only with -i|--init)
         --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
-        --proxy                     set tor load balancer
-``````
+        --proxy <socks|http>        set tor load balancer
+```
 
 ## Requirements
 
@@ -48,18 +48,19 @@ Provides the following options:
 - [tor](https://www.torproject.org/)
 - [netcat](http://netcat.sourceforge.net/)
 - [haproxy](https://www.haproxy.org/)
+- [polipo](https://www.irif.fr/~jch/software/polipo/)
 
 ## Install/uninstall
 
 It's simple - for install:
 
-```
+```bash
 ./setup.sh install
 ```
 
 For remove:
 
-```
+```bash
 ./setup.sh uninstall
 ```
 
@@ -72,9 +73,9 @@ For remove:
 
 Then an example of starting the tool:
 
-``````
+```bash
 multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900
-``````
+```
 
 Creates new **Tor** processes and specifies the number of processes to create:
 
@@ -96,7 +97,7 @@ Specifies the port number of the **Tor** process control. Increased by 1 for eac
 
 Examples of obtaining information about a given **Tor** process created by **multitor**:
 
-```
+```bash
 multitor --show-id --socks-port 9000
 ```
 
@@ -114,7 +115,7 @@ Specifies the port number for communication. Allows you to find the process afte
 
 If there is a need to create a new identity:
 
-```
+```bash
 multitor --new-id --socks-port 9000
 ```
 
@@ -128,57 +129,145 @@ Specifies the port number for communication. Allows you to find the process afte
 
 - `--socks-port 9000`
 
+### Proxy
+
+See [Load balancing](#lb).
+
 ### Output example
 
-So if We created 2 **Tor** processes by **multitor** example output will be given:
+So if We created 2 **TOR** processes by **Multitor** example output will be given:
 
 ![multitor_output](doc/img/multitor_output.png)
 
-## Load balancing
+## Load balancing {#lb}
 
-**Multitor** uses HAProxy to create a local socks proxy server for all created **TOR** instances and distribute traffic between them. The default configuration is in `templates/haproxy-template.cfg`.
+**Multitor** uses two techniques to create a load balancing mechanism -  these are **socks proxy** and **http proxy**. Each of these types of load balancing is good but its purpose is slightly different.
 
-To run the load balancer you need to add the `--proxy` parameter to the command specified in the example.
+For browsing websites (generally for **http/https** traffic) it is recommended to use **http proxy**. In this configuration, the **polipo** service is used, which has many very useful functions (including cache memory) which in the case of **TOR** is not always well-aimed. In addition, we are confident in better handling of ssl traffic.
+
+The **socks proxy** type is also reliable, however, when browsing websites through **TOR** nodes it can cause more problems.
+
+**Multitor** uses **HAProxy** to create a local proxy server for all created **TOR** or **Polipo** instances and distribute traffic between them. The default configuration is in `templates/haproxy-template.cfg`.
+
+> **HAProxy** uses **16379** to communication, so all of your services to use the load balancer should have this port number.
+
+### SOCKS Proxy
+
+Communication architecture:
 
 ```bash
-multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900 --proxy
+ Client
+    |
+    |
+ HAProxy (127.0.0.1:16379)
+    |
+    |--------> TOR Instance (127.0.0.1:9000)
+    |
+    |--------> TOR Instance (127.0.0.1:9001)
+```
+
+To run the load balancer you need to add the `--proxy socks` parameter to the command specified in the example.
+
+```bash
+multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900 --proxy socks
 ```
 
 After launching, let's see the working processes:
 
 ```bash
-netstat -tapn | grep LISTEN | grep "tor\|haproxy"
-tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      25497/tor           
-tcp        0      0 127.0.0.1:9001          0.0.0.0:*               LISTEN      25560/tor           
-tcp        0      0 127.0.0.1:9900          0.0.0.0:*               LISTEN      25497/tor           
-tcp        0      0 127.0.0.1:9901          0.0.0.0:*               LISTEN      25560/tor           
-tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      25638/haproxy       
-tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      25638/haproxy
+netstat -tapn | grep LISTEN | grep "tor\|haproxy\|polipo"
+tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      28976/tor
+tcp        0      0 127.0.0.1:9001          0.0.0.0:*               LISTEN      29039/tor
+tcp        0      0 127.0.0.1:9900          0.0.0.0:*               LISTEN      28976/tor
+tcp        0      0 127.0.0.1:9901          0.0.0.0:*               LISTEN      29039/tor
+tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      29104/haproxy
+tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      29104/haproxy
 ```
-
-HAProxy uses **16379** to communication, so all of your services to use the load balancer should have this port number.
 
 In order to test the correctness of the setup, you can run the following command:
 
 ```bash
-for i in $(seq 1 10) ; do printf "req %2d: " "$i" ; curl -k --location --proxy socks5h://127.0.0.1:16379 http://ipinfo.io/ip ; done
-req  1: 93.115.86.4
-req  2: 185.56.80.242
-req  3: 51.15.34.228
-req  4: 197.231.221.211
-req  5: 62.210.105.116
-req  6: 93.115.86.4
-req  7: 185.56.80.242
-req  8: 51.15.34.228
-req  9: 197.231.221.211
-req 10: 62.210.105.116
+for i in $(seq 1 4) ; do printf "req %2d: " "$i" ; curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; done
+req  1: 5.254.79.66
+req  2: 178.175.135.99
+req  3: 5.254.79.66
+req  4: 178.175.135.99
 ```
 
-> If you do not need a working haproxy at the moment and the processes of this service are still working, you can do one of many available commands to manage processes in GNU/Linux and kill them: `pkill -f haproxy`.
+Communication through **socks proxy** takes place without a cache (except browsers that have their own cache). **Curl** and other low-level programs should work without any problems.
+
+### HTTP Proxy
+
+Communication architecture:
+
+```bash
+ Client
+    |
+    |
+ HAProxy (127.0.0.1:16379)
+    |
+    |--------> Polipo Instance (127.0.0.1:8000)
+    |             |
+    |             |---------> TOR Instance (127.0.0.1:9000)
+    |
+    |--------> Polipo Instance (127.0.0.1:8001)
+                  |
+                  |---------> TOR Instance (127.0.0.1:9001)
+```
+
+To run the load balancer you need to add the `--proxy http` parameter to the command specified in the example.
+
+```bash
+multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900 --proxy http
+```
+
+After launching, let's see the working processes:
+
+```bash
+netstat -tapn | grep LISTEN | grep "tor\|haproxy\|polipo"
+tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      32168/tor
+tcp        0      0 127.0.0.1:9001          0.0.0.0:*               LISTEN      32246/tor
+tcp        0      0 127.0.0.1:9900          0.0.0.0:*               LISTEN      32168/tor
+tcp        0      0 127.0.0.1:9901          0.0.0.0:*               LISTEN      32246/tor
+tcp        0      0 127.0.0.1:16379         0.0.0.0:*               LISTEN      32327/haproxy
+tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      32327/haproxy
+tcp        0      0 127.0.0.1:8000          0.0.0.0:*               LISTEN      32307/polipo
+tcp        0      0 127.0.0.1:8001          0.0.0.0:*               LISTEN      32320/polipo
+```
+
+In order to test the correctness of the setup, you can run the following command:
+
+```bash
+for i in $(seq 1 4) ; do printf "req %2d: " "$i" ; curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; done
+req  1: 178.209.42.84
+req  2: 185.100.85.61
+req  3: 178.209.42.84
+req  4: 185.100.85.61
+```
+
+In the default configuration, the **Polipo** cache has been **turned off** (look at the configuration template). If you set the network configuration in the browser so that the traffic passes through **HAProxy**, you must remember that browsers have their **own cache,** which can cause that each entry to the page will be from the same IP address. This is not a big problem because it is not always the case. After clearing the browser cache again, the web server will receive the request from a different IP address.
+
+You can check it for example in the firefox browsers by installing the "*Empty Cache Button by mvm*" add-on and enter the [http://myexternalip.com/](http://myexternalip.com/) website.
+
+### Port convention
+
+The port numbers for the **TOR** are set by the user using the `--socks-port` parameter. Additionally, the standard port on which **HAProxy** listens is **16379**. **Polipo** uses ports **1000** smaller than those set for **TOR**.
 
 ### HAProxy stats interface
 
 If you want to view traffic statistics, go to http://127.0.0.1:16380/stats.
+
+### Polipo configuration interface
+
+If you wat to view or changed **Polipo** params, got to [http://127.0.0.1:8000/polipo/config](http://127.0.0.1:8000/polipo/config) (remember the right port number).
+
+### Gateway
+
+If you are building a gateway for **TOR** connections, you can put **HAProxy** on an external IP address by changing the `bind` directive in **haproxy-template.cfg**:
+
+```bash
+bind              0.0.0.0:16379 name proxy
+```
 
 ## Password authentication
 
@@ -198,6 +287,7 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 ## Limitations
 
 - each **Tor** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
+- **Polipo** is no longer supported but it is still a very good and light proxy. It is very good for such applications. In the next version I will give you the option to choose a different solution
 
 ## Contributing
 
@@ -225,7 +315,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
         |-- __init__               # contains the __main__ function
         |-- settings               # contains multitor settings
     |-- templates                  # contains examples and template files
-        |-- haproxy-template.cfg   # example of user config file
+        |-- haproxy-template.cfg   # example of HAProxy configuration
+        |-- polipo-template.cfg    # example of Polipo configuration
 
 ## License
 
