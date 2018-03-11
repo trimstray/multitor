@@ -19,25 +19,70 @@ function CreateProxyProcess() {
   local _FUNCTION_ID="CreateProxyProcess"
   local _STATE=0
 
+  local _bk_port_new=0
+  local _proxy_http_state=0
+
   # shellcheck disable=SC2154
   for _bk_port in "${_proxy_ports[@]}" ; do
 
-    # shellcheck disable=SC2154
-    printf "  server            tor%d 127.0.0.1:%d\n" "$_bk_port" "$_bk_port" \
-    >>"${_tml_file1}"
+    if [[ "$proxy_type" == "http" ]] ; then
 
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "added backend port: '$_bk_port'"
+      # shellcheck disable=SC2154
+      cp "${_tml_po0}" "${_tml_po1}.${_bk_port}"
+
+      # shellcheck disable=SC2034
+      _bk_port_new=$((_bk_port - 1000))
+
+      printf "proxyPort = %d\n" "$_bk_port_new" \
+      >>"${_tml_po1}.${_bk_port}"
+
+      # shellcheck disable=SC2154
+      printf "socksParentProxy = \"127.0.0.1:%d\"\n" "$_bk_port" \
+      >>"${_tml_po1}.${_bk_port}"
+
+      _proxy_http_state=1
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "added backend port for polipo: '$_bk_port'"
+
+      polipo -c "${_tml_po1}.${_bk_port}"
+
+    fi
+
+    if [[ "$_proxy_http_state" -eq 1 ]] ; then
+
+      # shellcheck disable=SC2154
+      printf "  server            tor%d 127.0.0.1:%d\n" "$_bk_port_new" "$_bk_port_new" \
+      >>"${_tml_ha1}"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "added backend port for haproxy + polipo: '$_bk_port_new'"
+
+    elif [[ "$proxy_type" == "socks" ]] ; then
+
+      # shellcheck disable=SC2034
+      _bk_port_new="$_bk_port"
+
+      # shellcheck disable=SC2154
+      printf "  server            tor%d 127.0.0.1:%d\n" "$_bk_port" "$_bk_port_new" \
+      >>"${_tml_ha1}"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "added backend port for haproxy: '$_bk_port'"
+
+    fi
 
   done
 
   # shellcheck disable=SC2154
   # Init proxy process.
-  haproxy -f "${_tml_file1}" && \
+  haproxy -f "${_tml_ha1}" && \
   _logger "info" \
     "${_FUNCTION_ID}()" \
-    "init proxy process with '${_tml_file1}' config file"
+    "init proxy process with '${_tml_ha1}' config file"
 
   return $_STATE
 
