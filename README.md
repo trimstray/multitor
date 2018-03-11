@@ -38,7 +38,7 @@ Provides the following options:
     -u, --user <string>             set the user (only with -i|--init)
         --socks-port <port_num|all> set socks port number
         --control-port <port_num>   set control port number
-        --proxy <socks|http>        set tor load balancer
+        --proxy <socks|http>        set load balancer
 ```
 
 ## Requirements
@@ -131,7 +131,7 @@ Specifies the port number for communication. Allows you to find the process afte
 
 ### Proxy
 
-See [Load balancing](#lb).
+See [Load balancing](#load-balancing).
 
 ### Output example
 
@@ -139,7 +139,7 @@ So if We created 2 **TOR** processes by **Multitor** example output will be give
 
 ![multitor_output](doc/img/multitor_output.png)
 
-## Load balancing {#lb}
+## Load balancing
 
 **Multitor** uses two techniques to create a load balancing mechanism -  these are **socks proxy** and **http proxy**. Each of these types of load balancing is good but its purpose is slightly different.
 
@@ -156,14 +156,13 @@ The **socks proxy** type is also reliable, however, when browsing websites throu
 Communication architecture:
 
 ```bash
- Client
-    |
-    |
- HAProxy (127.0.0.1:16379)
-    |
-    |--------> TOR Instance (127.0.0.1:9000)
-    |
-    |--------> TOR Instance (127.0.0.1:9001)
+Client
+   |
+   |--------> HAProxy (127.0.0.1:16379)
+                 |
+                 |--------> TOR Instance (127.0.0.1:9000)
+                 |
+                 |--------> TOR Instance (127.0.0.1:9001)
 ```
 
 To run the load balancer you need to add the `--proxy socks` parameter to the command specified in the example.
@@ -187,7 +186,9 @@ tcp        0      0 127.0.0.1:16380         0.0.0.0:*               LISTEN      
 In order to test the correctness of the setup, you can run the following command:
 
 ```bash
-for i in $(seq 1 4) ; do printf "req %2d: " "$i" ; curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; done
+for i in $(seq 1 4) ; do \
+printf "req %2d: " "$i" ; \
+curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; done
 req  1: 5.254.79.66
 req  2: 178.175.135.99
 req  3: 5.254.79.66
@@ -201,18 +202,17 @@ Communication through **socks proxy** takes place without a cache (except browse
 Communication architecture:
 
 ```bash
- Client
-    |
-    |
- HAProxy (127.0.0.1:16379)
-    |
-    |--------> Polipo Instance (127.0.0.1:8000)
-    |             |
-    |             |---------> TOR Instance (127.0.0.1:9000)
-    |
-    |--------> Polipo Instance (127.0.0.1:8001)
-                  |
-                  |---------> TOR Instance (127.0.0.1:9001)
+Client
+   |
+   |--------> HAProxy (127.0.0.1:16379)
+                 |
+                 |--------> Polipo Instance (127.0.0.1:8000)
+                 |             |
+                 |             |---------> TOR Instance (127.0.0.1:9000)
+                 |
+                 |--------> Polipo Instance (127.0.0.1:8001)
+                               |
+                               |---------> TOR Instance (127.0.0.1:9001)
 ```
 
 To run the load balancer you need to add the `--proxy http` parameter to the command specified in the example.
@@ -238,7 +238,9 @@ tcp        0      0 127.0.0.1:8001          0.0.0.0:*               LISTEN      
 In order to test the correctness of the setup, you can run the following command:
 
 ```bash
-for i in $(seq 1 4) ; do printf "req %2d: " "$i" ; curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; done
+for i in $(seq 1 4) ; do \
+printf "req %2d: " "$i" ; \
+curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; done
 req  1: 178.209.42.84
 req  2: 185.100.85.61
 req  3: 178.209.42.84
@@ -247,7 +249,7 @@ req  4: 185.100.85.61
 
 In the default configuration, the **Polipo** cache has been **turned off** (look at the configuration template). If you set the network configuration in the browser so that the traffic passes through **HAProxy**, you must remember that browsers have their **own cache,** which can cause that each entry to the page will be from the same IP address. This is not a big problem because it is not always the case. After clearing the browser cache again, the web server will receive the request from a different IP address.
 
-You can check it for example in the firefox browsers by installing the "*Empty Cache Button by mvm*" add-on and enter the [http://myexternalip.com/](http://myexternalip.com/) website.
+> You can check it for example in the firefox browsers by installing the "*Empty Cache Button by mvm*" add-on and enter the [http://myexternalip.com/](http://myexternalip.com/) website.
 
 ### Port convention
 
@@ -266,7 +268,7 @@ If you wat to view or changed **Polipo** params, got to [http://127.0.0.1:8000/p
 If you are building a gateway for **TOR** connections, you can put **HAProxy** on an external IP address by changing the `bind` directive in **haproxy-template.cfg**:
 
 ```bash
-bind              0.0.0.0:16379 name proxy
+bind 0.0.0.0:16379 name proxy
 ```
 
 ## Password authentication
