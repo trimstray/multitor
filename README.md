@@ -189,7 +189,7 @@ In order to test the correctness of the setup, you can run the following command
 for i in $(seq 1 4) ; do \
   printf "req %2d: " "$i" ; \
   curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; \
-done ; echo
+done
 
 req  1: 5.254.79.66
 req  2: 178.175.135.99
@@ -243,7 +243,7 @@ In order to test the correctness of the setup, you can run the following command
 for i in $(seq 1 4) ; do \
   printf "req %2d: " "$i" ; \
   curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; \
-done ; echo
+done
 
 req  1: 178.209.42.84
 req  2: 185.100.85.61
