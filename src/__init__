@@ -98,7 +98,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:i:snu:"
-  local _long_opt="help,debug,init:,show-id,new-id,user:,socks-port:,control-port:,proxy"
+  local _long_opt="help,debug,init:,show-id,new-id,user:,socks-port:,control-port:,proxy:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -174,7 +174,7 @@ function __main__() {
 
         export control_port_state=1
 
-        export control_port_number=${2:-"15000"}
+        export control_port_number="${2}"
 
         shift 2 ;;
 
@@ -182,7 +182,9 @@ function __main__() {
 
         export proxy_state=1
 
-        shift ;;
+        export proxy_type="${2}"
+
+        shift 2 ;;
 
       *)
 
@@ -342,6 +344,27 @@ function __main__() {
 
   fi
 
+  # Checking if proxy is set.
+  if [[ "$proxy_state" -eq 1 ]] ; then
+
+    if [[ "$proxy_type" == "socks" ]] || [[ "$proxy_type" == "http" ]] ; then
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "correct proxy type: '$proxy_type'"
+
+    else
+
+      _sprintf "stop" "incorrect proxy type"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "incorrect proxy type"
+
+    fi
+
+  fi
+
   # We set the value of the variable depending on the call option.
   if [[ "$init_state" -eq 1 ]] ; then
 
@@ -439,17 +462,35 @@ function __main__() {
     if [[ "$proxy_state" -eq 1 ]] ; then
 
       # shellcheck disable=SC2034,SC2154
-      local _tml_file0="${_tml}/haproxy-template.cfg"
+      local _tml_ha0="${_tml}/haproxy-template.cfg"
       # shellcheck disable=SC2034,SC2154
-      local _tml_file1="${_etc}/haproxy.cfg"
+      local _tml_po0="${_tml}/polipo-template.cfg"
+
+      # shellcheck disable=SC2034,SC2154
+      local _tml_ha1="${_etc}/haproxy.cfg"
+      # shellcheck disable=SC2034,SC2154
+      local _tml_po1="${_etc}/polipo.cfg"
+
+      for _tfd in "$_tml_ha1" "$_tml_po1" ; do
+
+        # shellcheck disable=SC2154
+        if [[ -e "$_tfd" ]] ; then
+
+          rm -fr "${_tfd}"
+
+        fi
+
+      done
 
       # shellcheck disable=SC2154
-      : >"${_tml_file1}"
-
-      # shellcheck disable=SC2154
-      cp "${_tml_file0}" "${_tml_file1}"
+      cp "${_tml_ha0}" "${_tml_ha1}"
 
       _proxy_ports=()
+
+    else
+
+      # Flush etc/ directory.
+      rm -fr "${_etc:?}"/*
 
     fi
 
@@ -500,23 +541,35 @@ function __main__() {
 
     done
 
+    _proxy_processes_list=()
+
+    # shellcheck disable=SC2034
+    # Manages proxy processes stack.
+    for _proc in "haproxy" "polipo" ; do
+
+      CheckProxyProcess "${_proc}"
+
+    done
+
+    # shellcheck disable=SC2154
+    for _hproc in "${_proxy_processes_list[@]}" ; do
+
+      DestroyProcess "${_hproc}"
+
+    done
+
     if [[ "$proxy_state" -eq 1 ]] ; then
-
-      # Manages proxy processes stack.
-      CheckProxyProcess
-
-      # shellcheck disable=SC2154
-      for _hproc in "${_proxy_processes_list[@]}" ; do
-
-        DestroyProcess "${_hproc}"
-
-      done
 
       CreateProxyProcess
 
     fi
 
-    CheckProxyProcess
+    # shellcheck disable=SC2034
+    for _proc in "haproxy" "polipo" ; do
+
+      CheckProxyProcess "${_proc}"
+
+    done
 
     printf "\n     Set processes: \e[0;39m%d\e[m\n" "$init_number"
     printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
@@ -524,13 +577,13 @@ function __main__() {
     printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
 
     # shellcheck disable=SC2154
-    if [[ ${#_proxy_processes_list[@]} -ne 0 ]] ; then
+    if [[ ${#_proxy_processes_list[@]} -ne 0 ]] && [[ "$proxy_state" -eq 1 ]] ; then
 
-      printf "       Socks proxy: \e[2;32m%s\e[m\n\n" "running"
+      printf "       Proxy state: \e[2;32m%s\e[m (%s proxy)\n\n" "running" "$proxy_type"
 
     else
 
-      printf "       Socks proxy: \e[2;31m%s\e[m\n\n" "disable"
+      printf "       Proxy state: \e[2;31m%s\e[m (only tor)\n\n" "disable"
 
     fi
 
