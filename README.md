@@ -15,7 +15,7 @@ A tool that lets you **create multiple TOR** instances with a **load-balancing**
 > The **multitor** has been completely rewritten on the basis of:
 >
 > - **Multi-TOR** project written by *Jai Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
-> - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple Tor Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
+> - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple TOR Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
 ## Parameters
 
@@ -77,7 +77,7 @@ Then an example of starting the tool:
 multitor --init 2 -u debian-tor --socks-port 9000 --control-port 9900
 ```
 
-Creates new **Tor** processes and specifies the number of processes to create:
+Creates new **TOR** processes and specifies the number of processes to create:
 
 - `--init 2`
 
@@ -85,23 +85,23 @@ Specifies the user from which new processes will be created (the user must exist
 
 - `-u debian-tor`
 
-Specifies the port number for **Tor** communication. Increased by 1 for each subsequent process:
+Specifies the port number for **TOR** communication. Increased by 1 for each subsequent process:
 
 - `--socks-port 9000`
 
-Specifies the port number of the **Tor** process control. Increased by 1 for each subsequent process:
+Specifies the port number of the **TOR** process control. Increased by 1 for each subsequent process:
 
 - `--control-port 9900`
 
 ### Reviewing processes
 
-Examples of obtaining information about a given **Tor** process created by **multitor**:
+Examples of obtaining information about a given **TOR** process created by **multitor**:
 
 ```bash
 multitor --show-id --socks-port 9000
 ```
 
-We want to get information about a given **Tor** process:
+We want to get information about a given **TOR** process:
 
 - `--show-id`
 
@@ -111,7 +111,7 @@ Specifies the port number for communication. Allows you to find the process afte
 
 - `--socks-port 9000`
 
-### New Tor identity
+### New TOR identity
 
 If there is a need to create a new identity:
 
@@ -119,7 +119,7 @@ If there is a need to create a new identity:
 multitor --new-id --socks-port 9000
 ```
 
-We set up creating a new identity for **Tor** process:
+We set up creating a new identity for **TOR** process:
 
 - `--new-id`
 
@@ -187,8 +187,10 @@ In order to test the correctness of the setup, you can run the following command
 
 ```bash
 for i in $(seq 1 4) ; do \
-printf "req %2d: " "$i" ; \
-curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; done
+  printf "req %2d: " "$i" ; \
+  curl -k --location --socks5 127.0.0.1:16379 http://ipinfo.io/ip ; \
+done ; echo
+
 req  1: 5.254.79.66
 req  2: 178.175.135.99
 req  3: 5.254.79.66
@@ -239,8 +241,10 @@ In order to test the correctness of the setup, you can run the following command
 
 ```bash
 for i in $(seq 1 4) ; do \
-printf "req %2d: " "$i" ; \
-curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; done
+  printf "req %2d: " "$i" ; \
+  curl -k --location --proxy 127.0.0.1:16379 http://ipinfo.io/ip ; \
+done ; echo
+
 req  1: 178.209.42.84
 req  2: 185.100.85.61
 req  3: 178.209.42.84
@@ -288,7 +292,7 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 
 ## Limitations
 
-- each **Tor** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
+- each **TOR** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
 - **Polipo** is no longer supported but it is still a very good and light proxy. It is very good for such applications. In the next version I will give you the option to choose a different solution
 
 ## Contributing
