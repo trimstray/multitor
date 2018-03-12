@@ -113,6 +113,8 @@ Specifies the port number for communication. Allows you to find the process afte
 
 ### New TOR identity
 
+> There is a "*Use new identity*" button in TOR Browser or Vidalia. It sends a signal to the control port of TOR, to switch to a new identity. An alternative solution is to restart the **multitor** or wait for the time defined in the `NewCircuitPeriod` variable, which default value is **30s**.
+
 If there is a need to create a new identity:
 
 ```bash
