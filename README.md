@@ -265,6 +265,9 @@ The port numbers for the **TOR** are set by the user using the `--socks-port` pa
 
 If you want to view traffic statistics, go to http://127.0.0.1:16380/stats.
 
+Login: **ha_admin**
+Password: automatically generated (see in `etc/haproxy.cfg`)
+
 ### Polipo configuration interface
 
 If you wat to view or changed **Polipo** params, got to [http://127.0.0.1:8000/polipo/config](http://127.0.0.1:8000/polipo/config) (remember the right port number).
