@@ -491,7 +491,7 @@ function __main__() {
       # shellcheck disable=SC2034
       _pass_gen_ha=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
 
-      sed -i 's/__PASSWORD__/"${_pass_gen_ha}/g' "${_tml_ha1}"
+      sed -i "s/__PASSWORD__/$_pass_gen_ha/g" "${_tml_ha1}"
 
       unset _pass_gen_ha
 
