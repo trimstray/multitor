@@ -1,6 +1,6 @@
 <h1 align="center">Multitor</h1>
 
-<h4 align="center">Open source tool to help you build a valid SSL certificate chain.</h4>
+<h4 align="center">A tool that lets you create multiple TOR instances with a load-balancing.</h4>
 
 <p align="center">
   <a href="https://img.shields.io/badge/Branch-master-green.svg">
