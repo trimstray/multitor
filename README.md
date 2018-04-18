@@ -27,7 +27,7 @@
  • <a href="#how-to-use">How To Use</a>
  • <a href="#load-balancing">Load balancing</a>
  • <a href="#password-authentication">Password authentication</a>
- • <a href="#loggind">Logging</a>
+ • <a href="#logging">Logging</a>
  • <a href="#important">Important</a>
  • <a href="#limitations">Limitations</a>
  • <a href="#contributing">Contributing</a>
