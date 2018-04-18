@@ -1,12 +1,47 @@
-# multitor
+<h1 align="center">Multitor</h1>
 
-## Releases
+<h4 align="center">Open source tool to help you build a valid SSL certificate chain.</h4>
 
-|            **STABLE RELEASE**            |           **TESTING RELEASE**            |
-| :--------------------------------------: | :--------------------------------------: |
-| [![](https://img.shields.io/badge/Branch-master-green.svg)]() | [![](https://img.shields.io/badge/Branch-testing-orange.svg)]() |
-| [![](https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg)]() |
-| [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=master)](https://travis-ci.org/trimstray/multitor) | [![Build Status](https://travis-ci.org/trimstray/multitor.svg?branch=testing)](https://travis-ci.org/trimstray/multitor) |
+<p align="center">
+  <a href="https://img.shields.io/badge/Branch-master-green.svg">
+    <img src="https://img.shields.io/badge/Branch-master-green.svg"
+        alt="Branch">
+  </a>
+  <a href="https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg">
+    <img src="https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg"
+        alt="Version">
+  </a>
+  <a href="https://travis-ci.org/trimstray/multitor">
+    <img src="https://travis-ci.org/trimstray/multitor.svg?branch=master"
+        alt="Travis-CI">
+  <a href="http://www.gnu.org/licenses/">
+    <img src="https://img.shields.io/badge/license-GNU-blue.svg"
+        alt="License">
+  </a>
+</p>
+
+<p align="center">
+   <a href="#description">Description</a>
+ • <a href="#parameters">Parameters</a>
+ • <a href="#requirements">Requirements</a>
+ • <a href="#how-to-use">How To Use</a>
+ • <a href="#load-balancing">Load balancing</a>
+ • <a href="#password-authentication">Password authentication</a>
+ • <a href="#loggind">Logging</a>
+ • <a href="#important">Important</a>
+ • <a href="#limitations">Limitations</a>
+ • <a href="#contributing">Contributing</a>
+ • <a href="#project-architecture">Project Architecture</a>
+ • <a href="#license">License</a>
+</p>
+
+<div align="center">
+  <sub>Created by
+  <a href="https://twitter.com/trimstray">trimstray</a> and
+  <a href="https://github.com/trimstray/multitor/graphs/contributors">
+    contributors
+  </a>
+</div>
 
 ## Description
 
@@ -50,7 +85,7 @@ Provides the following options:
 - [haproxy](https://www.haproxy.org/)
 - [polipo](https://www.irif.fr/~jch/software/polipo/)
 
-## Install/uninstall
+## How To Use
 
 It's simple - for install:
 
@@ -66,8 +101,6 @@ For remove:
 
 > - symlink to `bin/multitor` is placed in `/usr/local/bin`
 > - man page is placed in `/usr/local/man/man8`
-
-## Use example
 
 ### Creating processes
 
