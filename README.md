@@ -43,6 +43,8 @@
   </a>
 </div>
 
+<br>
+
 <p align="center">
     <img src="https://github.com/trimstray/multitor/blob/master/doc/img/multitor_output_1.png"
         alt="Master">
