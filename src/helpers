@@ -572,6 +572,7 @@ function _help_() {
   Options:
         --help                      show this message
         --debug                     displays information on the screen (debug mode)
+        --verbose                   displays more information about TOR processes
     -i, --init <num>                init new tor processes
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit

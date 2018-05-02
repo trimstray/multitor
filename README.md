@@ -7,8 +7,8 @@
     <img src="https://img.shields.io/badge/Branch-master-green.svg"
         alt="Branch">
   </a>
-  <a href="https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg">
-    <img src="https://img.shields.io/badge/Version-v1.2.1-lightgrey.svg"
+  <a href="https://img.shields.io/badge/Version-v1.2.2-lightgrey.svg">
+    <img src="https://img.shields.io/badge/Version-v1.2.2-lightgrey.svg"
         alt="Version">
   </a>
   <a href="https://travis-ci.org/trimstray/multitor">
@@ -67,6 +67,7 @@ Provides the following options:
   Options:
         --help                      show this message
         --debug                     displays information on the screen (debug mode)
+        --verbose                   displays more information about TOR processes
     -i, --init <num>                init new tor processes
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit
@@ -158,7 +159,7 @@ We set up creating a new identity for **TOR** process:
 
 - `--new-id`
 
-> You can use the **all** value to regenerate identity for all processes.
+> You can use the **all** value to regenerate identity for all processes. An alternative option to give new identity is to restart the multitor.
 
 Specifies the port number for communication. Allows you to find the process after this port number:
 
