@@ -158,7 +158,7 @@ function _logger() {
   # shellcheck disable=SC2154
   if [[ "$stdout_mode" == "debug" ]] ; then
 
-    printf "%s  %s:  [%s] %s\n" \
+    printf "%s  %s:  [%s] %s\\n" \
            "$(date +"%d/%m/%y %X")" \
            "$_init_name" \
            "$_conv_type" \
@@ -169,7 +169,7 @@ function _logger() {
   # or to a file and to standard output.
   else
 
-    printf "%s  %s:  [%s] %s\n" \
+    printf "%s  %s:  [%s] %s\\n" \
            "$(date +"%d/%m/%y %X")" \
            "$_init_name" \
            "$_conv_type" \
@@ -256,13 +256,13 @@ function _sprintf() {
       while [[ $(ps a | awk '{print $1}' | grep -w "$_pid") ]] ; do
 
         _n=$(( ( _n + 1 ) % 4 ))
-        printf "\r[%s]" "${_sc:_n:1}"
+        printf "\\r[%s]" "${_sc:_n:1}"
         sleep 0.1
 
       done
 
       # If the end, we clean.
-      printf "\r"
+      printf "\\r"
 
     else
 

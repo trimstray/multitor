@@ -88,7 +88,7 @@ function __main__() {
   # of the required commands in the commands array is not found.
   if [[ "$missing_counter" -gt 0 ]] ; then
 
-    printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
+    printf "not found in PATH: %s\\n" "${missing_hash[*]}" >&2
     _exit_ "1"
 
   fi
@@ -207,7 +207,7 @@ function __main__() {
 
         if [[ "$2" == "-" ]] || [[ ! -z "$2" ]] ; then
 
-          printf "%s: invalid option -- '%s'\n" "$_init_name" "$2"
+          printf "%s: invalid option -- '%s'\\n" "$_init_name" "$2"
           _exit_ "1"
 
         # elif [[ -z "$2" ]] ; then break ; fi
@@ -435,7 +435,7 @@ function __main__() {
   if [[ "$init_state" -eq 1 ]] ; then
 
     # First, we remove current processes.
-    _tor_processes=($(pidof tor))
+    _tor_processes=( "$(pidof tor)" )
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
@@ -566,8 +566,8 @@ function __main__() {
 
         _tor_pid_status="false"
 
-        printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
-        printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
+        printf "    \\e[1;30msocks_port\\e[m: \\e[1;39m%s\\e[m\\n" "$_tor_proc_socks"
+        printf "        \\e[1;30mstatus\\e[m: \\e[1;31m%s\\e[m\\n" "$_tor_pid_status"
 
       fi
 
@@ -606,19 +606,19 @@ function __main__() {
 
     done
 
-    printf "\n     Set processes: \e[0;39m%d\e[m\n" "$init_number"
-    printf "           Created: \e[0;32m%d\e[m\n" "$_tor_processes_done"
-    printf "       Not created: \e[0;31m%s\e[m\n" "$_tor_processes_fail"
-    printf "  Control password: \e[2;38m%s\e[m\n\n" "$_pass_gen"
+    printf "\\n     Set processes: \\e[0;39m%d\\e[m\\n" "$init_number"
+    printf "           Created: \\e[0;32m%d\\e[m\\n" "$_tor_processes_done"
+    printf "       Not created: \\e[0;31m%s\\e[m\\n" "$_tor_processes_fail"
+    printf "  Control password: \\e[2;38m%s\\e[m\\n\\n" "$_pass_gen"
 
     # shellcheck disable=SC2154
     if [[ ${#_proxy_processes_list[@]} -ne 0 ]] && [[ "$proxy_state" -eq 1 ]] ; then
 
-      printf "       Proxy state: \e[2;32m%s\e[m (%s proxy)\n\n" "running" "$proxy_type"
+      printf "       Proxy state: \\e[2;32m%s\\e[m (%s proxy)\\n\\n" "running" "$proxy_type"
 
     else
 
-      printf "       Proxy state: \e[2;31m%s\e[m (only tor)\n\n" "disable"
+      printf "       Proxy state: \\e[2;31m%s\\e[m (only tor)\\n\\n" "disable"
 
     fi
 
@@ -627,7 +627,7 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    _tor_processes=($(pidof tor))
+    _tor_processes=( "$(pidof tor)" )
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
@@ -639,11 +639,11 @@ function __main__() {
           # shellcheck disable=SC2009
           _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-          _proc_socks_num+=($(echo "$_tproc" | awk '{print $13}'))
+          _proc_socks_num+=( "$(echo "$_tproc" | awk '{print $13}')" )
 
         done
 
-        IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
+        IFS=$'\n' _proc_socks_num_sorted=( "$(sort <<<"${_proc_socks_num[*]}")" )
         unset IFS
 
         for _tpr in "${_proc_socks_num_sorted[@]}" ; do
@@ -673,8 +673,8 @@ function __main__() {
 
             _tor_pid_status="false"
 
-            printf "    \e[1;30msocks_port\e[m: \e[1;39m%s\e[m\n" "$_tor_proc_socks"
-            printf "        \e[1;30mstatus\e[m: \e[1;31m%s\e[m\n" "$_tor_pid_status"
+            printf "    \\e[1;30msocks_port\\e[m: \\e[1;39m%s\\e[m\\n" "$_tor_proc_socks"
+            printf "        \\e[1;30mstatus\\e[m: \\e[1;31m%s\\e[m\\n" "$_tor_pid_status"
 
           fi
 
@@ -747,11 +747,11 @@ function __main__() {
 
     if [[ "$socks_port_number" == "all" ]] ; then
 
-      _tor_processes=($(pidof tor))
+      _tor_processes=( "$(pidof tor)" )
 
     else
 
-      _tor_processes=($socks_port_number)
+      _tor_processes=("$socks_port_number")
 
     fi
 
@@ -794,7 +794,7 @@ function __main__() {
           fi
 
           # shellcheck disable=SC2154
-          _newnym=$(printf "AUTHENTICATE \"%s\"\r\nSIGNAL NEWNYM\nQUIT\n" "${_pass_in}" \
+          _newnym=$(printf "AUTHENTICATE \"%s\"\\r\\nSIGNAL NEWNYM\\nQUIT\\n" "${_pass_in}" \
           | nc 127.0.0.1 "$_tor_proc_control")
 
           if echo "$_newnym" | grep -qi "250 closing connection" ; then
@@ -842,7 +842,7 @@ function __main__() {
 
       if [[ "$_key_state" == "true" ]] ; then
 
-        printf "New identity for \e[1;39m%d\e[m: \e[0;32m%s\e[m\n" "$_key_id" "regenerated"
+        printf "New identity for \\e[1;39m%d\\e[m: \\e[0;32m%s\\e[m\\n" "$_key_id" "regenerated"
 
       else
 
@@ -852,11 +852,11 @@ function __main__() {
             "${_FUNCTION_ID}()" \
             "not found or unknown tor process"
 
-          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "unknown"
+          printf "New identity for \\e[1;39m%d\\e[m: \\e[0;31m%s\\e[m\\n" "$_key_id" "unknown"
 
         else
 
-          printf "New identity for \e[1;39m%d\e[m: \e[0;31m%s\e[m\n" "$_key_id" "failed"
+          printf "New identity for \\e[1;39m%d\\e[m: \\e[0;31m%s\\e[m\\n" "$_key_id" "failed"
 
         fi
 
@@ -875,7 +875,7 @@ function __main__() {
     _totaltime=$((_endtime - _begtime))
 
     # Print time header.
-    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+    printf '\\e[m\\e[1;39mTOTAL TIME: %dh:%dm:%ds\\e[m\n' \
             $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
 
   fi

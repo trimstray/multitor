@@ -25,7 +25,7 @@ function CheckProxyProcess() {
   local proc_type="$1"
 
   # First, we remove current processes.
-  _proxy_processes=($(pidof "$proc_type"))
+  _proxy_processes=( "$(pidof "$proc_type")" )
 
   if [[ ${#_proxy_processes[@]} -ne 0 ]] ; then
 

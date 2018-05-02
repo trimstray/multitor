@@ -35,11 +35,11 @@ function CreateProxyProcess() {
       # shellcheck disable=SC2034
       _bk_port_new=$((_bk_port - 1000))
 
-      printf "proxyPort = %d\n" "$_bk_port_new" \
+      printf "proxyPort = %d\\n" "$_bk_port_new" \
       >>"${_tml_po1}.${_bk_port}"
 
       # shellcheck disable=SC2154
-      printf "socksParentProxy = \"127.0.0.1:%d\"\n" "$_bk_port" \
+      printf "socksParentProxy = \"127.0.0.1:%d\"\\n" "$_bk_port" \
       >>"${_tml_po1}.${_bk_port}"
 
       _proxy_http_state=1
@@ -55,7 +55,7 @@ function CreateProxyProcess() {
     if [[ "$_proxy_http_state" -eq 1 ]] ; then
 
       # shellcheck disable=SC2154
-      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\n" "$_bk_port_new" "$_bk_port_new" \
+      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port_new" "$_bk_port_new" \
       >>"${_tml_ha1}"
 
       _logger "info" \
@@ -68,7 +68,7 @@ function CreateProxyProcess() {
       _bk_port_new="$_bk_port"
 
       # shellcheck disable=SC2154
-      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\n" "$_bk_port" "$_bk_port_new" \
+      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port" "$_bk_port_new" \
       >>"${_tml_ha1}"
 
       _logger "info" \
