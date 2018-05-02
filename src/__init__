@@ -33,6 +33,7 @@ function __main__() {
 
   # Declaration of output variables (--debug and --verbose params).
   stdout_mode=""
+  verbose_mode="false"
   # Enable/disable output colors.
   # shellcheck disable=SC2034
   s_color="true"
@@ -133,6 +134,12 @@ function __main__() {
       --debug)
 
         export stdout_mode="debug"
+
+        shift ;;
+
+      --verbose)
+
+        export verbose_mode="true"
 
         shift ;;
 
@@ -508,8 +515,6 @@ function __main__() {
 
     for i in $(seq 0 $((init_number - 1))) ; do
 
-      echo
-
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
@@ -531,13 +536,23 @@ function __main__() {
 
         _tor_pid_status="true"
 
-        OutputGen
+        if [[ "$verbose_mode" == "true" ]] ; then
+
+          echo
+          OutputGen
+
+        fi
 
       elif [[ "$socks_port_number" -eq "$_tor_proc_socks" ]] ; then
 
         _tor_pid_status="true"
 
-        OutputGen
+        if [[ "$verbose_mode" == "true" ]] ; then
+
+          echo
+          OutputGen
+
+        fi
 
       else
 
