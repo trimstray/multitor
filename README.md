@@ -43,6 +43,11 @@
   </a>
 </div>
 
+<p align="center">
+    <img src="https://github.com/trimstray/multitor/blob/master/doc/img/multitor_output_1.png"
+        alt="Master">
+</p>
+
 ## Description
 
 A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **HAProxy**. It's provides one single endpoint for clients. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
@@ -173,7 +178,10 @@ See [Load balancing](#load-balancing).
 
 So if We created 2 **TOR** processes by **Multitor** example output will be given:
 
-![multitor_output](doc/img/multitor_output.png)
+<p align="center">
+    <img src="https://github.com/trimstray/multitor/blob/master/doc/img/multitor_output_2.png"
+        alt="Master">
+</p>
 
 ## Load balancing
 
