@@ -111,6 +111,8 @@ Provides the following options:
 - [haproxy](https://www.haproxy.org/)
 - [polipo](https://www.irif.fr/~jch/software/polipo/)
 
+Also you will need **root access**.
+
 ## Other
 
 ### Important
