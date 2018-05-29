@@ -34,13 +34,13 @@ function CheckProxyProcess() {
 
       # In this case, we can search for a specific identifier (${_tpr}).
       # shellcheck disable=SC2009,SC2034
-      _hpr=$(ps -ax | grep "$proc_type" | grep -v "grep" | grep "$_tpr" | grep "multitor")
+      _hpr=$(ps -ax | grep "$proc_type" | grep -v "grep" | grep "$_tpr" | grep "multitor\\|polipo")
 
       if [[ -z "$_hpr" ]] ; then
 
         _logger "warn" \
           "${_FUNCTION_ID}()" \
-          "not found or unknown proxy process"
+          "not found or unknown proxy process for ${proc_type}"
 
       else
 
@@ -48,7 +48,7 @@ function CheckProxyProcess() {
 
         _logger "info" \
           "${_FUNCTION_ID}()" \
-          "added proxy process with '$_tpr' pid"
+          "added proxy process with '${proc_type}:${_tpr}' pid"
 
       fi
 
