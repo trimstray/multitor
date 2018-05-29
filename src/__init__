@@ -738,7 +738,7 @@ function __main__() {
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 
-    _tor_processes=($(pidof tor))
+    IFS=" " read -r -a _tor_processes <<< "$(pidof "tor")"
 
     if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
 
@@ -750,11 +750,14 @@ function __main__() {
           # shellcheck disable=SC2009
           _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
 
-          _proc_socks_num+=($(echo "$_tproc" | awk '{print $13}'))
+          IFS=" " read -r -a _proc_socks_num_tmp <<< "$(echo "$_tproc" | awk '{print $13}')"
+
+          _proc_socks_num+=("${_proc_socks_num_tmp[@]}")
 
         done
 
-        IFS=$'\n' _proc_socks_num_sorted=($(sort <<<"${_proc_socks_num[*]}"))
+        IFS=$'\n' read -r -a _proc_socks_num_sorted <<< " $(sort <<<"${_proc_socks_num[*]}")"
+
         unset IFS
 
         for _tpr in "${_proc_socks_num_sorted[@]}" ; do
@@ -858,7 +861,7 @@ function __main__() {
 
     if [[ "$socks_port_number" == "all" ]] ; then
 
-      _tor_processes=($(pidof tor))
+      IFS=" " read -r -a _tor_processes <<< "$(pidof "tor")"
 
     else
 
