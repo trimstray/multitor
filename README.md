@@ -94,6 +94,7 @@ Provides the following options:
         --debug                     displays information on the screen (debug mode)
         --verbose                   displays more information about TOR processes
     -i, --init <num>                init new tor processes
+    -k, --kill                      kill all multitor processes
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit
     -u, --user <string>             set the user (only with -i|--init)
@@ -123,6 +124,8 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 
 - each **TOR** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
 - **Polipo** is no longer supported but it is still a very good and light proxy. In the next version I will give you the option to choose a different solution.
+
+> Tor is a fine security project and an excellent component in a strategy of defence in depth but it isn’t (sadly) a cloak of invisibility. When using the **TOR**, always remember about ssl (eg. https) wherever it is possible.
 
 ### Contributing
 
