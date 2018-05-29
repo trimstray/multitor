@@ -108,8 +108,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="i:snu:"
-  local _long_opt="help,debug,verbose,init:,show-id,new-id,user:,socks-port:,control-port:,proxy:"
+  local _short_opt="i:ksnu:"
+  local _long_opt="help,debug,verbose,init:,kill,show-id,new-id,user:,socks-port:,control-port:,proxy:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -158,6 +158,14 @@ function __main__() {
         export init_number="${2}"
 
         shift 2 ;;
+
+      -k|--kill)
+
+        export kill_state="1"
+
+        export kill_status="0"
+
+        shift ;;
 
       -s|--show-id)
 
@@ -339,11 +347,19 @@ function __main__() {
 
   else
 
-    _sprintf "stop" "no numeric value"
+    if [[ "$kill_state" -eq 1 ]] ; then
 
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "no numeric value"
+      true
+
+    else
+
+      _sprintf "stop" "no numeric value"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "no numeric value"
+
+    fi
 
   fi
 
@@ -390,6 +406,10 @@ function __main__() {
                        "user_state" "user_name" \
                        "socks_port_state" "socks_port_number" \
                        "control_port_state" "control_port_number")
+
+  elif [[ "$kill_state" -eq 1 ]] ; then
+
+    local _opt_values=("kill_state")
 
   elif [[ "$show_id_state" -eq 1 ]] || [[ "$new_id_state" -eq 1 ]] ; then
 
@@ -625,6 +645,96 @@ function __main__() {
 
     # Unset password variables.
     unset _pass_gen ; unset _pass_hash
+
+  elif [[ "$kill_state" -eq 1 ]] ; then
+
+    # First, we remove current processes.
+    # _tor_processes=($(pidof tor))
+    IFS=" " read -r -a _tor_processes <<< "$(pidof "tor")"
+
+    if [[ ${#_tor_processes[@]} -ne 0 ]] ; then
+
+      for _tpr in "${_tor_processes[@]}" ; do
+
+        # In this case, we can search for a specific identifier (${_tpr}).
+        # shellcheck disable=SC2009
+        _tproc=$(ps -ax | grep "multitor" | grep ".pid" | grep -v "grep" | grep "$_tpr")
+
+        if [[ -z "$_tproc" ]] ; then
+
+          _logger "warn" \
+            "${_FUNCTION_ID}()" \
+            "not found or unknown tor process"
+
+        else
+
+          DestroyProcess "${_tpr}"
+
+          kill_status="1"
+
+        fi
+
+      done
+
+    else
+
+      _logger "warn" \
+        "${_FUNCTION_ID}()" \
+        "not found tor processes: ${_tpr}"
+
+    fi
+
+    # Removed all multitor process data directory.
+    find ${_multitor_directory}/* -delete >>"$_log_stdout" 2>&1
+
+    # shellcheck disable=SC2034,SC2154
+    local _tml_ha0="${_tml}/haproxy-template.cfg"
+    # shellcheck disable=SC2034,SC2154
+    local _tml_po0="${_tml}/polipo-template.cfg"
+
+    # shellcheck disable=SC2034,SC2154
+    local _tml_ha1="${_etc}/haproxy.cfg"
+    # shellcheck disable=SC2034,SC2154
+    local _tml_po1="${_etc}/polipo.cfg"
+
+    for _tfd in "$_tml_ha1" "$_tml_po1" ; do
+
+      # shellcheck disable=SC2154
+      if [[ -e "$_tfd" ]] ; then
+
+        rm -fr "${_tfd}"
+
+        kill_status="1"
+
+      fi
+
+    done
+
+    # Flush etc/ directory.
+    rm -fr "${_etc:?}"/*
+
+    # shellcheck disable=SC2034
+    # Manages proxy processes stack.
+    for _proc in "haproxy" "polipo" ; do
+
+      CheckProxyProcess "${_proc}"
+
+    done
+
+    # shellcheck disable=SC2154
+    for _hproc in "${_proxy_processes_list[@]}" ; do
+
+      DestroyProcess "${_hproc}"
+
+      kill_status="1"
+
+    done
+
+    if [[ "$kill_status" -eq 1 ]] ; then
+
+      printf "Multitor processes: \\e[1;31m%s\\e[m\\n" "stop"
+
+    fi
 
   elif [[ "$show_id_state" -eq 1 ]] ; then
 

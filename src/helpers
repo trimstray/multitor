@@ -574,6 +574,7 @@ function _help_() {
         --debug                     displays information on the screen (debug mode)
         --verbose                   displays more information about TOR processes
     -i, --init <num>                init new tor processes
+    -k, --kill                      kill all multitor processes
     -s, --show-id                   show specific tor process id
     -n, --new-id                    regenerate tor circuit
     -u, --user <string>             set the user (only with -i|--init)
