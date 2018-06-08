@@ -112,6 +112,11 @@ Provides the following options:
 - [haproxy](https://www.haproxy.org/)
 - [polipo](https://www.irif.fr/~jch/software/polipo/)
 
+This tool working with:
+
+- **GNU/Linux** (testing on Debian and CentOS)
+- **Bash** (testing on 4.4.19)
+
 Also you will need **root access**.
 
 ## Other
