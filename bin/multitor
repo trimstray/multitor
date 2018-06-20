@@ -15,7 +15,7 @@
 #   See README.md file for more information.
 #
 #   The multitor has been completely rewritten on the basis of:
-#     - Multi-TOR project written by Jai Seidl:
+#     - Multi-TOR project written by Jan Seidl:
 #       https://github.com/jseidl/Multi-TOR
 #     - original source is (Sebastian Wain project):
 #       http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/

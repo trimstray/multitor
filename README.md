@@ -51,7 +51,7 @@ A tool that lets you **create multiple TOR** instances with a **load-balancing**
 
 > The **multitor** has been completely rewritten on the basis of:
 >
-> - **Multi-TOR** project written by *Jai Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
+> - **Multi-TOR** project written by *Jan Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
 > - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple TOR Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
 ## How To Use
