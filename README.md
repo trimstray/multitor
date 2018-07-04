@@ -25,6 +25,7 @@
  • <a href="#how-to-use">How To Use</a>
  • <a href="#parameters">Parameters</a>
  • <a href="#requirements">Requirements</a>
+ • <a href="#testing-environment">Testing environment</a>
  • <a href="#other">Other</a>
  • <a href="#license">License</a>
  • <a href="https://github.com/trimstray/multitor/wiki">Wiki</a>
@@ -118,6 +119,77 @@ This tool working with:
 - **Bash** (testing on 4.4.19)
 
 Also you will need **root access**.
+
+## Testing environment
+
+Let's go to create **128** TOR processes by **multitor**.
+
+#### VM Info
+
+###### System
+
+```
+Linux multitor-node 3.10.0-514.26.2.el7.x86_64 #1
+SMP Tue Jul 4 15:04:05 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+###### CPU
+
+```bash
+vCore: 2x
+```
+
+###### Memory
+
+```bash
+Size: 4096 MB
+```
+
+#### Init multitor
+
+```bash
+time multitor --init 128 -u debian-tor --socks-port 9000 --control-port 9900 --proxy http
+
+     Set processes: 128
+           Created: 128
+       Not created: 0
+  Control password: RBrvmVYlaa00TEG8es
+
+       Proxy state: running (http proxy)
+
+
+real  1m7.851s
+user  0m7.429s
+sys 0m12.244s
+```
+
+#### Processes
+
+```bash
+ps_mem | grep "haproxy\|polipo\|tor"
+  5.2 MiB +  46.5 KiB =   5.2 MiB haproxy
+ 41.2 MiB +   5.4 MiB =  46.5 MiB polipo (128)
+  2.8 GiB +   8.9 MiB =   2.8 GiB tor (128)
+```
+
+#### Requests
+
+It's simple - send **128** req by **curl**:
+
+```bash
+for i in $(seq 1 128) ; do \
+
+printf "req %2d: " "$i" ; curl -k --location --proxy 127.0.0.1:16379 https://x33con.info/endpoint/ \
+
+done ; echo
+```
+
+#### Preview (goaccess)
+
+<p align="center">
+    <img src="https://github.com/trimstray/multitor/blob/master/doc/img/multitor_test_01.png"
+        alt="Master">
+</p>
 
 ## Other
 
