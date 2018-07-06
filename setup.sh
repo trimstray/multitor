@@ -50,6 +50,9 @@ elif [[ "$1" == "uninstall" ]] ; then
     rm /usr/local/man/man8/multitor.8.gz
 
   fi
+else
+
+	printf "Usage:\\n  ./setup.sh install     (Install)\\n  ./setup.sh uninstall   (Uninstall)\\n"
 
 fi
 
