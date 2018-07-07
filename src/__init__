@@ -56,7 +56,7 @@ function __main__() {
   # We place here used commands at script runtime, as strings to anything
   # unnecessarily run.
   readonly commands=(basename dirname stat ps date grep cut sed awk chown \
-                     chmod mkdir pidof tor sudo nc kill haproxy privoxy)
+                     chmod mkdir pidof tor sudo nc kill haproxy privoxy hpts)
 
   # If you intend to specify the full path to the command we do it like:
   # readonly exec_gzip="/bin/gzip"
@@ -381,7 +381,9 @@ function __main__() {
   # Checking if proxy is set.
   if [[ "$proxy_state" -eq 1 ]] ; then
 
-    if [[ "$proxy_type" == "socks" ]] || [[ "$proxy_type" == "http" ]] ; then
+    if [[ "$proxy_type" == "socks" ]] || \
+       [[ "$proxy_type" == "privoxy" ]] || \
+       [[ "$proxy_type" == "hpts" ]] ; then
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
@@ -601,7 +603,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "privoxy" ; do
+    for _proc in "haproxy" "privoxy" "node" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -621,7 +623,7 @@ function __main__() {
     fi
 
     # shellcheck disable=SC2034
-    for _proc in "haproxy" "privoxy" ; do
+    for _proc in "haproxy" "privoxy" "node" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -635,7 +637,15 @@ function __main__() {
     # shellcheck disable=SC2154
     if [[ ${#_proxy_processes_list[@]} -ne 0 ]] && [[ "$proxy_state" -eq 1 ]] ; then
 
-      printf "       Proxy state: \\e[2;32m%s\\e[m (%s proxy)\\n\\n" "running" "$proxy_type"
+      if [[ "$proxy_type" == "socks" ]] ; then
+
+        printf "       Proxy state: \\e[2;32m%s\\e[m (haproxy » %s)\\n\\n" "running" "$proxy_type"
+
+      else
+
+        printf "       Proxy state: \\e[2;32m%s\\e[m (%s » haproxy » socks)\\n\\n" "running" "$proxy_type"
+
+      fi
 
     else
 
@@ -715,7 +725,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "privoxy" ; do
+    for _proc in "haproxy" "privoxy" "node" ; do
 
       CheckProxyProcess "${_proc}"
 
