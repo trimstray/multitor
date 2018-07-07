@@ -81,7 +81,15 @@ function CreateTorProcess() {
        --PidFile "${_proc_dir}/${_arg_socks}.pid" \
        --DataDirectory "${_proc_dir}" \
        --SocksBindAddress 127.0.0.1 \
-       --MaxCircuitDirtiness 60 \
+       --NewCircuitPeriod 15 \
+       --MaxCircuitDirtiness 15 \
+       --NumEntryGuards 8 \
+       --CircuitBuildTimeout 5 \
+       --ExitRelay 0 \
+       --RefuseUnknownExits 0 \
+       --ClientOnly 1 \
+       --StrictNodes 1 \
+       --AllowSingleHopCircuits 1 \
        >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
