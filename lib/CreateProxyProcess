@@ -29,38 +29,47 @@ function CreateProxyProcess() {
 
     if [[ "$proxy_type" == "http" ]] ; then
 
-      # shellcheck disable=SC2154
-      cp "${_tml_po0}" "${_tml_po1}.${_bk_port}"
-
       # shellcheck disable=SC2034
       _bk_port_new=$((_bk_port - 1000))
 
-      printf "proxyPort = %d\\n" "$_bk_port_new" \
-      >>"${_tml_po1}.${_bk_port}"
+      _pfd="${_tml_po1}.${_bk_port_new}"
 
       # shellcheck disable=SC2154
-      printf "socksParentProxy = \"127.0.0.1:%d\"\\n" "$_bk_port" \
-      >>"${_tml_po1}.${_bk_port}"
+      cp "${_tml_po0}" "${_pfd}"
+
+      # shellcheck disable=SC2154,SC2129
+      printf "logfile privoxy.%d\\n" "$_bk_port_new" \
+      >>"${_pfd}"
+
+      # shellcheck disable=SC2154,SC2129
+      printf "listen-address 127.0.0.1:%d\\n" "$_bk_port_new" \
+      >>"${_pfd}"
+
+      # shellcheck disable=SC2154,SC2129
+      printf "forward-socks5t / 127.0.0.1:%d .\\n" "$_bk_port" \
+      >>"${_pfd}"
 
       _proxy_http_state=1
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
-        "added backend port for polipo: '$_bk_port'"
+        "added backend port for privoxy: '$_bk_port'"
 
-      polipo -c "${_tml_po1}.${_bk_port}"
+      # hpts -s 127.0.0.1:"${_bk_port}" -p "${_bk_port_new}" &
+
+      privoxy "${_pfd}"
 
     fi
 
     if [[ "$_proxy_http_state" -eq 1 ]] ; then
 
       # shellcheck disable=SC2154
-      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port_new" "$_bk_port_new" \
+      printf "  server            http-process-%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port_new" "$_bk_port_new" \
       >>"${_tml_ha1}"
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
-        "added backend port for haproxy + polipo: '$_bk_port_new'"
+        "added backend port for haproxy + privoxy: '$_bk_port_new'"
 
     elif [[ "$proxy_type" == "socks" ]] ; then
 
@@ -68,7 +77,7 @@ function CreateProxyProcess() {
       _bk_port_new="$_bk_port"
 
       # shellcheck disable=SC2154
-      printf "  server            tor%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port" "$_bk_port_new" \
+      printf "  server            socks-process-%d 127.0.0.1:%d check fall 3 rise 2\\n" "$_bk_port" "$_bk_port_new" \
       >>"${_tml_ha1}"
 
       _logger "info" \
