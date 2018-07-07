@@ -80,6 +80,8 @@ function CreateTorProcess() {
        --ControlPort "$_arg_control" \
        --PidFile "${_proc_dir}/${_arg_socks}.pid" \
        --DataDirectory "${_proc_dir}" \
+       --SocksBindAddress 127.0.0.1 \
+       --MaxCircuitDirtiness 60 \
        >>"$_log_stdout" 2>&1 ; _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
