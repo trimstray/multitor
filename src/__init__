@@ -56,7 +56,7 @@ function __main__() {
   # We place here used commands at script runtime, as strings to anything
   # unnecessarily run.
   readonly commands=(basename dirname stat ps date grep cut sed awk chown \
-                     chmod mkdir pidof tor sudo nc kill haproxy polipo)
+                     chmod mkdir pidof tor sudo nc kill haproxy privoxy)
 
   # If you intend to specify the full path to the command we do it like:
   # readonly exec_gzip="/bin/gzip"
@@ -503,12 +503,12 @@ function __main__() {
       # shellcheck disable=SC2034,SC2154
       local _tml_ha0="${_tml}/haproxy-template.cfg"
       # shellcheck disable=SC2034,SC2154
-      local _tml_po0="${_tml}/polipo-template.cfg"
+      local _tml_po0="${_tml}/privoxy-template.cfg"
 
       # shellcheck disable=SC2034,SC2154
       local _tml_ha1="${_etc}/haproxy.cfg"
       # shellcheck disable=SC2034,SC2154
-      local _tml_po1="${_etc}/polipo.cfg"
+      local _tml_po1="${_etc}/privoxy.cfg"
 
       for _tfd in "$_tml_ha1" "$_tml_po1" ; do
 
@@ -601,7 +601,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "polipo" ; do
+    for _proc in "haproxy" "privoxy" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -621,7 +621,7 @@ function __main__() {
     fi
 
     # shellcheck disable=SC2034
-    for _proc in "haproxy" "polipo" ; do
+    for _proc in "haproxy" "privoxy" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -690,12 +690,12 @@ function __main__() {
     # shellcheck disable=SC2034,SC2154
     local _tml_ha0="${_tml}/haproxy-template.cfg"
     # shellcheck disable=SC2034,SC2154
-    local _tml_po0="${_tml}/polipo-template.cfg"
+    local _tml_po0="${_tml}/privoxy-template.cfg"
 
     # shellcheck disable=SC2034,SC2154
     local _tml_ha1="${_etc}/haproxy.cfg"
     # shellcheck disable=SC2034,SC2154
-    local _tml_po1="${_etc}/polipo.cfg"
+    local _tml_po1="${_etc}/privoxy.cfg"
 
     for _tfd in "$_tml_ha1" "$_tml_po1" ; do
 
@@ -715,7 +715,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "polipo" ; do
+    for _proc in "haproxy" "privoxy" ; do
 
       CheckProxyProcess "${_proc}"
 
