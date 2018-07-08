@@ -39,7 +39,10 @@ A tool that lets you create multiple TOR instances with a load-balancing traffic
         set control port number
 
 --proxy <proxy_type>
-        set proxy server (eg. socks, polipo, privoxy, hpts)
+        set socks or http (polipo, privoxy, hpts) proxy server
+
+--haproxy
+        set HAProxy as a frontend for http proxies (only with --proxy)
 .SH SEE ALSO
 https://github.com/trimstray/multitor
 .SH BUGS

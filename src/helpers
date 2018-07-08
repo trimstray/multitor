@@ -581,7 +581,8 @@ function _help_() {
     -u, --user <string>               set the user (only with -i|--init)
         --socks-port <port_num|all>   set socks port number
         --control-port <port_num>     set control port number
-        --proxy <proxy_type>          set proxy server (eg. socks, polipo, privoxy, hpts)
+        --proxy <proxy_type>          set socks or http (polipo, privoxy, hpts) proxy server
+        --haproxy                     set HAProxy as a frontend for http proxies (only with --proxy)
 
 
   This program comes with ABSOLUTELY NO WARRANTY.
