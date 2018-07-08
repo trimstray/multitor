@@ -147,7 +147,7 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 
 ### Limitations
 
-- each **TOR** process, **http-proxy** processes and **HAProxy** needs a certain number of memory. If the number of **TOR** processes is too big, the oldest one will be automatic killed by the system.
+- each **TOR**, **http-proxy** and **HAProxy** processes needs a certain number of memory. If the number of **TOR** processes is too big, the oldest one will be automatic killed by the system.
 - **Polipo** is no longer supported but it is still a very good and light proxy. In my opinion the best http-proxy solution is **Privoxy**.
 - **TOR** does attempt to generate a bunch of streams for you already. From this perspective, it is already load balancing (and it's much smarter at it than HAproxy).
 
