@@ -567,7 +567,7 @@ function _help_() {
 
   Examples:
     $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900
-    $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
+    $_init_name --init 10 --user debian-tor --socks-port 9000 --control-port 9900 --proxy socks
     $_init_name --show-id --socks-port 9000
 
   Options:

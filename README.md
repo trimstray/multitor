@@ -103,7 +103,7 @@ Provides the following options:
 
   Examples:
     multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900
-    multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
+    multitor --init 10 --user debian-tor --socks-port 9000 --control-port 9900 --proxy socks
     multitor --show-id --socks-port 9000
 
   Options:
