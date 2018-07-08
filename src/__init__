@@ -795,7 +795,9 @@ function __main__() {
 
         done
 
-        IFS=$'\n' read -r -a _proc_socks_num_sorted <<< " $(sort <<<"${_proc_socks_num[*]}")"
+        # IFS=$'\n' read -r -a _proc_socks_num_sorted <<< "$(sort <<<"${_proc_socks_num[*]}")"
+        # shellcheck disable=SC2207
+        _proc_socks_num_sorted=( $( printf "%s\\n" "${_proc_socks_num[@]}" | sort -n ) )
 
         unset IFS
 
