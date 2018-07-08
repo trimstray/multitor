@@ -56,7 +56,8 @@ function __main__() {
   # We place here used commands at script runtime, as strings to anything
   # unnecessarily run.
   readonly commands=(basename dirname stat ps date grep cut sed awk chown \
-                     chmod mkdir pidof tor sudo nc kill haproxy privoxy hpts)
+                     chmod mkdir pidof tor sudo nc kill \
+                     haproxy polipo privoxy hpts)
 
   # If you intend to specify the full path to the command we do it like:
   # readonly exec_gzip="/bin/gzip"
@@ -109,7 +110,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="i:ksnu:"
-  local _long_opt="help,debug,verbose,init:,kill,show-id,new-id,user:,socks-port:,control-port:,proxy:"
+  local _long_opt="help,debug,verbose,init:,kill,show-id,new-id,user:,socks-port:,control-port:,proxy:,haproxy"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -208,6 +209,14 @@ function __main__() {
         export proxy_state=1
 
         export proxy_type="${2}"
+
+        shift 2 ;;
+
+      --haproxy)
+
+        export frontend_state=1
+
+        export frontend_type="haproxy"
 
         shift 2 ;;
 
@@ -397,6 +406,21 @@ function __main__() {
       _logger "stop" \
         "${_FUNCTION_ID}()" \
         "incorrect proxy type"
+
+    fi
+
+  fi
+
+  # Checking if proxy is set for '--haproxy' param.
+  if [[ "$frontend_state" -eq 1 ]] ; then
+
+    if [[ "$proxy_state" -ne 1 ]] ; then
+
+      _sprintf "stop" "not set '--proxy' param"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "not set '--proxy' param"
 
     fi
 
@@ -641,6 +665,10 @@ function __main__() {
       if [[ "$proxy_type" == "socks" ]] ; then
 
         printf "       Proxy state: \\e[2;32m%s\\e[m (haproxy » %s)\\n\\n" "running" "$proxy_type"
+
+      elif [[ "$frontend_type" == "haproxy" ]] ; then
+
+        printf "       Proxy state: \\e[2;32m%s\\e[m (haproxy » %s » socks)\\n\\n" "running" "$proxy_type"
 
       else
 
