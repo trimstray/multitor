@@ -88,20 +88,22 @@ Provides the following options:
 
   Examples:
     multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900
+    multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
     multitor --show-id --socks-port 9000
 
   Options:
-        --help                      show this message
-        --debug                     displays information on the screen (debug mode)
-        --verbose                   displays more information about TOR processes
-    -i, --init <num>                init new tor processes
-    -k, --kill                      kill all multitor processes
-    -s, --show-id                   show specific tor process id
-    -n, --new-id                    regenerate tor circuit
-    -u, --user <string>             set the user (only with -i|--init)
-        --socks-port <port_num|all> set socks port number
-        --control-port <port_num>   set control port number
-        --proxy <socks|http>        set load balancer
+        --help                        show this message
+        --debug                       displays information on the screen (debug mode)
+        --verbose                     displays more information about TOR processes
+    -i, --init <num>                  init new tor processes
+    -k, --kill                        kill all multitor processes
+    -s, --show-id                     show specific tor process id
+    -n, --new-id                      regenerate tor circuit
+    -u, --user <string>               set the user (only with -i|--init)
+        --socks-port <port_num|all>   set socks port number
+        --control-port <port_num>     set control port number
+        --proxy <proxy_type>          set socks or http (polipo, privoxy, hpts) proxy server
+        --haproxy                     set HAProxy as a frontend for http proxies (only with --proxy)
 ```
 
 ## Requirements
