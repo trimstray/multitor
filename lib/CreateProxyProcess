@@ -45,13 +45,6 @@ function CreateProxyProcess() {
   done
 
   # shellcheck disable=SC2154
-  # Init proxy process.
-  haproxy -f "${_tml_ha1}" && \
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "init proxy process with '${_tml_ha1}' config file"
-
-  # shellcheck disable=SC2154
   if [[ "$proxy_type" = *"polipo"* ]] || \
      [[ "$proxy_type" = *"privoxy"* ]] || \
      [[ "$proxy_type" = *"hpts"* ]] ; then
@@ -129,6 +122,13 @@ function CreateProxyProcess() {
     fi
 
   fi
+
+  # shellcheck disable=SC2154
+  # Init HAProxy process.
+  haproxy -f "${_tml_ha1}" && \
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "init proxy process with '${_tml_ha1}' config file"
 
   return $_STATE
 
