@@ -21,8 +21,9 @@ function CreateProxyProcess() {
   local _FUNCTION_ID="CreateProxyProcess"
   local _STATE=0
 
+  # Port number from HAProxy config file.
+  local _bk_port_tmp="16379"
   local _bk_port_new=0
-  local _proxy_http_state=0
 
   # shellcheck disable=SC2154
   for _bk_port in "${_proxy_ports[@]}" ; do
@@ -44,7 +45,7 @@ function CreateProxyProcess() {
     else
 
       # shellcheck disable=SC2034
-      _bk_port_new=$((_bk_port - 1000))
+      _bk_port_new=$((_bk_port_tmp - 1000))
 
       # shellcheck disable=SC2154
       printf "  server            %s-process-%d 127.0.0.1:%d check fall 3 rise 2\\n" "$proxy_type" "$_bk_port_new" "$_bk_port_new" \
@@ -54,86 +55,22 @@ function CreateProxyProcess() {
         "${_FUNCTION_ID}()" \
         "added backend port (haproxy): '$_bk_port_new'"
 
+      CreateWebProxyProcess
+
+      _bk_port_tmp=$((_bk_port_tmp + 1))
+
     fi
 
   done
 
-  # shellcheck disable=SC2154
-  if [[ "$proxy_type" = *"polipo"* ]] || \
-     [[ "$proxy_type" = *"privoxy"* ]] || \
-     [[ "$proxy_type" = *"hpts"* ]] ; then
+  if [[ ! "$frontend_type" == "haproxy" ]] ; then
 
     # Port number from HAProxy config file.
     # shellcheck disable=SC2034
     _bk_port="16379"
-    _bk_port_new="4040"
+    _bk_port_new=$((_bk_port - 1000))
 
-    if [[ "$proxy_type" == "polipo" ]] ; then
-
-      # shellcheck disable=SC2154
-      # _pfd="${_tml_po1}.${_bk_port_new}"
-      _pfd="${_tml_po1}"
-
-      # shellcheck disable=SC2154
-      cp "${_tml_po0}" "${_pfd}"
-
-      printf "proxyPort = %d\\n" "$_bk_port_new" \
-      >>"${_pfd}"
-
-      # shellcheck disable=SC2154
-      printf "socksParentProxy = \"127.0.0.1:%d\"\\n" "$_bk_port" \
-      >>"${_pfd}"
-
-      _proxy_http_state=1
-
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "added backend port (polipo): '$_bk_port'"
-
-      polipo -c "${_pfd}"
-
-    elif [[ "$proxy_type" == "privoxy" ]] ; then
-
-      # shellcheck disable=SC2154
-      # _pfd="${_tml_po1}.${_bk_port_new}"
-      _pfd="${_tml_po1}"
-
-      # shellcheck disable=SC2154
-      cp "${_tml_po0}" "${_pfd}"
-
-      # shellcheck disable=SC2154,SC2129
-      printf "logfile privoxy.%d\\n" "$_bk_port_new" \
-      >>"${_pfd}"
-
-      # shellcheck disable=SC2154,SC2129
-      printf "listen-address 127.0.0.1:%d\\n" "$_bk_port_new" \
-      >>"${_pfd}"
-
-      # shellcheck disable=SC2154,SC2129
-      printf "forward-socks5t / 127.0.0.1:%d .\\n" "$_bk_port" \
-      >>"${_pfd}"
-
-      # shellcheck disable=SC2034
-      _proxy_http_state=1
-
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "added backend port (privoxy): '$_bk_port'"
-
-      privoxy "${_pfd}"
-
-    elif [[ "$proxy_type" == "hpts" ]] ; then
-
-      # shellcheck disable=SC2034
-      _proxy_http_state=1
-
-      _logger "info" \
-        "${_FUNCTION_ID}()" \
-        "added backend port (hpts): '$_bk_port'"
-
-      hpts -s 127.0.0.1:"${_bk_port}" -p "${_bk_port_new}" >/dev/null 2>&1 &
-
-    fi
+    CreateWebProxyProcess
 
   fi
 
