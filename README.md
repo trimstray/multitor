@@ -64,9 +64,11 @@ Before using the **multitor** you need to remember:
 - the main goal is masking from where we get by sending requests to multiple streams. It is not so easy to locate where an attacker comes from. If you used http/https servers eg. proxy servers, you will know what is going on but...
 - using multiple **TOR** instances can increase the probability of using a compromised circuit. On the other hand this is not a **multitor** problem but the network itself
 - **multitor** getting some bandwidth improvements just because it's a different way of connecting to **TOR** network
-- in **multitor** configuration mostly HAProxy checks the local (syn, syn/ack) socket - not all tor nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next. It does not ensure that the data will arrive because it is already a problem of the tor network (circuits)
+- in **multitor** configuration mostly **HAProxy** checks the local (syn, syn/ack) socket - not all tor nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next. It does not ensure that the data will arrive because it is already a problem of the tor network (circuits)
 - **TOR** network is a separate organism on which the multitor has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
-- haproxy load balancing traffic between local tor or http-proxy processes - not nodes inside **TOR** network
+- **HAProxy** load balance network traffic between local **TOR** or **http-proxy** processes - not nodes inside **TOR** network
+
+Look also at **[Limitations](#limitations)**.
 
 ## How To Use
 
