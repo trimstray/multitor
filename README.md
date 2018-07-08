@@ -22,10 +22,10 @@
 
 <p align="center">
    <a href="#description">Description</a>
+ • <a href="#introduction">Introduction</a>
  • <a href="#how-to-use">How To Use</a>
  • <a href="#parameters">Parameters</a>
  • <a href="#requirements">Requirements</a>
- • <a href="#testing-environment">Testing environment</a>
  • <a href="#other">Other</a>
  • <a href="#license">License</a>
  • <a href="https://github.com/trimstray/multitor/wiki">Wiki</a>
@@ -48,16 +48,29 @@
 
 ## Description
 
-A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **HAProxy**. It's provides one single endpoint for clients. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
+A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **[HAProxy](http://www.haproxy.org/)**. It's provides one single endpoint for clients. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes. Support **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**.
 
 > The **multitor** has been completely rewritten on the basis of:
 >
 > - **Multi-TOR** project written by *Jan Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
 > - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple TOR Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
+## Introduction
+
+**Multitor** was created with the aim of initialize many **TOR** processes as quickly as possible. I could use many instances for my daily use programs (web browsers, messangers and other). In addition, I was looking for a tool that would increase anonymity when conducting penetration tests and testing the security of infrastructure.
+
+Before using the **multitor** you need to remember:
+
+- the main goal is masking from where we get by sending requests to multiple streams. It is not so easy to locate where an attacker comes from. If you used http/https servers eg. proxy servers, you will know what is going on but...
+- using multiple **TOR** instances can increase the probability of using a compromised circuit. On the other hand this is not a **multitor** problem but the network itself
+- **multitor** getting some bandwidth improvements just because it's a different way of connecting to **TOR** network
+- in **multitor** configuration mostly HAProxy checks the local (syn, syn/ack) socket - not all tor nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next. It does not ensure that the data will arrive because it is already a problem of the tor network (circuits)
+- **TOR** network is a separate organism on which the multitor has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
+- haproxy load balancing traffic between local tor or http-proxy processes - not nodes inside **TOR** network
+
 ## How To Use
 
-> Before using the **multitor**, detailed understanding all parameters and how it works, see the **<a href="https://github.com/trimstray/multitor/wiki/Manual">Manual</a>**.
+> :heavy_exclamation_mark: Before using the **multitor**, detailed understanding all parameters and how it works, see the **<a href="https://github.com/trimstray/multitor/wiki/Manual">Manual</a>**.
 
 It's simple:
 
@@ -72,7 +85,7 @@ cd multitor
 ./setup.sh install
 
 # Run the app
-multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy http
+multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
 ```
 
 > * symlink to `bin/multitor` is placed in `/usr/local/bin`
@@ -114,6 +127,8 @@ Provides the following options:
 - [netcat](http://netcat.sourceforge.net/)
 - [haproxy](https://www.haproxy.org/)
 - [polipo](https://www.irif.fr/~jch/software/polipo/)
+- [privoxy](https://www.privoxy.org/)
+- [http-proxy-to-socks](https://github.com/oyyd/http-proxy-to-socks)
 
 This tool working with:
 
@@ -121,77 +136,6 @@ This tool working with:
 - **Bash** (testing on 4.4.19)
 
 Also you will need **root access**.
-
-## Testing environment
-
-Let's go to create **128** TOR processes by **multitor**.
-
-#### VM Info
-
-###### System
-
-```
-Linux multitor-node 3.10.0-514.26.2.el7.x86_64 #1
-SMP Tue Jul 4 15:04:05 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
-```
-
-###### CPU
-
-```bash
-vCore: 2x
-```
-
-###### Memory
-
-```bash
-Size: 4096 MB
-```
-
-#### Init multitor
-
-```bash
-time multitor --init 128 -u debian-tor --socks-port 9000 --control-port 9900 --proxy http
-
-     Set processes: 128
-           Created: 128
-       Not created: 0
-  Control password: RBrvmVYlaa00TEG8es
-
-       Proxy state: running (http proxy)
-
-
-real  1m7.851s
-user  0m7.429s
-sys 0m12.244s
-```
-
-#### Processes
-
-```bash
-ps_mem | grep "haproxy\|polipo\|tor"
-  5.2 MiB +  46.5 KiB =   5.2 MiB haproxy
- 41.2 MiB +   5.4 MiB =  46.5 MiB polipo (128)
-  2.8 GiB +   8.9 MiB =   2.8 GiB tor (128)
-```
-
-#### Requests
-
-It's simple - send **128** req by **curl**:
-
-```bash
-for i in $(seq 1 128) ; do \
-
-printf "req %2d: " "$i" ; curl -k --location --proxy 127.0.0.1:16379 https://x33con.info/endpoint/ \
-
-done ; echo
-```
-
-#### Preview (goaccess)
-
-<p align="center">
-    <img src="https://github.com/trimstray/multitor/blob/master/doc/img/multitor_test_01.png"
-        alt="Master">
-</p>
 
 ## Other
 
@@ -201,8 +145,9 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 
 ### Limitations
 
-- each **TOR** process needs a certain number of memory. If the number of processes is too big, the oldest one will be automatic killed by the system
-- **Polipo** is no longer supported but it is still a very good and light proxy. In the next version I will give you the option to choose a different solution.
+- each **TOR** process, **http-proxy** processes and **HAProxy** needs a certain number of memory. If the number of **TOR** processes is too big, the oldest one will be automatic killed by the system.
+- **Polipo** is no longer supported but it is still a very good and light proxy. In my opinion the best http-proxy solution is **Privoxy**.
+- **TOR** does attempt to generate a bunch of streams for you already. From this perspective, it is already load balancing (and it's much smarter at it than HAproxy).
 
 > **TOR** is a fine security project and an excellent component in a strategy of defence in depth but it isn’t (sadly) a cloak of invisibility. When using the **TOR**, always remember about ssl (eg. https) wherever it is possible.
 
