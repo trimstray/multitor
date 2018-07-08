@@ -87,7 +87,7 @@ cd multitor
 ./setup.sh install
 
 # Run the app
-multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
+multitor --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy --haproxy
 ```
 
 > * symlink to `bin/multitor` is placed in `/usr/local/bin`
