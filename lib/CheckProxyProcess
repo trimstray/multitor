@@ -32,9 +32,16 @@ function CheckProxyProcess() {
 
     for _tpr in "${_proxy_processes[@]}" ; do
 
+      # shellcheck disable=SC2154
+      for _rg in "${_proxy_list[@]}" ; do
+
+        _tmp_proxy_list+="\\|$_rg"
+
+      done
+
       # In this case, we can search for a specific identifier (${_tpr}).
-      # shellcheck disable=SC2009,SC2034
-      _hpr=$(ps -ax | grep "$proc_type" | grep -v "grep" | grep "$_tpr" | grep "multitor\\|polipo")
+      # shellcheck disable=SC2009,SC2034,SC2154
+      _hpr=$(ps -ax | grep "$proc_type" | grep -v "grep" | grep "$_tpr" | grep "multitor${_tmp_proxy_list}")
 
       if [[ -z "$_hpr" ]] ; then
 
