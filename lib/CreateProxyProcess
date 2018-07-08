@@ -27,7 +27,8 @@ function CreateProxyProcess() {
   # shellcheck disable=SC2154
   for _bk_port in "${_proxy_ports[@]}" ; do
 
-    if [[ "$proxy_state" -eq 1 ]] ; then
+    if [[ "$proxy_state" -eq 1 ]] && \
+       [[ ! "$frontend_type" == "haproxy" ]] ; then
 
       # shellcheck disable=SC2034
       _bk_port_new="$_bk_port"
@@ -39,6 +40,19 @@ function CreateProxyProcess() {
       _logger "info" \
         "${_FUNCTION_ID}()" \
         "added backend port (haproxy): '$_bk_port'"
+
+    else
+
+      # shellcheck disable=SC2034
+      _bk_port_new=$((_bk_port - 1000))
+
+      # shellcheck disable=SC2154
+      printf "  server            %s-process-%d 127.0.0.1:%d check fall 3 rise 2\\n" "$proxy_type" "$_bk_port_new" "$_bk_port_new" \
+      >>"${_tml_ha1}"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "added backend port (haproxy): '$_bk_port_new'"
 
     fi
 
