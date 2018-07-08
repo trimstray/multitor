@@ -567,21 +567,21 @@ function _help_() {
 
   Examples:
     $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900
-    $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy http
+    $_init_name --init 2 --user debian-tor --socks-port 9000 --control-port 9900 --proxy privoxy
     $_init_name --show-id --socks-port 9000
 
   Options:
-        --help                              show this message
-        --debug                             displays information on the screen (debug mode)
-        --verbose                           displays more information about TOR processes
-    -i, --init <num>                        init new tor processes
-    -k, --kill                              kill all multitor processes
-    -s, --show-id                           show specific tor process id
-    -n, --new-id                            regenerate tor circuit
-    -u, --user <string>                     set the user (only with -i|--init)
-        --socks-port <port_num|all>         set socks port number
-        --control-port <port_num>           set control port number
-        --proxy <socks|privoxy|hpts>        set proxy server
+        --help                        show this message
+        --debug                       displays information on the screen (debug mode)
+        --verbose                     displays more information about TOR processes
+    -i, --init <num>                  init new tor processes
+    -k, --kill                        kill all multitor processes
+    -s, --show-id                     show specific tor process id
+    -n, --new-id                      regenerate tor circuit
+    -u, --user <string>               set the user (only with -i|--init)
+        --socks-port <port_num|all>   set socks port number
+        --control-port <port_num>     set control port number
+        --proxy <proxy_type>          set proxy server (eg. socks, polipo, privoxy, hpts)
 
 
   This program comes with ABSOLUTELY NO WARRANTY.
@@ -684,6 +684,9 @@ function _before_init() {
     fi
 
   fi
+
+  # Flush etc/ directory.
+  rm -fr "${_etc:?}"/*
 
   return $_STATE
 
