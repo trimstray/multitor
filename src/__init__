@@ -270,6 +270,8 @@ function __main__() {
 
   local _num='^[0-9]+$'
 
+  local _proxy_list=("polipo" "privoxy" "hpts" "node")
+
   # Checking whether the variable value is a numeric value.
   if [[ "$init_number" =~ $_num ]] || \
      [[ "$socks_port_number" =~ $_num ]] || \
@@ -382,8 +384,7 @@ function __main__() {
   if [[ "$proxy_state" -eq 1 ]] ; then
 
     if [[ "$proxy_type" == "socks" ]] || \
-       [[ "$proxy_type" == "privoxy" ]] || \
-       [[ "$proxy_type" == "hpts" ]] ; then
+       [[ " ${_proxy_list[*]} " =~ $proxy_type ]] ; then
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
@@ -505,12 +506,12 @@ function __main__() {
       # shellcheck disable=SC2034,SC2154
       local _tml_ha0="${_tml}/haproxy-template.cfg"
       # shellcheck disable=SC2034,SC2154
-      local _tml_po0="${_tml}/privoxy-template.cfg"
+      local _tml_po0="${_tml}/${proxy_type}-template.cfg"
 
       # shellcheck disable=SC2034,SC2154
       local _tml_ha1="${_etc}/haproxy.cfg"
       # shellcheck disable=SC2034,SC2154
-      local _tml_po1="${_etc}/privoxy.cfg"
+      local _tml_po1="${_etc}/${proxy_type}.cfg"
 
       for _tfd in "$_tml_ha1" "$_tml_po1" ; do
 
@@ -603,7 +604,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "privoxy" "node" ; do
+    for _proc in "haproxy" "${_proxy_list[@]}" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -623,7 +624,7 @@ function __main__() {
     fi
 
     # shellcheck disable=SC2034
-    for _proc in "haproxy" "privoxy" "node" ; do
+    for _proc in "haproxy" "${_proxy_list[@]}" ; do
 
       CheckProxyProcess "${_proc}"
 
@@ -700,12 +701,12 @@ function __main__() {
     # shellcheck disable=SC2034,SC2154
     local _tml_ha0="${_tml}/haproxy-template.cfg"
     # shellcheck disable=SC2034,SC2154
-    local _tml_po0="${_tml}/privoxy-template.cfg"
+    local _tml_po0="${_tml}/${proxy_type}-template.cfg"
 
     # shellcheck disable=SC2034,SC2154
     local _tml_ha1="${_etc}/haproxy.cfg"
     # shellcheck disable=SC2034,SC2154
-    local _tml_po1="${_etc}/privoxy.cfg"
+    local _tml_po1="${_etc}/${proxy_type}.cfg"
 
     for _tfd in "$_tml_ha1" "$_tml_po1" ; do
 
@@ -725,7 +726,7 @@ function __main__() {
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
-    for _proc in "haproxy" "privoxy" "node" ; do
+    for _proc in "haproxy" "${_proxy_list[@]}" ; do
 
       CheckProxyProcess "${_proc}"
 
