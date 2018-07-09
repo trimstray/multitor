@@ -48,7 +48,7 @@
 
 ## Description
 
-A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **[HAProxy](http://www.haproxy.org/)**. It's provides one single endpoint for clients. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes. Support **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**.
+A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **[HAProxy](http://www.haproxy.org/)**. It's provides one single endpoint for clients. Support **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
 
 > The **multitor** has been completely rewritten on the basis of:
 >
