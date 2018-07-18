@@ -61,12 +61,12 @@ A tool that lets you **create multiple TOR** instances with a **load-balancing**
 
 Before using the **multitor** you need to remember:
 
-- **TOR** does attempt to generate a bunch of streams for you already. From this perspective, it is already load balancing (and it's much smarter at it than HAproxy)
+- **TOR** does attempt to generate a bunch of streams for you already. From this perspective, it is already load balancing (and it's much smarter at it than **HAproxy**)
 - the main goal is masking from where we get by sending requests to multiple streams. It is not so easy to locate where an attacker comes from. If you used http/https servers eg. proxy servers, you will know what is going on but...
-- using multiple **TOR** instances can increase the probability of using a compromised circuit. On the other hand this is not a **multitor** problem but the network itself
+- using multiple **TOR** instances can increase the probability of using a compromised circuit
 - **multitor** getting some bandwidth improvements just because it's a different way of connecting to **TOR** network
-- in **multitor** configuration mostly **HAProxy** checks the local (syn, syn/ack) socket - not all tor nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next - it does not ensure that the data will arrive
-- **TOR** network is a separate organism on which the multitor has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
+- in **multitor** configuration mostly **HAProxy** checks the local (syn, syn/ack) socket - not all **TOR** nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next - it does not ensure that the data will arrive
+- **TOR** network is a separate organism on which the **multitor** has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
 - **HAProxy** load balance network traffic between local **TOR** or **http-proxy** processes - not nodes inside **TOR** network
 
 > **TOR** is a fine security project and an excellent component in a strategy of defence in depth but it isn’t (sadly) a cloak of invisibility. When using the **TOR**, always remember about ssl (eg. https) wherever it is possible.
