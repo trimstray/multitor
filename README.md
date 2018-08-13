@@ -26,6 +26,7 @@
  • <a href="#how-to-use">How To Use</a>
  • <a href="#parameters">Parameters</a>
  • <a href="#requirements">Requirements</a>
+ • <a href="#docker">Docker</a>
  • <a href="#other">Other</a>
  • <a href="#license">License</a>
  • <a href="https://github.com/trimstray/multitor/wiki">Wiki</a>
@@ -141,6 +142,10 @@ This tool working with:
 - **Bash** (testing on 4.4.19)
 
 Also you will need **root access**.
+
+## Docker
+
+See this project: **[docker-multitor](https://github.com/evait-security/docker-multitor)**
 
 ## Other
 
