@@ -62,9 +62,10 @@ function CreateWebProxyProcess() {
         # shellcheck disable=SC2154
         cp "${_tml_po0}" "${_pfd}"
 
+        # https://github.com/trimstray/multitor/issues/15
         # shellcheck disable=SC2154,SC2129
-        printf "logfile privoxy.%d\\n" "$_bk_port_new" \
-        >>"${_pfd}"
+        # printf "logfile privoxy.%d\\n" "$_bk_port_new" \
+        # >>"${_pfd}"
 
         # shellcheck disable=SC2154,SC2129
         printf "listen-address 127.0.0.1:%d\\n" "$_bk_port_new" \
@@ -138,9 +139,10 @@ function CreateWebProxyProcess() {
         # shellcheck disable=SC2154
         cp "${_tml_po0}" "${_pfd}"
 
+        # https://github.com/trimstray/multitor/issues/15
         # shellcheck disable=SC2154,SC2129
-        printf "logfile privoxy.%d\\n" "$_bk_port_new" \
-        >>"${_pfd}"
+        # printf "logfile privoxy.%d\\n" "$_bk_port_new" \
+        # >>"${_pfd}"
 
         # shellcheck disable=SC2154,SC2129
         printf "listen-address 127.0.0.1:%d\\n" "$_bk_port_new" \
