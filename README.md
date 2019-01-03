@@ -51,23 +51,23 @@
 
 A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **[HAProxy](http://www.haproxy.org/)**. It's provides one single endpoint for clients. Support **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
 
-> The **multitor** has been completely rewritten on the basis of:
+> The `multitor` has been completely rewritten on the basis of:
 >
 > - **Multi-TOR** project written by *Jan Seidl*: [Multi-TOR](https://github.com/jseidl/Multi-TOR)
 > - original source is (*Sebastian Wain* project): [Distributed Scraping With Multiple TOR Circuits](http://blog.databigbang.com/distributed-scraping-with-multiple-tor-circuits/)
 
 ## Introduction
 
-**Multitor** was created with the aim of initialize many **TOR** processes as quickly as possible. I could use many instances for my daily use programs (web browsers, messangers and other). In addition, I was looking for a tool that would increase anonymity when conducting penetration tests and testing the security of infrastructure.
+`multitor` was created with the aim of initialize many **TOR** processes as quickly as possible. I could use many instances for my daily use programs (web browsers, messangers and other). In addition, I was looking for a tool that would increase anonymity when conducting penetration tests and testing the security of infrastructure.
 
-Before using the **multitor** you need to remember:
+Before using the `multitor` you need to remember:
 
 - **TOR** does attempt to generate a bunch of streams for you already. From this perspective, it is already load balancing (and it's much smarter at it than **HAproxy**)
 - the main goal is masking from where we get by sending requests to multiple streams. It is not so easy to locate where an attacker comes from. If you used http/https servers e.g. proxy servers, you will know what is going on but...
 - using multiple **TOR** instances can increase the probability of using a compromised circuit
-- **multitor** getting some bandwidth improvements just because it's a different way of connecting to **TOR** network
-- in **multitor** configuration mostly **HAProxy** checks the local (syn, syn/ack) socket - not all **TOR** nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next - it does not ensure that the data will arrive
-- **TOR** network is a separate organism on which the **multitor** has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
+- `multitor` getting some bandwidth improvements just because it's a different way of connecting to **TOR** network
+- in `multitor` configuration mostly **HAProxy** checks the local (syn, syn/ack) socket - not all **TOR** nodes (also exist nodes). If there is a problem with the socket it tries to send traffic to others available without touching what's next - it does not ensure that the data will arrive
+- **TOR** network is a separate organism on which the `multitor` has no effect If one of the nodes is damaged and somehow the data can not leave the exit node, it is likely that a connection error will be returned or, at best, the data will be transferred through another local socket
 - **HAProxy** load balance network traffic between local **TOR** or **http-proxy** processes - not nodes inside **TOR** network
 
 > **TOR** is a fine security project and an excellent component in a strategy of defence in depth but it isn’t (sadly) a cloak of invisibility. When using the **TOR**, always remember about ssl (e.g. https) wherever it is possible.
@@ -76,7 +76,7 @@ Look also at **[Limitations](#limitations)**.
 
 ## How To Use
 
-> :heavy_exclamation_mark: Before using the **multitor**, detailed understanding all parameters and how it works, see the **<a href="https://github.com/trimstray/multitor/wiki/Manual">Manual</a>**.
+> :heavy_exclamation_mark: Before using the `multitor`, detailed understanding all parameters and how it works, see the **<a href="https://github.com/trimstray/multitor/wiki/Manual">Manual</a>**.
 
 It's simple:
 
@@ -127,7 +127,7 @@ Provides the following options:
 
 ## Requirements
 
-**<u>Multitor</u>** uses external utilities to be installed before running:
+`multitor` uses external utilities to be installed before running:
 
 - [tor](https://www.torproject.org/)
 - [netcat](http://netcat.sourceforge.net/)
@@ -139,7 +139,7 @@ Provides the following options:
 This tool working with:
 
 - **GNU/Linux** (testing on Debian and CentOS)
-- **Bash** (testing on 4.4.19)
+- **[Bash](https://www.gnu.org/software/bash/)** (testing on 4.4.19)
 
 Also you will need **root access**.
 
@@ -151,13 +151,13 @@ See this project: **[docker-multitor](https://github.com/evait-security/docker-m
 
 ### Important
 
-If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version. If you do not use regenerate function of single or all **TOR** circuits with a password, you can safely restart the **multitor** which will do it for you.
+If you use this tool in other scripts where the output is saved everywhere, not on the screen, remember that you will not be able to use the generated password. I will correct this in the next version. If you do not use regenerate function of single or all **TOR** circuits with a password, you can safely restart the `multitor` which will do it for you.
 
 ### Limitations
 
 - each **TOR**, **http-proxy** and **HAProxy** processes needs a certain number of memory. If the number of **TOR** processes is too big, the oldest one will be automatically killed by the system
 - **Polipo** is no longer supported but it is still a very good and light proxy. In my opinion the best http-proxy solution is **Privoxy**
-- I think this topic will be usefull for You before using **multitor** - [How to run multiple Tor processes at once with different exit IPs?](https://stackoverflow.com/questions/14321214/how-to-run-multiple-tor-processes-at-once-with-different-exit-ips)
+- I think this topic will be usefull for You before using `multitor` - [How to run multiple Tor processes at once with different exit IPs?](https://stackoverflow.com/questions/14321214/how-to-run-multiple-tor-processes-at-once-with-different-exit-ips)
 
 ### Contributing
 
