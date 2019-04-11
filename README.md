@@ -3,20 +3,14 @@
 <h4 align="center">A tool that lets you create multiple TOR instances with a load-balancing.</h4>
 
 <p align="center">
-  <a href="https://img.shields.io/badge/Branch-master-green.svg">
-    <img src="https://img.shields.io/badge/Branch-master-green.svg"
-        alt="Branch">
+  <a href="https://travis-ci.org/trimstray/multitor">
+    <img src="https://travis-ci.org/trimstray/multitor.svg?branch=master" alt="Travis-CI">
   </a>
   <a href="https://img.shields.io/badge/Version-v1.3.0-lightgrey.svg">
-    <img src="https://img.shields.io/badge/Version-v1.3.0-lightgrey.svg"
-        alt="Version">
+    <img src="https://img.shields.io/badge/Version-v1.3.0-lightgrey.svg" alt="Version">
   </a>
-  <a href="https://travis-ci.org/trimstray/multitor">
-    <img src="https://travis-ci.org/trimstray/multitor.svg?branch=master"
-        alt="Travis-CI">
   <a href="http://www.gnu.org/licenses/">
-    <img src="https://img.shields.io/badge/license-GNU-blue.svg"
-        alt="License">
+    <img src="https://img.shields.io/badge/license-GNU-blue.svg" alt="License">
   </a>
 </p>
 
@@ -41,8 +35,7 @@
 <br>
 
 <p align="center">
-    <img src="https://github.com/trimstray/multitor/blob/master/static/img/multitor_output_1.png"
-        alt="Master">
+  <img src="https://github.com/trimstray/multitor/blob/master/static/img/multitor_output_1.png" alt="Master">
 </p>
 
 ## Description
@@ -74,7 +67,7 @@ Look also at **[Limitations](#limitations)**.
 
 ## How To Use
 
-> :heavy_exclamation_mark: Before using the `multitor`, detailed understanding all parameters and how it works, see the **<a href="https://github.com/trimstray/multitor/wiki/Manual">Manual</a>**.
+> :heavy_exclamation_mark: For a more detailed understanding of `multitor`, its parameters, functions and how it all works, see the **[Manual](https://github.com/trimstray/multitor/wiki/Manual)**.
 
 It's simple:
 
@@ -163,7 +156,7 @@ See **[this](CONTRIBUTING.md)**.
 
 ### Project architecture
 
-See **<a href="https://github.com/trimstray/multitor/wiki/Project-architecture">this</a>**.
+See **[this](https://github.com/trimstray/multitor/wiki/Project-architecture)**.
 
 ## License
 
