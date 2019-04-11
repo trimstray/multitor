@@ -1,4 +1,4 @@
-<h1 align="center">Multitor</h1>
+<h1 align="center">multitor</h1>
 
 <h4 align="center">A tool that lets you create multiple TOR instances with a load-balancing.</h4>
 
