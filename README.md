@@ -1,6 +1,6 @@
 <h1 align="center">multitor</h1>
 
-<h4 align="center">A tool that lets you create multiple TOR instances with a load-balancing.</h4>
+<h4 align="center">Create multiple TOR instances with a load-balancing.</h4>
 
 <p align="center">
   <a href="https://travis-ci.org/trimstray/multitor">
@@ -40,7 +40,9 @@
 
 ## Description
 
-A tool that lets you **create multiple TOR** instances with a **load-balancing** traffic between them by **[HAProxy](http://www.haproxy.org/)**. It's provides one single endpoint for clients. Support **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**. In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
+It provides one single endpoint for clients. Supports **[HAProxy](http://www.haproxy.org/)**, **socks** protocol and **http-proxy** servers: **[polipo](https://www.irif.fr/~jch/software/polipo/)**, **[privoxy](https://www.privoxy.org/)** and **[hpts](https://github.com/oyyd/http-proxy-to-socks)**.
+
+In addition, you can **view** previously running **TOR** processes and create a **new identity** for all or selected processes.
 
 > The `multitor` has been completely rewritten on the basis of:
 >
