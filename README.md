@@ -154,7 +154,7 @@ If you use this tool in other scripts where the output is saved everywhere, not 
 
 ### Contributing
 
-See **[this](CONTRIBUTING.md)**.
+See **[this](.github/CONTRIBUTING.md)**.
 
 ### Project architecture
 
