@@ -1,6 +1,6 @@
 <h1 align="center">multitor</h1>
 
-<h4 align="center">Create multiple TOR instances with a load-balancing.</h4>
+<h4 align="center">Create multiple TOR instances with load-balancing.</h4>
 
 <p align="center">
   <a href="https://travis-ci.org/trimstray/multitor">
