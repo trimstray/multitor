@@ -523,7 +523,7 @@ function __main__() {
     # shellcheck disable=SC2034
     _pass_gen=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
     # shellcheck disable=SC2034
-    _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" | grep "16:")
+    _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" --quiet | grep "16:[0-9A-Z]*")
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
