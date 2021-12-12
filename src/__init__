@@ -575,7 +575,7 @@ function __main__() {
         "${_FUNCTION_ID}()" \
         "socks_port_number: '$socks_port_number', control_port_number: '$control_port_number'"
 
-      CreateTorProcess "${user_name}" "${socks_port_number}" "${control_port_number}"
+      CreateTorProcess "${user_name}" "${socks_port_number}" "${control_port_number}" "/etc/tor/torrc"
 
       # For proxy:
       _proxy_ports+=("$socks_port_number")
