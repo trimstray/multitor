@@ -686,9 +686,6 @@ function _before_init() {
 
   fi
 
-  # Flush etc/ directory.
-  rm -fr "${_etc:?}"/*
-
   return $_STATE
 
 }

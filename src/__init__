@@ -562,11 +562,6 @@ function __main__() {
 
       _proxy_ports=()
 
-    else
-
-      # Flush etc/ directory.
-      rm -fr "${_etc:?}"/*
-
     fi
 
     for i in $(seq 0 $((init_number - 1))) ; do
@@ -748,9 +743,6 @@ function __main__() {
       fi
 
     done
-
-    # Flush etc/ directory.
-    rm -fr "${_etc:?}"/*
 
     # shellcheck disable=SC2034
     # Manages proxy processes stack.
