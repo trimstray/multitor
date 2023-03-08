@@ -55,8 +55,8 @@ function __main__() {
 
   # We place here used commands at script runtime, as strings to anything
   # unnecessarily run.
-  readonly commands=(basename dirname stat ps date grep cut sed awk chown \
-                     chmod mkdir pidof tor sudo nc kill \
+  readonly commands=(basename dirname stat ps date grep cut sed awk chown openssl \
+                     chmod mkdir pidof tor runuser nc kill \
                      haproxy polipo privoxy hpts)
 
   # If you intend to specify the full path to the command we do it like:
@@ -521,9 +521,9 @@ function __main__() {
     # Generate random password.
     # Does storing the password in this form is security issue?
     # shellcheck disable=SC2034
-    _pass_gen=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+    _pass_gen=$(openssl rand -base64 20 | tr -dc 'a-zA-Z0-9' | fold -w 18)
     # shellcheck disable=SC2034
-    _pass_hash=$(sudo -u "$user_name" tor --hash-password "$_pass_gen" | grep "16:")
+    _pass_hash=$(runuser -u "$user_name" -- tor --hash-password "$_pass_gen" | grep "16:")
 
     if [[ "$proxy_state" -eq 1 ]] ; then
 
@@ -554,7 +554,7 @@ function __main__() {
       cp "${_tml_ha0}" "${_tml_ha1}"
 
       # shellcheck disable=SC2034
-      _pass_gen_ha=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+      _pass_gen_ha=$(openssl rand -base64 20 | tr -dc 'a-zA-Z0-9' | fold -w 18)
 
       sed -i "s/__PASSWORD__/$_pass_gen_ha/g" "${_tml_ha1}"
 
