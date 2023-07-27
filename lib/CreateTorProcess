@@ -23,6 +23,7 @@ function CreateTorProcess() {
   local _arg_uname="$1"
   local _arg_socks="$2"
   local _arg_control="$3"
+  local _arg_torrc="$4"
 
   # shellcheck disable=SC2154
   local _proc_dir="${_multitor_directory}/${_arg_socks}"
@@ -34,9 +35,16 @@ function CreateTorProcess() {
   # We create a directory for the new tor process.
   CreateTorDirectory
 
+  # create torrc file
+  if [[ $var ]]; then
+    echo "" > "${_torrc_config}"
+  else
+    cp "${_arg_torrc}" "${_torrc_config}"
+  fi
+
   # We save the hash of the password to the configuration file.
   # shellcheck disable=SC2154
-  echo "HashedControlPassword ${_pass_hash}" > "${_torrc_config}"
+  echo "HashedControlPassword ${_pass_hash}" >> "${_torrc_config}"
   _kstate="$?"
 
   if [[ $_kstate -eq 0 ]] ; then
