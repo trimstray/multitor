@@ -26,12 +26,6 @@
  • <a href="https://github.com/trimstray/multitor/wiki">Wiki</a>
 </p>
 
-<div align="center">
-  <sub>Created by
-  <a href="https://twitter.com/trimstray">trimstray</a> and
-  <a href="https://github.com/trimstray/multitor/graphs/contributors">contributors</a>
-</div>
-
 <br>
 
 <p align="center">
