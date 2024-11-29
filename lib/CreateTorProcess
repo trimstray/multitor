@@ -73,7 +73,7 @@ function CreateTorProcess() {
   fi
 
   # shellcheck disable=SC2024
-  sudo -u "$_arg_uname" tor -f "${_torrc_config}" \
+  runuser -u "$_arg_uname" -- tor -f "${_torrc_config}" \
        --RunAsDaemon 1 \
        --CookieAuthentication 0 \
        --SocksPort "$_arg_socks" \
